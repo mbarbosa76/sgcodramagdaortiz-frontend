@@ -1,0 +1,159 @@
+/* Fondo general del módulo */
+.Paciente-container {
+  max-width: 1180px;
+  margin: 32px auto;
+  padding: 32px;
+  border-radius: 24px;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.12);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Títulos */
+.Paciente-container h2 {
+  margin: 0 0 28px;
+  text-align: center;
+  color: #0f172a;
+  font-size: 32px;
+}
+
+.Paciente-container h3 {
+  margin: 32px 0 16px;
+  color: #0f172a;
+  font-size: 26px;
+}
+
+/* Formulario */
+.Paciente-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+  padding: 28px;
+  border-radius: 20px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  margin-bottom: 8px;
+  color: #1e293b;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.form-group input {
+  padding: 14px 16px;
+  border: 1px solid #cbd5e1;
+  border-radius: 14px;
+  font-size: 15px;
+  color: #0f172a;
+  background-color: #f8fafc;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #2563eb;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.18);
+}
+
+/* Botones */
+.form-buttons {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 14px;
+  margin-top: 8px;
+}
+
+.form-buttons button {
+  padding: 13px 24px;
+  border: none;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.form-buttons button:first-child {
+  color: #ffffff;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.30);
+}
+
+.form-buttons button:last-child {
+  color: #334155;
+  background-color: #e2e8f0;
+}
+
+.form-buttons button:hover {
+  transform: translateY(-2px);
+}
+
+/* Tabla */
+.Paciente-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  border-radius: 18px;
+  background-color: #ffffff;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+}
+
+.Paciente-table thead {
+  background: linear-gradient(135deg, #0f172a, #1e40af);
+}
+
+.Paciente-table th {
+  padding: 16px;
+  color: #ffffff;
+  font-size: 14px;
+  text-align: left;
+}
+
+.Paciente-table td {
+  padding: 16px;
+  border-bottom: 1px solid #e2e8f0;
+  color: #334155;
+}
+
+.Paciente-table tbody tr:hover {
+  background-color: #f1f5f9;
+}
+
+.Paciente-table button {
+  padding: 8px 13px;
+  margin-right: 8px;
+  border: none;
+  border-radius: 10px;
+  color: #ffffff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.Paciente-table button:first-child {
+  background-color: #16a34a;
+}
+
+.Paciente-table button:last-child {
+  background-color: #dc2626;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .Paciente-form {
+    grid-template-columns: 1fr;
+  }
+
+  .Paciente-container {
+    margin: 16px;
+    padding: 20px;
+  }
+}

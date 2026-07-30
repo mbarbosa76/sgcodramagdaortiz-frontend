@@ -1,0 +1,372 @@
+/*
+  ============================================================
+  MÓDULO CITA
+  ============================================================
+*/
+
+.Cita-module {
+  width: 100%;
+}
+
+
+/*
+  ============================================================
+  ENCABEZADO
+  ============================================================
+*/
+
+.module-header {
+  margin-bottom: 24px;
+}
+
+.module-tag {
+  display: inline-block;
+  padding: 5px 12px;
+  background: #eee7fa;
+  color: #6f2dbd;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.module-header h2 {
+  margin: 10px 0 5px;
+  font-size: 27px;
+}
+
+.module-header p {
+  margin: 0;
+  color: #607d8b;
+}
+
+
+/*
+  ============================================================
+  TARJETAS
+  ============================================================
+*/
+
+.card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 25px;
+  margin-bottom: 25px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+}
+
+.card h3 {
+  margin-top: 0;
+  margin-bottom: 22px;
+}
+
+
+/*
+  ============================================================
+  FORMULARIO
+  ============================================================
+*/
+
+.Cita-form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group.full {
+  grid-column: 1 / -1;
+}
+
+.form-group label {
+  font-size: 14px;
+  font-weight: bold;
+  color: #455a64;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border: 1px solid #d5e0e0;
+  border-radius: 8px;
+  background: #f9fcfc;
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+  transition: 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: #6f2dbd;
+  box-shadow: 0 0 0 2px rgba(111, 45, 189, 0.10);
+  background: #ffffff;
+}
+
+.form-group textarea {
+  resize: vertical;
+}
+
+
+/*
+  ============================================================
+  BOTONES DEL FORMULARIO
+  ============================================================
+*/
+
+.form-buttons {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 12px;
+  margin-top: 5px;
+}
+
+.btn-primary,
+.btn-secondary,
+.btn-edit,
+.btn-delete {
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s;
+}
+
+.btn-primary,
+.btn-secondary {
+  padding: 12px 25px;
+}
+
+.btn-primary {
+  background: #6f2dbd;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #5b229c;
+}
+
+.btn-secondary {
+  background: #e7eeee;
+  color: #455a64;
+}
+
+.btn-secondary:hover {
+  background: #d8e2e2;
+}
+
+
+/*
+  ============================================================
+  MENSAJES
+  ============================================================
+*/
+
+.mensaje {
+  margin-bottom: 20px;
+  padding: 12px 15px;
+  border-radius: 8px;
+  background: #eef7f0;
+  border: 1px solid #c7e3cc;
+  color: #276738;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+
+/*
+  ============================================================
+  TABLA
+  ============================================================
+*/
+
+.table-title {
+  margin-bottom: 20px;
+}
+
+.table-title h3 {
+  margin-bottom: 6px;
+}
+
+.table-title p {
+  margin: 0;
+  color: #607d8b;
+  font-size: 14px;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.Cita-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 1000px;
+}
+
+.Cita-table thead {
+  background: #6f2dbd;
+  color: white;
+}
+
+.Cita-table th {
+  padding: 12px 10px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.Cita-table td {
+  padding: 12px 10px;
+  border-bottom: 1px solid #e5eeee;
+  font-size: 14px;
+  vertical-align: middle;
+}
+
+.Cita-table tbody tr:hover {
+  background: #faf8ff;
+}
+
+
+/*
+  ============================================================
+  ESTADO DE LA CITA
+  ============================================================
+*/
+
+.estado-badge {
+  display: inline-block;
+  padding: 5px 9px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 700;
+  background: #eee7fa;
+  color: #5b2a91;
+}
+
+
+/*
+  ============================================================
+  ACCIONES DE LA TABLA
+  ============================================================
+
+  IMPORTANTE:
+
+  Estos estilos hacen que los botones Editar y Eliminar
+  aparezcan horizontalmente, uno al lado del otro,
+  igual que en el módulo Paciente.
+*/
+
+.Cita-table td:last-child {
+  min-width: 150px;
+  white-space: nowrap;
+}
+
+
+/*
+  Contenedor de los botones.
+*/
+
+.Cita-table .action-buttons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 7px;
+  flex-wrap: nowrap;
+}
+
+
+/*
+  Botón Editar.
+*/
+
+.Cita-table .btn-edit {
+  background: #2e9d78;
+  color: white;
+  padding: 7px 12px;
+  white-space: nowrap;
+}
+
+.Cita-table .btn-edit:hover {
+  background: #247e61;
+}
+
+
+/*
+  Botón Eliminar.
+*/
+
+.Cita-table .btn-delete {
+  background: #d9534f;
+  color: white;
+  padding: 7px 12px;
+  white-space: nowrap;
+}
+
+.Cita-table .btn-delete:hover {
+  background: #b93f3b;
+}
+
+
+/*
+  ============================================================
+  MENSAJES DE CARGA
+  ============================================================
+*/
+
+.loading {
+  text-align: center;
+  padding: 25px;
+  color: #777;
+}
+
+.empty-message {
+  text-align: center !important;
+  padding: 30px !important;
+  color: #777;
+}
+
+
+/*
+  ============================================================
+  RESPONSIVE
+  ============================================================
+*/
+
+@media (max-width: 700px) {
+
+  .Cita-form {
+    grid-template-columns: 1fr;
+  }
+
+  .form-group.full {
+    grid-column: auto;
+  }
+
+  .form-buttons {
+    grid-column: auto;
+    flex-direction: column;
+  }
+
+  /*
+    En pantallas pequeñas mantenemos los botones
+    de acciones horizontalmente siempre que haya espacio.
+  */
+
+  .Cita-table .action-buttons {
+    flex-direction: row;
+    flex-wrap: nowrap;
+  }
+
+}
