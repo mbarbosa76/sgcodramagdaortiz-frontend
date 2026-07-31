@@ -61,6 +61,23 @@ const API_URL = 'http://localhost:8765/api'
 
 
 /*
+  Obtiene los encabezados con el token JWT
+  almacenado en el navegador tras iniciar sesión.
+
+  Todos los endpoints de /api/pacientes ahora
+  requieren autenticación mediante Bearer Token.
+*/
+const obtenerConfigAuth = () => {
+  const token = localStorage.getItem('token')
+  return {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  }
+}
+
+
+/*
   ============================================================
   ESTADO INICIAL DEL FORMULARIO
   ============================================================
@@ -197,7 +214,8 @@ function Paciente() {
       setCargando(true)
 
       const respuesta = await axios.get(
-        `${API_URL}/pacientes`
+        `${API_URL}/pacientes`,
+        obtenerConfigAuth()
       )
 
       /*
@@ -720,7 +738,8 @@ function Paciente() {
 
         await axios.put(
           `${API_URL}/pacientes/${idPacienteEditando}`,
-          datosPaciente
+          datosPaciente,
+          obtenerConfigAuth()
         )
 
 
@@ -742,7 +761,8 @@ function Paciente() {
 
         await axios.post(
           `${API_URL}/pacientes`,
-          datosPaciente
+          datosPaciente,
+          obtenerConfigAuth()
         )
 
 
@@ -950,7 +970,8 @@ function Paciente() {
         Envía la solicitud DELETE al backend.
       */
       await axios.delete(
-        `${API_URL}/pacientes/${idPaciente}`
+        `${API_URL}/pacientes/${idPaciente}`,
+        obtenerConfigAuth()
       )
 
 

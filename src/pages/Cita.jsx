@@ -48,6 +48,16 @@ import './Cita.css'
 
 const API_URL = 'http://localhost:8765/api'
 
+// Obtiene los encabezados con el token JWT
+// almacenado en el navegador tras iniciar sesión.
+const obtenerConfigAuth = () => {
+  const token = localStorage.getItem('token')
+  return {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  }
+}
 
 /*
   ============================================================
@@ -221,7 +231,8 @@ function Cita() {
     try {
 
       const respuesta = await axios.get(
-        `${API_URL}/citas`
+        `${API_URL}/citas`,
+        obtenerConfigAuth()
       )
 
       setCitas(respuesta.data)
@@ -254,7 +265,8 @@ function Cita() {
     try {
 
       const respuesta = await axios.get(
-        `${API_URL}/pacientes`
+        `${API_URL}/pacientes`,
+        obtenerConfigAuth()
       )
 
       setPacientes(respuesta.data)
@@ -287,7 +299,8 @@ function Cita() {
     try {
 
       const respuesta = await axios.get(
-        `${API_URL}/servicios`
+        `${API_URL}/servicios`,
+        obtenerConfigAuth()
       )
 
       setServicios(respuesta.data)
@@ -907,12 +920,10 @@ function Cita() {
         idCitaEditando !== null
       ) {
 
-        await axios.put(
-
-          `${API_URL}/citas/${idCitaEditando}`,
-
-          datosCita
-
+        await axios.post(
+          `${API_URL}/citas`,
+          datosCita,
+          obtenerConfigAuth()
         )
 
 
@@ -936,11 +947,9 @@ function Cita() {
       else {
 
         await axios.post(
-
           `${API_URL}/citas`,
-
-          datosCita
-
+          datosCita,
+          obtenerConfigAuth()
         )
 
 
@@ -1220,7 +1229,8 @@ function Cita() {
     try {
 
       await axios.delete(
-        `${API_URL}/citas/${idCita}`
+        `${API_URL}/citas/${idCita}`,
+        obtenerConfigAuth()
       )
 
 

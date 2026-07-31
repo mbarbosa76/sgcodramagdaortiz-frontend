@@ -16,36 +16,27 @@
   box-sizing: border-box;
 }
 
-
 html {
   scroll-behavior: smooth;
 }
 
-
 body {
   margin: 0;
   padding: 0;
-
-  font-family:
-    Arial,
-    Helvetica,
-    sans-serif;
-
+  font-family: Arial, Helvetica, sans-serif;
   background: #f3f8f7;
-
   color: #263238;
 }
 
 
 /*
   ============================================================
-  CONTENEDOR PRINCIPAL
+  CONTENEDOR PRINCIPAL Y LAYOUT
   ============================================================
 */
 
 .app {
   min-height: 100vh;
-
   display: flex;
   flex-direction: column;
 }
@@ -53,74 +44,97 @@ body {
 
 /*
   ============================================================
-  ENCABEZADO PRINCIPAL
+  ENCABEZADO PRINCIPAL (HEADER)
   ============================================================
 */
 
 .app-header {
   width: 100%;
-
   background: #177c6b;
-
   color: white;
-
-  box-shadow:
-    0 3px 12px rgba(0, 0, 0, 0.10);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.10);
 }
-
 
 .app-header-content {
   width: 100%;
-
   max-width: 1250px;
-
   margin: 0 auto;
-
   padding: 22px 30px;
+  /* Se integran propiedades de layout */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 15px;
 }
-
 
 .app-brand {
   display: flex;
-
   align-items: center;
-
   gap: 16px;
 }
-
 
 .app-logo {
   width: 50px;
   height: 50px;
-
   display: flex;
-
   align-items: center;
   justify-content: center;
-
   background: rgba(255, 255, 255, 0.15);
-
   border-radius: 12px;
-
   font-size: 27px;
 }
 
-
 .app-brand h1 {
   margin: 0 0 5px 0;
-
   font-size: 24px;
-
   font-weight: 700;
 }
 
-
 .app-brand p {
   margin: 0;
-
   font-size: 14px;
-
   opacity: 0.90;
+}
+
+
+/*
+  ============================================================
+  ENCABEZADO: INFORMACIÓN DE SESIÓN
+  ============================================================
+*/
+
+.app-user-info {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.app-user-info span {
+  background: rgba(255, 255, 255, 0.15);
+  padding: 8px 14px;
+  border-radius: 20px;
+}
+
+.app-user-info button {
+  border: none;
+  border-radius: 7px;
+  padding: 9px 16px;
+  background: #ffffff;
+  color: #0f5c4f;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.app-user-info button:hover {
+  background: #e6f2f0;
+  transform: translateY(-1px);
 }
 
 
@@ -132,13 +146,9 @@ body {
 
 .app-content {
   width: 100%;
-
   max-width: 1250px;
-
   margin: 0 auto;
-
   padding: 28px 30px 40px;
-
   flex: 1;
 }
 
@@ -151,54 +161,30 @@ body {
 
 .module-navigation {
   width: 100%;
-
   display: flex;
-
   gap: 10px;
-
   margin-bottom: 25px;
-
   padding: 6px;
-
   background: #ffffff;
-
   border-radius: 12px;
-
-  box-shadow:
-    0 3px 12px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
 }
 
-
-/*
-  Botón individual de pestaña
-*/
-
+/* Botón individual de pestaña */
 .module-tab {
   flex: 1;
-
   min-height: 52px;
-
   display: flex;
-
   align-items: center;
   justify-content: center;
-
   gap: 9px;
-
   border: none;
-
   border-radius: 8px;
-
   background: transparent;
-
   color: #607d8b;
-
   font-size: 15px;
-
   font-weight: 700;
-
   cursor: pointer;
-
   transition:
     background 0.2s ease,
     color 0.2s ease,
@@ -206,34 +192,22 @@ body {
     transform 0.2s ease;
 }
 
-
 .module-tab:hover {
   background: #eef7f5;
-
   color: #177c6b;
 }
 
-
-/*
-  Pestaña activa
-*/
-
+/* Pestaña activa */
 .module-tab.active {
   background: #177c6b;
-
   color: white;
-
-  box-shadow:
-    0 3px 8px rgba(23, 124, 107, 0.20);
+  box-shadow: 0 3px 8px rgba(23, 124, 107, 0.20);
 }
-
 
 .module-tab.active:hover {
   background: #126657;
-
   color: white;
 }
-
 
 .tab-icon {
   font-size: 18px;
@@ -242,66 +216,68 @@ body {
 
 /*
   ============================================================
-  CONTENEDOR DEL MÓDULO
+  CONTENEDOR DEL MÓDULO Y TARJETAS
   ============================================================
 */
 
 .module-content {
   width: 100%;
-
   min-height: 500px;
 }
 
-
-/*
-  ============================================================
-  ESTILOS GENERALES DE TARJETAS
-  ============================================================
-*/
-
 .card {
   background: #ffffff;
-
   border-radius: 12px;
-
   padding: 25px;
-
   margin-bottom: 25px;
-
-  box-shadow:
-    0 3px 12px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
 }
-
 
 .card h3 {
   margin-top: 0;
-
   color: #263238;
 }
 
 
 /*
   ============================================================
-  PIE DE PÁGINA
+  VISTA DE LOGIN (MÓDULO INDEPENDIENTE)
+  ============================================================
+*/
+
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f0f4f3;
+}
+
+.login-box {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+
+/*
+  ============================================================
+  PIE DE PÁGINA (FOOTER)
   ============================================================
 */
 
 .app-footer {
   width: 100%;
-
   padding: 20px 30px;
-
   text-align: center;
-
   background: #ffffff;
-
   border-top: 1px solid #e1ebea;
-
   color: #78909c;
-
   font-size: 13px;
 }
-
 
 .app-footer p {
   margin: 3px 0;
@@ -310,51 +286,43 @@ body {
 
 /*
   ============================================================
-  RESPONSIVE
+  RESPONSIVE / MEDIA QUERIES (SIEMPRE AL FINAL)
   ============================================================
 */
 
 @media (max-width: 700px) {
-
   .app-header-content {
     padding: 18px 20px;
+    flex-direction: column;
+    align-items: flex-start;
   }
-
 
   .app-brand h1 {
     font-size: 19px;
   }
 
-
   .app-brand p {
     font-size: 12px;
   }
-
 
   .app-content {
     padding: 20px 15px 30px;
   }
 
-
   .module-navigation {
     gap: 6px;
   }
 
-
   .module-tab {
     min-height: 48px;
-
     font-size: 13px;
   }
-
 
   .tab-icon {
     font-size: 16px;
   }
 
-
   .app-footer {
     padding: 18px 15px;
   }
-
 }
