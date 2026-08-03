@@ -489,11 +489,20 @@ function Usuario() {
     <div className="usuario-container">
 
 
-      {/* ======================================================
+{/* ======================================================
           ENCABEZADO
+
+          Se usa la misma estructura (module-header +
+          module-tag) que en los módulos Paciente y Cita,
+          para que la etiqueta "Módulo Usuario" se muestre
+          con el mismo color morado en toda la aplicación.
           ====================================================== */}
 
-      <div className="module-title">
+      <div className="module-header">
+
+        <span className="module-tag">
+          Módulo Usuarios
+        </span>
 
         <h2>
           Gestión de Usuarios
@@ -787,22 +796,6 @@ function Usuario() {
       <div className="list-container">
 
         <div className="list-header">
-
-          <h3>
-
-            Usuarios registrados
-
-          </h3>
-
-
-          <button
-            type="button"
-            onClick={cargarUsuarios}
-          >
-
-            Actualizar
-
-          </button>
 
         </div>
 

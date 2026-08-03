@@ -4,6 +4,7 @@ import './App.css'
 import Paciente from './pages/Paciente'
 import Cita from './pages/Cita'
 import Usuario from './pages/Usuario'
+import Profesional from './pages/Profesional'
 import Login from './pages/Login'
 
 import { logout } from './services/AuthService'
@@ -114,12 +115,22 @@ function App() {
             <span className="tab-icon">🔐</span>
             <span>Usuarios</span>
           </button>
+
+          <button
+            type="button"
+            className={moduloActivo === 'profesionales' ? 'module-tab active' : 'module-tab'}
+            onClick={() => setModuloActivo('profesionales')}
+          >
+            <span className="tab-icon">🩺</span>
+            <span>Profesionales</span>
+          </button>
         </nav>
 
         <section className="module-content">
           {moduloActivo === 'pacientes' && <Paciente />}
           {moduloActivo === 'citas' && <Cita />}
           {moduloActivo === 'usuarios' && <Usuario />}
+          {moduloActivo === 'profesionales' && <Profesional />}
         </section>
       </main>
 
