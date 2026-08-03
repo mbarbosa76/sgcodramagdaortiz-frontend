@@ -222,7 +222,12 @@ function Paciente() {
         Guarda en el estado la lista recibida
         desde el backend.
       */
-      setPacientes(respuesta.data)
+      console.log(
+  "Pacientes recibidos desde API:",
+  respuesta.data
+)
+
+setPacientes(respuesta.data)
 
     } catch (error) {
 

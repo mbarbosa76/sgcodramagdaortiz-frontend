@@ -1,0 +1,348 @@
+/*
+  ============================================================
+  Servicio.css
+  ============================================================
+
+  Estilos del módulo Servicios Odontológicos.
+
+  Mantiene la identidad visual del Sistema SGCO:
+
+  - Encabezados tipo módulo.
+  - Tarjetas blancas.
+  - Botones corporativos.
+  - Tabla verde institucional.
+  - Diseño coherente con Pacientes, Usuarios,
+    Profesionales y Citas.
+
+  ============================================================
+*/
+
+
+.servicio-container {
+
+    padding: 0;
+
+}
+
+
+
+/*
+  Encabezado principal del módulo
+*/
+.servicio-container h2 {
+
+    background: transparent;
+
+    color: #1f2937;
+
+    font-size: 28px;
+
+    text-align: left;
+
+    padding: 0;
+
+    margin-bottom: 8px;
+
+}
+
+
+
+/*
+  Contenedor del formulario
+*/
+.servicio-form {
+
+
+    background: white;
+
+    border-radius: 12px;
+
+    padding: 25px;
+
+    margin-top: 25px;
+
+    box-shadow:
+    0 3px 10px rgba(0,0,0,0.08);
+
+
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 15px;
+
+
+}
+
+
+
+/*
+ Campos del formulario
+*/
+.servicio-form input,
+.servicio-form textarea {
+
+
+    width: 100%;
+
+    padding: 12px;
+
+    border-radius: 8px;
+
+    border: 1px solid #d1d5db;
+
+    font-size: 14px;
+
+    box-sizing: border-box;
+
+
+}
+
+
+
+.servicio-form textarea {
+
+
+    grid-column: span 2;
+
+    height: 90px;
+
+    resize: none;
+
+
+}
+
+
+
+/*
+ Botón guardar
+*/
+.servicio-form button {
+
+
+    background-color: #2563eb;
+
+    color: white;
+
+    border: none;
+
+    border-radius: 8px;
+
+    padding: 12px;
+
+    cursor: pointer;
+
+    font-weight: bold;
+
+
+}
+
+
+
+.servicio-form button:hover {
+
+
+    background-color: #1d4ed8;
+
+
+}
+
+
+
+/*
+ Botón cancelar
+*/
+.servicio-form button[type="button"] {
+
+
+    background-color: #e5e7eb;
+
+    color: #374151;
+
+
+}
+
+
+
+
+
+/*
+ Tabla contenedora
+*/
+.servicio-table {
+
+
+    width: 100%;
+
+    margin-top: 25px;
+
+    border-collapse: collapse;
+
+    background:white;
+
+    border-radius:12px;
+
+    overflow:hidden;
+
+
+}
+
+
+
+/*
+ Encabezado tabla
+*/
+.servicio-table thead {
+
+
+    background-color: #008f83;
+
+    color:white;
+
+
+}
+
+
+
+.servicio-table th {
+
+
+    padding:14px;
+
+    font-size:14px;
+
+
+}
+
+
+
+.servicio-table td {
+
+
+    padding:14px;
+
+    border-bottom:
+    1px solid #e5e7eb;
+
+    text-align:center;
+
+
+}
+
+
+
+/*
+ Filas tabla
+*/
+.servicio-table tbody tr:hover {
+
+
+    background-color:#f3f4f6;
+
+
+}
+
+
+
+
+/*
+ Botón editar
+*/
+.servicio-table button {
+
+
+    border:none;
+
+    padding:8px 15px;
+
+    border-radius:7px;
+
+    cursor:pointer;
+
+    color:white;
+
+    font-weight:bold;
+
+    margin:2px;
+
+
+}
+
+
+
+.servicio-table button:first-child {
+
+
+    background-color:#10b981;
+
+
+}
+
+
+
+.servicio-table button:last-child {
+
+
+    background-color:#ef4444;
+
+
+}
+
+
+
+
+.servicio-table button:hover {
+
+
+    opacity:0.85;
+
+
+}
+
+
+
+/*
+ Mensajes
+*/
+.mensaje {
+
+
+    background:#d1fae5;
+
+    color:#065f46;
+
+    padding:12px;
+
+    border-radius:8px;
+
+    margin-bottom:15px;
+
+}
+
+
+
+/*
+ Adaptación móvil
+*/
+@media(max-width:768px){
+
+
+    .servicio-form {
+
+
+        grid-template-columns:1fr;
+
+
+    }
+
+
+    .servicio-form textarea {
+
+
+        grid-column:span 1;
+
+
+    }
+
+
+}
