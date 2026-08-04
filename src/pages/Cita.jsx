@@ -146,7 +146,7 @@ function Cita() {
 
   const [servicios, setServicios] = useState([])
 
-
+  const [profesionales, setProfesionales] = useState([])
   /*
     ID de la cita que se está editando.
 
@@ -209,16 +209,17 @@ function Cita() {
     ============================================================
   */
 
-  useEffect(() => {
+    useEffect(() => {
 
-    cargarCitas()
+      cargarCitas()
 
-    cargarPacientes()
+      cargarPacientes()
 
-    cargarServicios()
+      cargarProfesionales()
 
-  }, [])
+      cargarServicios()
 
+    }, [])
 
   /*
     ============================================================
@@ -287,7 +288,37 @@ function Cita() {
 
   }
 
+    /*
+    ============================================================
+    CARGAR PROFESIONALES
+    ============================================================
+  */
+      const cargarProfesionales = async () => {
 
+        try {
+
+          const respuesta = await axios.get(
+            `${API_URL}/profesionales`,
+            obtenerConfigAuth()
+          )
+
+          setProfesionales(respuesta.data)
+
+        } catch (error) {
+
+          console.error(
+            "Error al cargar profesionales:",
+            error
+          )
+
+          mostrarMensaje(
+            "No fue posible cargar los profesionales.",
+            "error"
+          )
+
+        }
+
+      }
   /*
     ============================================================
     CARGAR SERVICIOS
@@ -870,46 +901,45 @@ function Cita() {
         al formato esperado por Spring Boot.
       */
 
-      const datosCita = {
+const datosCita = {
 
-        paciente: {
+  paciente: {
 
-          idPaciente:
-            Number(cita.idPaciente)
+    idPaciente: Number(cita.idPaciente)
 
-        },
+  },
 
-        idProfesional:
-          cita.idProfesional
-            ? Number(cita.idProfesional)
-            : null,
+  profesional: {
 
-        idServicio:
-          cita.idServicio
-            ? Number(cita.idServicio)
-            : null,
+    idProfesional: Number(cita.idProfesional)
 
-        fecha:
-          cita.fecha,
+  },
 
-        horaInicio:
-          cita.horaInicio,
+  servicio: {
 
-        duracionMin:
-          Number(cita.duracionMin),
+    idServicio: Number(cita.idServicio)
 
-        sala:
-          cita.sala.trim(),
+  },
 
-        estado:
-          cita.estado,
+  fecha: cita.fecha,
 
-        observacion:
-          cita.observacion.trim()
+  horaInicio: cita.horaInicio,
 
-      }
+  duracionMin: Number(cita.duracionMin),
+
+  sala: cita.sala.trim(),
+
+  estado: cita.estado,
+
+  observacion: cita.observacion.trim()
+
+}
 
 
+console.log(
+  "DATOS QUE SE ENVÍAN AL BACKEND:",
+  datosCita
+)
       /*
         ========================================================
         ACTUALIZAR CITA
@@ -1584,16 +1614,14 @@ function Cita() {
 
             <label htmlFor="idProfesional">
 
-              Profesional
+              Profesional *
 
             </label>
 
 
-            <input
+            <select
 
               id="idProfesional"
-
-              type="number"
 
               name="idProfesional"
 
@@ -1601,21 +1629,53 @@ function Cita() {
 
               onChange={handleChange}
 
-              placeholder="ID del profesional"
+              required
 
-              min="1"
+            >
 
-            />
+              <option value="">
+
+                Seleccione un profesional
+
+              </option>
+
+
+              {profesionales.map(
+
+                (profesional) => (
+
+                  <option
+
+                    key={profesional.idProfesional}
+
+                    value={profesional.idProfesional}
+
+                  >
+
+                    {profesional.nombre}{' '}
+
+                    {profesional.apellido}
+
+                    {' - '}
+
+                    {profesional.especialidad}
+
+                  </option>
+
+                )
+
+              )}
+
+            </select>
 
 
             <small>
 
-              Campo opcional. Ingrese el ID del profesional.
+              Seleccione el profesional que atenderá la cita.
 
             </small>
 
           </div>
-
 
           {/* ==================================================
               SERVICIO
