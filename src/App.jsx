@@ -39,6 +39,7 @@ import Cita from './pages/Cita'
 import Usuario from './pages/Usuario'
 import Profesional from './pages/Profesional'
 import Servicio from './pages/Servicio'
+import HistoriaClinica from './pages/HistoriaClinica'
 import Login from './pages/Login'
 
 
@@ -466,7 +467,37 @@ function App() {
 
           </button>
 
+          <button
 
+            type="button"
+
+            className={
+              moduloActivo === 'historias'
+              ? 'module-tab active'
+              : 'module-tab'
+            }
+
+            onClick={() =>
+              setModuloActivo('historias')
+            }
+
+          >
+
+            <span className="tab-icon">
+
+              📋
+
+            </span>
+
+
+            <span>
+
+              Historia Clínica
+
+            </span>
+
+
+          </button>
 
         </nav>
 
@@ -520,7 +551,11 @@ function App() {
             <Servicio />
           }
 
-
+          {
+            moduloActivo === 'historias'
+            &&
+            <HistoriaClinica />
+          }
 
         </section>
 

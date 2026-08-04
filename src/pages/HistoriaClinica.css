@@ -1,0 +1,155 @@
+/*
+============================================================
+HistoriaClinica.css
+Sistema de Gestión de Citas Odontológicas
+============================================================
+*/
+
+
+.historia-container {
+
+    padding: 20px;
+
+}
+
+
+.historia-container h2 {
+
+    margin-bottom: 20px;
+
+    color: #123;
+
+}
+
+
+
+.historia-form {
+
+    background: white;
+
+    padding: 25px;
+
+    border-radius: 12px;
+
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 15px;
+
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+
+}
+
+
+
+.historia-form select,
+.historia-form input,
+.historia-form textarea {
+
+
+    padding: 10px;
+
+    border: 1px solid #ccc;
+
+    border-radius: 6px;
+
+    font-size: 14px;
+
+}
+
+
+
+.historia-form textarea {
+
+    grid-column: span 2;
+
+    min-height: 90px;
+
+}
+
+
+
+.historia-form button {
+
+
+    grid-column: span 2;
+
+    background: #007f73;
+
+    color: white;
+
+    border: none;
+
+    padding: 12px;
+
+    border-radius: 6px;
+
+    cursor: pointer;
+
+    font-weight: bold;
+
+}
+
+
+
+.historia-form button:hover {
+
+    background: #00665c;
+
+}
+
+
+
+.Historia-table {
+
+    width: 100%;
+
+    margin-top: 25px;
+
+    border-collapse: collapse;
+
+    background: white;
+
+}
+
+
+
+.Historia-table th {
+
+    background: #007f73;
+
+    color: white;
+
+    padding: 10px;
+
+}
+
+
+
+.Historia-table td {
+
+    padding: 10px;
+
+    border-bottom: 1px solid #ddd;
+
+}
+
+
+
+.Historia-table button {
+
+
+    background: #d9534f;
+
+    color:white;
+
+    border:none;
+
+    padding:6px 10px;
+
+    border-radius:5px;
+
+    cursor:pointer;
+
+}
