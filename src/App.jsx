@@ -41,7 +41,7 @@ import Profesional from './pages/Profesional'
 import Servicio from './pages/Servicio'
 import HistoriaClinica from './pages/HistoriaClinica'
 import Login from './pages/Login'
-
+import Factura from './pages/Factura'
 
 // ============================================================
 // Servicio de autenticación
@@ -499,6 +499,38 @@ function App() {
 
           </button>
 
+          <button
+
+            type="button"
+
+            className={
+              moduloActivo === 'facturas'
+              ? 'module-tab active'
+              : 'module-tab'
+            }
+
+            onClick={() =>
+              setModuloActivo('facturas')
+            }
+
+          >
+
+            <span className="tab-icon">
+
+              💰
+
+            </span>
+
+
+            <span>
+
+              Facturación
+
+            </span>
+
+
+          </button>
+
         </nav>
 
 
@@ -555,6 +587,12 @@ function App() {
             moduloActivo === 'historias'
             &&
             <HistoriaClinica />
+          }
+
+          {
+            moduloActivo === 'facturas'
+            &&
+            <Factura />
           }
 
         </section>
