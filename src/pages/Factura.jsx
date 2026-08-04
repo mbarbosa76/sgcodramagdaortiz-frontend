@@ -186,21 +186,13 @@ function Factura() {
 
 
 
-    const guardar = async () => {
+const guardar = async () => {
 
 
-        const numero =
-            factura.numeroFactura
-            ||
-            `FAC-${Date.now()}`;
-
+    try {
 
 
         const facturaEnviar = {
-
-
-            numeroFactura:
-                numero,
 
 
             fecha:
@@ -212,7 +204,9 @@ function Factura() {
 
 
             total:
-                Number(factura.total),
+                Number(
+                    factura.total
+                ),
 
 
             paciente: {
@@ -237,51 +231,21 @@ function Factura() {
 
         };
 
-            console.log(
-                "FACTURA JSON:",
-                JSON.stringify(
-                    facturaEnviar,
-                    null,
-                    2
-                )
-            );
+
+
+        console.log(
+            "FACTURA ENVIADA:",
+            facturaEnviar
+        );
+
+
 
         await crearFactura(
             facturaEnviar
         );
 
-try {
 
 
-    await crearFactura(
-        facturaEnviar
-    );
-
-
-    await cargarFacturas();
-
-
-    alert(
-        "Factura creada correctamente"
-    );
-
-
-}
-catch(error) {
-
-
-    console.error(
-        "ERROR FACTURA:",
-        error.response?.data
-    );
-
-
-    alert(
-        "No fue posible crear la factura. Revise la consola."
-    );
-
-
-}
         await cargarFacturas();
 
 
@@ -290,8 +254,26 @@ catch(error) {
             "Factura creada correctamente"
         );
 
-    };
 
+
+    } catch (error) {
+
+
+        console.error(
+            "ERROR CREANDO FACTURA:",
+            error.response?.data || error
+        );
+
+
+        alert(
+            "No fue posible crear la factura."
+        );
+
+
+    }
+
+
+};
 
 
 
