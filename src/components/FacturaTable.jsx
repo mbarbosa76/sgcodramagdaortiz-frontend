@@ -11,7 +11,8 @@ Componente encargado de mostrar las facturas registradas.
 
 function FacturaTable({
     facturas,
-    eliminarFactura
+    eliminarFactura,
+    imprimirFactura
 }) {
 
 
@@ -155,6 +156,19 @@ function FacturaTable({
 
                                         </button>
 
+                                        <button
+
+                                            onClick={() =>
+                                                imprimirFactura(
+                                                    factura
+                                                )
+                                            }
+
+                                        >
+
+                                            Imprimir
+
+                                        </button>
 
                                     </td>
 

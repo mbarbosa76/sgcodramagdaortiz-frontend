@@ -7,10 +7,13 @@ Módulo:
 Facturación
 
 Funciones:
+
+- Crear factura completa.
+- Seleccionar paciente.
+- Filtrar citas por paciente.
+- Seleccionar servicios.
+- Calcular total automático.
 - Consultar facturas.
-- Crear facturas.
-- Relacionar paciente.
-- Relacionar cita.
 - Eliminar facturas.
 
 ============================================================
@@ -25,18 +28,20 @@ import {
 
 import {
     listarFacturas,
-    crearFactura,
+    crearFacturaCompleta,
     eliminarFactura
 } from "../services/FacturaService";
 
 
 import FacturaTable from "../components/FacturaTable";
 
+
 import "./Factura.css";
 
 
 
 function Factura() {
+
 
 
     const [facturas, setFacturas] =
@@ -54,19 +59,33 @@ function Factura() {
 
 
 
+    const [citasFiltradas, setCitasFiltradas] =
+        useState([]);
+
+
+
+
+    const [servicios, setServicios] =
+        useState([]);
+
+
+
+
+    const [serviciosSeleccionados, setServiciosSeleccionados] =
+        useState([]);
+
+
+
+
+
     const [factura, setFactura] =
         useState({
 
-            numeroFactura: "",
 
-            fecha:
-                new Date()
-                .toISOString()
-                .split("T")[0],
+            estadoPago:
+                "PENDIENTE",
 
-            estadoPago: "PENDIENTE",
 
-            total: 0,
 
             paciente: {
 
@@ -74,17 +93,25 @@ function Factura() {
 
             },
 
+
+
             cita: {
 
                 idCita: ""
 
             }
 
+
         });
 
 
 
+
+
+
+
     useEffect(() => {
+
 
         cargarFacturas();
 
@@ -92,7 +119,13 @@ function Factura() {
 
         cargarCitas();
 
+        cargarServicios();
+
+
     }, []);
+
+
+
 
 
 
@@ -104,18 +137,26 @@ function Factura() {
             localStorage.getItem("token");
 
 
+
         return {
 
+
             headers: {
+
 
                 Authorization:
                     `Bearer ${token}`
 
+
             }
+
 
         };
 
+
     };
+
+
 
 
 
@@ -124,13 +165,35 @@ function Factura() {
     const cargarFacturas = async () => {
 
 
-        const datos =
-            await listarFacturas();
+        try {
 
 
-        setFacturas(datos);
+            const datos =
+                await listarFacturas();
+
+
+
+            setFacturas(datos);
+
+
+
+        }
+        catch(error) {
+
+
+            console.error(
+                "Error cargando facturas:",
+                error
+            );
+
+
+        }
+
 
     };
+
+
+
 
 
 
@@ -149,13 +212,19 @@ function Factura() {
             );
 
 
+
         const datos =
             await respuesta.json();
 
 
+
         setPacientes(datos);
 
+
     };
+
+
+
 
 
 
@@ -174,11 +243,14 @@ function Factura() {
             );
 
 
+
         const datos =
             await respuesta.json();
 
 
+
         setCitas(datos);
+
 
     };
 
@@ -186,87 +258,589 @@ function Factura() {
 
 
 
-const guardar = async () => {
+
+
+
+    const cargarServicios = async () => {
+
+
+        const respuesta =
+            await fetch(
+
+                "http://localhost:8765/api/servicios",
+
+                obtenerConfigAuth()
+
+            );
+
+
+
+        const datos =
+            await respuesta.json();
+
+
+
+        setServicios(datos);
+
+
+    };
+
+    
+
+
+
+    const cambiarPaciente = (
+        idPaciente
+    ) => {
+
+
+
+        const id =
+            Number(idPaciente);
+
+
+
+        setFactura({
+
+
+            ...factura,
+
+
+            paciente:{
+
+
+                idPaciente:
+                    idPaciente
+
+
+            },
+
+
+            cita:{
+
+
+                idCita:
+                    ""
+
+
+            }
+
+
+        });
+
+
+
+
+
+        const citasDelPaciente =
+            citas.filter(
+
+
+                cita =>
+
+                cita.paciente?.idPaciente
+                ===
+                id
+
+
+
+            );
+
+
+
+
+        setCitasFiltradas(
+            citasDelPaciente
+        );
+
+
+
+    };
+
+
+
+
+
+
+
+
+    const cambiarServicio = (
+        idServicio
+    ) => {
+
+
+
+        if(
+            serviciosSeleccionados.includes(
+                idServicio
+            )
+        ) {
+
+
+
+            setServiciosSeleccionados(
+
+                serviciosSeleccionados.filter(
+
+                    id =>
+                    id !== idServicio
+
+                )
+
+            );
+
+
+
+        }
+        else {
+
+
+            setServiciosSeleccionados([
+
+                ...serviciosSeleccionados,
+
+                idServicio
+
+            ]);
+
+
+        }
+
+
+    };
+
+
+
+
+
+
+
+    const calcularTotal = () => {
+
+
+        return servicios
+
+            .filter(
+
+                servicio =>
+
+                serviciosSeleccionados.includes(
+                    servicio.idServicio
+                )
+
+            )
+
+            .reduce(
+
+                (total, servicio) =>
+
+                total + servicio.precio,
+
+                0
+
+            );
+
+
+    };
+
+
+
+
+
+
+
+    const guardar = async () => {
+
+
+
+        try {
+
+
+
+            const datos = {
+
+
+                idPaciente:
+
+                    Number(
+                        factura.paciente.idPaciente
+                    ),
+
+
+
+                idCita:
+
+                    Number(
+                        factura.cita.idCita
+                    ),
+
+
+
+                estadoPago:
+
+                    factura.estadoPago,
+
+
+
+                servicios:
+
+                    serviciosSeleccionados
+
+
+            };
+
+
+
+
+
+            console.log(
+                "FACTURA COMPLETA ENVIADA:",
+                datos
+            );
+
+
+
+
+
+            await crearFacturaCompleta(
+                datos
+            );
+
+
+
+
+
+            setFactura({
+
+
+                estadoPago:
+                    "PENDIENTE",
+
+
+
+                paciente:{
+
+                    idPaciente:""
+
+                },
+
+
+
+                cita:{
+
+                    idCita:""
+
+                }
+
+
+            });
+
+
+
+
+
+            setCitasFiltradas([]);
+
+
+
+            setServiciosSeleccionados([]);
+
+
+
+
+
+        }
+        catch(error) {
+
+
+
+            console.error(
+
+                "Error creando factura:",
+                error.response?.data || error
+
+            );
+
+
+
+            alert(
+                "No fue posible crear factura"
+            );
+
+
+
+        }
+
+
+    };
+
+
+const eliminar = async (
+    idFactura
+) => {
+
+
+    await eliminarFactura(
+        idFactura
+    );
+
+
+    await cargarFacturas();
+
+
+};
+
+
+
+
+
+const imprimirFactura = async (
+    factura
+) => {
 
 
     try {
 
 
-        const facturaEnviar = {
-
-
-            fecha:
-                factura.fecha,
-
-
-            estadoPago:
-                factura.estadoPago,
-
-
-            total:
-                Number(
-                    factura.total
-                ),
-
-
-            paciente: {
-
-                idPaciente:
-                    Number(
-                        factura.paciente.idPaciente
-                    )
-
-            },
-
-
-            cita: {
-
-                idCita:
-                    Number(
-                        factura.cita.idCita
-                    )
-
-            }
-
-
-        };
+        const token =
+            localStorage.getItem("token");
 
 
 
-        console.log(
-            "FACTURA ENVIADA:",
-            facturaEnviar
-        );
+        const respuesta =
+            await fetch(
+
+                `http://localhost:8765/api/detalles-factura/factura/${factura.idFactura}`,
+
+                {
+
+                    headers: {
+
+                        Authorization:
+                            `Bearer ${token}`
+
+                    }
+
+                }
+
+            );
 
 
 
-        await crearFactura(
-            facturaEnviar
-        );
+        const detalles =
+            await respuesta.json();
 
 
 
-        await cargarFacturas();
+
+        const ventana =
+            window.open(
+                "",
+                "_blank",
+                "width=900,height=700"
+            );
 
 
 
-        alert(
-            "Factura creada correctamente"
-        );
+
+        ventana.document.write(`
+
+<html>
+
+<head>
+
+<title>
+Factura ${factura.numeroFactura}
+</title>
+
+
+<style>
+
+body{
+font-family:Arial;
+padding:40px;
+}
+
+h1,h2{
+text-align:center;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:20px;
+}
+
+th{
+background:#007f73;
+color:white;
+padding:10px;
+}
+
+td{
+padding:10px;
+border-bottom:1px solid #ddd;
+}
+
+.total{
+text-align:right;
+font-size:22px;
+font-weight:bold;
+margin-top:30px;
+}
+
+button{
+margin-top:30px;
+padding:10px 20px;
+}
+
+@media print{
+button{
+display:none;
+}
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<h1>
+🦷 Consultorio Odontológico
+</h1>
+
+
+<h2>
+Dra. Magda Ortiz
+</h2>
+
+
+<h2>
+FACTURA DE VENTA
+</h2>
+
+
+<p>
+<strong>Número:</strong>
+${factura.numeroFactura}
+</p>
+
+
+<p>
+<strong>Fecha:</strong>
+${factura.fecha}
+</p>
+
+
+<p>
+<strong>Paciente:</strong>
+${factura.paciente.nombre}
+${factura.paciente.apellido}
+</p>
+
+
+<hr>
+
+
+<h3>
+Detalle de servicios
+</h3>
+
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>
+Servicio
+</th>
+
+<th>
+Cantidad
+</th>
+
+<th>
+Valor
+</th>
+
+</tr>
+
+</thead>
+
+
+<tbody>
+
+${
+    detalles.map(
+
+        detalle => `
+
+<tr>
+
+<td>
+${detalle.servicio.nombreServicio}
+</td>
+
+<td>
+${detalle.cantidad}
+</td>
+
+<td>
+$${detalle.subtotal.toLocaleString()}
+</td>
+
+</tr>
+
+`
+
+    ).join("")
+}
+
+</tbody>
+
+</table>
+
+
+<div class="total">
+
+TOTAL:
+$${factura.total.toLocaleString()}
+
+</div>
 
 
 
-    } catch (error) {
+<button onclick="window.print()">
+
+Imprimir
+
+</button>
+
+
+</body>
+
+</html>
+
+        `);
+
+
+
+        ventana.document.close();
+
+
+
+    }
+    catch(error) {
 
 
         console.error(
-            "ERROR CREANDO FACTURA:",
-            error.response?.data || error
-        );
-
-
-        alert(
-            "No fue posible crear la factura."
+            "Error impresión:",
+            error
         );
 
 
@@ -275,28 +849,11 @@ const guardar = async () => {
 
 };
 
-
-
-
-    const eliminar = async (idFactura) => {
-
-
-        await eliminarFactura(
-            idFactura
-        );
-
-
-        await cargarFacturas();
-
-    };
-
-
-
-
-
     return (
 
+
         <section className="factura-container">
+
 
 
             <h2>
@@ -307,30 +864,12 @@ const guardar = async () => {
 
 
 
+
+
             <div className="factura-form">
 
 
-                <input
 
-                    placeholder="Número factura"
-
-                    value={
-                        factura.numeroFactura
-                    }
-
-                    onChange={
-                        e =>
-                        setFactura({
-
-                            ...factura,
-
-                            numeroFactura:
-                                e.target.value
-
-                        })
-                    }
-
-                />
 
 
 
@@ -343,64 +882,84 @@ const guardar = async () => {
 
 
                     onChange={
+
                         e =>
-                        setFactura({
 
-                            ...factura,
+                        cambiarPaciente(
+                            e.target.value
+                        )
 
-                            paciente:{
-
-                                idPaciente:
-                                    e.target.value
-
-                            }
-
-                        })
                     }
 
 
                 >
 
 
+
                     <option value="">
 
+
                         Seleccione paciente
+
 
                     </option>
 
 
+
+
                     {
+
+
                         pacientes.map(
 
                             paciente => (
 
+
                                 <option
+
 
                                     key={
                                         paciente.idPaciente
                                     }
 
+
                                     value={
                                         paciente.idPaciente
                                     }
 
+
                                 >
 
-                                    {paciente.nombre}
+
+                                    {
+                                    paciente.nombre
+                                    }
 
                                     {" "}
 
-                                    {paciente.apellido}
+                                    {
+                                    paciente.apellido
+                                    }
+
 
                                 </option>
 
+
                             )
 
+
                         )
+
+
                     }
 
 
+
+
                 </select>
+
+
+
 
 
 
@@ -415,62 +974,96 @@ const guardar = async () => {
 
 
                     onChange={
+
                         e =>
+
                         setFactura({
+
 
                             ...factura,
 
+
                             cita:{
 
+
                                 idCita:
-                                    e.target.value
+                                e.target.value
+
 
                             }
 
+
                         })
+
+
                     }
 
 
                 >
 
 
+
                     <option value="">
 
+
                         Seleccione cita
+
 
                     </option>
 
 
 
+
+
                     {
-                        citas.map(
+
+
+                        citasFiltradas.map(
 
                             cita => (
 
+
                                 <option
+
 
                                     key={
                                         cita.idCita
                                     }
 
+
                                     value={
                                         cita.idCita
                                     }
 
+
                                 >
 
-                                    Cita #{cita.idCita}
 
-                                    -
+                                    Cita #
 
-                                    {cita.fecha}
+                                    {
+                                    cita.idCita
+                                    }
+
+                                    {" - "}
+
+                                    {
+                                    cita.fecha
+                                    }
+
+
 
                                 </option>
 
+
                             )
 
+
                         )
+
+
                     }
+
 
 
                 </select>
@@ -479,31 +1072,47 @@ const guardar = async () => {
 
 
 
+
+
+
+
                 <select
+
 
                     value={
                         factura.estadoPago
                     }
 
+
                     onChange={
+
                         e =>
+
                         setFactura({
 
+
                             ...factura,
+
 
                             estadoPago:
                                 e.target.value
 
+
                         })
+
+
                     }
 
+
                 >
+
 
                     <option value="PENDIENTE">
 
                         PENDIENTE
 
                     </option>
+
 
 
                     <option value="PAGADA">
@@ -513,11 +1122,13 @@ const guardar = async () => {
                     </option>
 
 
+
                     <option value="CANCELADA">
 
                         CANCELADA
 
                     </option>
+
 
 
                 </select>
@@ -526,29 +1137,122 @@ const guardar = async () => {
 
 
 
-                <input
 
-                    type="number"
 
-                    placeholder="Total inicial"
+                <h3>
 
-                    value={
-                        factura.total
+                    Servicios
+
+                </h3>
+
+
+
+
+
+                {
+
+
+                    servicios.map(
+
+                        servicio => (
+
+
+                            <label
+
+
+                                key={
+                                    servicio.idServicio
+                                }
+
+
+                            >
+
+
+
+                                <input
+
+
+                                    type="checkbox"
+
+
+                                    checked={
+
+                                        serviciosSeleccionados.includes(
+
+                                            servicio.idServicio
+
+                                        )
+
+                                    }
+
+
+
+                                    onChange={
+
+                                        () =>
+
+                                        cambiarServicio(
+
+                                            servicio.idServicio
+
+                                        )
+
+                                    }
+
+
+                                />
+
+
+
+                                {
+                                servicio.nombreServicio
+                                }
+
+
+                                {" $"}
+
+
+
+                                {
+                                servicio.precio.toLocaleString()
+                                }
+
+
+
+                            </label>
+
+
+                        )
+
+
+                    )
+
+
+                }
+
+
+
+
+
+
+                <h3>
+
+
+                    Total:
+
+                    {" $"}
+
+
+                    {
+                    calcularTotal()
+                    .toLocaleString()
                     }
 
-                    onChange={
-                        e =>
-                        setFactura({
 
-                            ...factura,
 
-                            total:
-                                e.target.value
+                </h3>
 
-                        })
-                    }
 
-                />
 
 
 
@@ -556,35 +1260,62 @@ const guardar = async () => {
 
                 <button
 
-                    onClick={guardar}
+
+                    onClick={
+                        guardar
+                    }
+
 
                 >
 
+
                     Crear Factura
 
+
                 </button>
+
+
+
 
 
             </div>
 
 
 
+<FacturaTable
 
 
-            <FacturaTable
+    facturas={
+        facturas
+    }
 
-                facturas={facturas}
 
-                eliminarFactura={eliminar}
+    eliminarFactura={
+        eliminar
+    }
 
-            />
+
+    imprimirFactura={
+        imprimirFactura
+    }
+
+
+/>
+
+
+
+
 
 
         </section>
 
+
     );
 
+
+
 }
+
 
 
 export default Factura;

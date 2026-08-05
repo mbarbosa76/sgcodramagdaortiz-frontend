@@ -9,6 +9,7 @@ del módulo Facturación.
 ============================================================
 */
 
+
 import axios from "axios";
 
 
@@ -18,6 +19,7 @@ const API_URL =
 
 
 const obtenerConfigAuth = () => {
+
 
     const token =
         localStorage.getItem("token");
@@ -39,13 +41,17 @@ const obtenerConfigAuth = () => {
 
 
 
+
 const listarFacturas = async () => {
 
 
     const respuesta =
         await axios.get(
+
             API_URL,
+
             obtenerConfigAuth()
+
         );
 
 
@@ -56,7 +62,17 @@ const listarFacturas = async () => {
 
 
 
-const crearFactura = async (factura) => {
+
+/*
+============================================================
+Crear factura tradicional
+
+Se mantiene por compatibilidad.
+============================================================
+*/
+const crearFactura = async (
+    factura
+) => {
 
 
     const respuesta =
@@ -78,7 +94,52 @@ const crearFactura = async (factura) => {
 
 
 
-const eliminarFactura = async (idFactura) => {
+
+/*
+============================================================
+Crear factura completa
+
+Nuevo flujo profesional:
+
+- Paciente
+- Cita
+- Servicios
+- Total automático
+
+Endpoint:
+
+POST /api/facturas/completa
+
+============================================================
+*/
+const crearFacturaCompleta = async (
+    facturaRequest
+) => {
+
+
+    const respuesta =
+        await axios.post(
+
+            `${API_URL}/completa`,
+
+            facturaRequest,
+
+            obtenerConfigAuth()
+
+        );
+
+
+    return respuesta.data;
+
+};
+
+
+
+
+
+const eliminarFactura = async (
+    idFactura
+) => {
 
 
     await axios.delete(
@@ -93,11 +154,15 @@ const eliminarFactura = async (idFactura) => {
 
 
 
+
+
 export {
 
     listarFacturas,
 
     crearFactura,
+
+    crearFacturaCompleta,
 
     eliminarFactura
 
