@@ -22,8 +22,8 @@
 .module-tag {
   display: inline-block;
   padding: 5px 12px;
-  background: #eee7fa;
-  color: #6f2dbd;
+  background: #e3f2fd;
+  color: #1565c0;
   border-radius: 20px;
   font-size: 12px;
   font-weight: bold;
@@ -239,21 +239,110 @@
 
 
 /*
-  ============================================================
-  ESTADO DE LA CITA
-  ============================================================
+============================================================
+ESTADOS DE CITAS
+============================================================
 */
 
-.estado-badge {
-  display: inline-block;
-  padding: 5px 9px;
-  border-radius: 12px;
-  font-size: 11px;
-  font-weight: 700;
-  background: #eee7fa;
-  color: #5b2a91;
+
+.Cita-table td .estado-badge {
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:3px 9px;
+
+    border-radius:15px;
+
+    font-size:10px !important;
+
+    line-height:1;
+
+    font-weight:700;
+
+    white-space:nowrap;
+
+    letter-spacing:0.2px;
+
 }
 
+
+
+/*
+PROGRAMADA
+Azul
+*/
+
+.Cita-table td .estado-programada {
+
+    background:#dbeafe !important;
+
+    color:#1e40af !important;
+
+}
+
+
+
+/*
+CONFIRMADA
+Amarillo
+*/
+
+.Cita-table td .estado-confirmada {
+
+    background:#fef3c7 !important;
+
+    color:#b45309 !important;
+
+}
+
+
+
+/*
+ASISTIDA
+Verde
+*/
+
+.Cita-table td .estado-asistida {
+
+    background:#dcfce7 !important;
+
+    color:#15803d !important;
+
+}
+
+
+
+/*
+NO ASISTIDA
+Morado
+*/
+
+.Cita-table td .estado-no-asistida {
+
+    background:#e9d5ff !important;
+
+    color:#7e22ce !important;
+
+}
+
+
+
+/*
+CANCELADA
+Rojo
+*/
+
+.Cita-table td .estado-cancelada {
+
+    background:#fee2e2 !important;
+
+    color:#dc2626 !important;
+
+}
 
 /*
   ============================================================
@@ -336,7 +425,6 @@
   padding: 30px !important;
   color: #777;
 }
-
 
 /*
   ============================================================

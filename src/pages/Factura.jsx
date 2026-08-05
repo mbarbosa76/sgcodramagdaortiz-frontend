@@ -800,7 +800,7 @@ ${detalle.cantidad}
 </td>
 
 <td>
-$${detalle.subtotal.toLocaleString()}
+$${detalle.subtotal.toLocaleString("es-CO")}
 </td>
 
 </tr>
@@ -818,7 +818,7 @@ $${detalle.subtotal.toLocaleString()}
 <div class="total">
 
 TOTAL:
-$${factura.total.toLocaleString()}
+$${factura.total.toLocaleString("es-CO")}
 
 </div>
 
@@ -865,12 +865,34 @@ Imprimir
 
 
 
-            <h2>
+<div className="module-header">
 
-                Facturación
 
-            </h2>
+    <span className="module-tag">
 
+        Módulo Facturación
+
+    </span>
+
+
+
+    <h2>
+
+        Gestión de Facturación
+
+    </h2>
+
+
+
+    <p>
+
+        Administra la generación de facturas
+        y los servicios asociados del consultorio.
+
+    </p>
+
+
+</div>
 
 
 

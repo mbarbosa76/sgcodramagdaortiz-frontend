@@ -24,29 +24,123 @@
 
 }
 
-
-
 /*
-  Encabezado principal del módulo
+============================================================
+ENCABEZADO DEL MÓDULO
+Mantiene la misma identidad visual de Pacientes
+============================================================
 */
-.servicio-container h2 {
 
-    background: transparent;
+.module-header {
 
-    color: #1f2937;
-
-    font-size: 28px;
-
-    text-align: left;
-
-    padding: 0;
-
-    margin-bottom: 8px;
+    margin-bottom:25px;
 
 }
 
 
 
+.module-tag {
+
+    display:inline-block;
+
+    padding:5px 12px;
+
+    background:#e3f2fd;
+
+    color:#1565c0;
+
+    border-radius:20px;
+
+    font-size:12px;
+
+    font-weight:700;
+
+}
+
+
+
+.module-header h2 {
+
+    margin:10px 0 5px;
+
+    font-size:27px;
+
+    color:#263238;
+
+    font-weight:700;
+
+}
+
+
+
+.module-header p {
+
+    margin:0;
+
+    color:#607d8b;
+
+    line-height:1.5;
+
+}
+
+/*
+============================================================
+ENCABEZADO DEL MÓDULO
+Igual al módulo Pacientes
+============================================================
+*/
+
+.module-header {
+
+    margin-bottom:25px;
+
+}
+
+
+
+.module-tag {
+
+    display:inline-block;
+
+    padding:5px 12px;
+
+    background:#e3f2fd;
+
+    color:#1565c0;
+
+    border-radius:20px;
+
+    font-size:12px;
+
+    font-weight:700;
+
+}
+
+
+
+.module-header h2 {
+
+    margin:10px 0 5px;
+
+    font-size:27px;
+
+    color:#263238;
+
+    font-weight:700;
+
+}
+
+
+
+.module-header p {
+
+    margin:0;
+
+    color:#607d8b;
+
+    line-height:1.5;
+
+}
 /*
   Contenedor del formulario
 */
@@ -272,13 +366,38 @@
 
 .servicio-table button:first-child {
 
+    background-color:#009688;
 
-    background-color:#10b981;
+}
 
+.servicio-table button:first-child:hover {
+
+    background-color:#00796b;
+
+}
+
+.action-buttons {
+
+    display:flex;
+
+    flex-direction:row;
+
+    flex-wrap:nowrap;
+
+    gap:8px;
+
+    align-items:center;
+
+    justify-content:center;
 
 }
 
 
+.action-buttons button {
+
+    white-space:nowrap;
+
+}
 
 .servicio-table button:last-child {
 
@@ -291,10 +410,19 @@
 
 
 
-.servicio-table button:hover {
+.servicio-table button:first-child:hover {
 
 
-    opacity:0.85;
+    background-color:#00796b;
+
+
+}
+
+
+.servicio-table button:last-child:hover {
+
+
+    background-color:#c62828;
 
 
 }
@@ -344,5 +472,39 @@
 
     }
 
+    /*
+============================================================
+ACCIONES TABLA
+============================================================
+*/
+
+.action-buttons {
+
+
+    display:flex;
+
+    flex-direction:row;
+
+    flex-wrap:nowrap;
+
+    gap:8px;
+
+    align-items:center;
+
+    justify-content:center;
+
+
+}
+
+
+.action-buttons button {
+
+
+    white-space:nowrap;
+
+    width:auto;
+
+
+}
 
 }

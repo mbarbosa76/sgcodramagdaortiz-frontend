@@ -8,40 +8,101 @@ Sistema de Gestión de Citas Odontológicas
 
 .factura-container {
 
-    padding: 20px;
+    padding:0;
 
 }
 
 
 
-.factura-container h2 {
+/*
+============================================================
+ENCABEZADO DEL MÓDULO
+============================================================
+*/
 
-    margin-bottom: 20px;
 
-    color: #123;
+.module-header {
+
+    margin-bottom:25px;
 
 }
 
+
+
+.module-tag {
+
+    display:inline-block;
+
+    padding:5px 12px;
+
+    background:#e3f2fd;
+
+    color:#1565c0;
+
+    border-radius:20px;
+
+    font-size:12px;
+
+    font-weight:700;
+
+}
+
+
+
+.module-header h2 {
+
+    margin:10px 0 5px;
+
+    font-size:27px;
+
+    color:#263238;
+
+    font-weight:700;
+
+}
+
+
+
+.module-header p {
+
+    margin:0;
+
+    color:#607d8b;
+
+    line-height:1.5;
+
+}
+
+
+
+
+
+/*
+============================================================
+FORMULARIO FACTURA
+============================================================
+*/
 
 
 .factura-form {
 
-    background: white;
+    background:white;
 
-    padding: 25px;
+    padding:25px;
 
-    border-radius: 12px;
+    border-radius:12px;
 
-    display: grid;
+    display:grid;
 
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns:repeat(2,1fr);
 
-    gap: 15px;
+    gap:15px;
 
     box-shadow:
-        0 2px 10px rgba(0,0,0,0.1);
+    0 2px 10px rgba(0,0,0,0.1);
 
 }
+
 
 
 
@@ -49,36 +110,48 @@ Sistema de Gestión de Citas Odontológicas
 .factura-form select {
 
 
-    padding: 10px;
+    padding:10px;
 
-    border-radius: 6px;
+    border-radius:6px;
 
-    border: 1px solid #ccc;
+    border:1px solid #ccc;
 
-    font-size: 14px;
+    font-size:14px;
+
 
 }
 
 
 
+
+/*
+============================================================
+BOTÓN CREAR FACTURA
+============================================================
+*/
+
+
 .factura-form button {
 
 
-    grid-column: span 2;
+    background:#2563eb;
 
-    background: #007f73;
+    color:white;
 
-    color: white;
+    border:none;
 
-    border: none;
+    padding:12px 25px;
 
-    padding: 12px;
+    border-radius:7px;
 
-    border-radius: 6px;
+    cursor:pointer;
 
-    cursor: pointer;
+    font-weight:700;
 
-    font-weight: bold;
+    width:auto;
+
+    justify-self:start;
+
 
 }
 
@@ -86,23 +159,96 @@ Sistema de Gestión de Citas Odontológicas
 
 .factura-form button:hover {
 
-    background: #00665c;
+
+    background:#1d4ed8;
+
 
 }
 
 
 
 
+/*
+============================================================
+SERVICIOS DISPONIBLES
+============================================================
+*/
+
+
+.factura-form label {
+
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    font-size:15px;
+
+    color:#455a64;
+
+    cursor:pointer;
+
+
+}
+
+
+
+.factura-form input[type="checkbox"] {
+
+
+    width:16px;
+
+    height:16px;
+
+
+}
+
+
+
+
+
+/*
+============================================================
+TOTAL FACTURA
+============================================================
+*/
+
+
+.factura-total {
+
+
+    font-size:22px;
+
+    color:#263238;
+
+    margin-top:20px;
+
+}
+
+
+
+
+
+/*
+============================================================
+TABLA FACTURAS
+============================================================
+*/
+
+
 .Factura-table {
 
 
-    width: 100%;
+    width:100%;
 
-    margin-top: 25px;
+    margin-top:25px;
 
-    border-collapse: collapse;
+    border-collapse:collapse;
 
-    background: white;
+    background:white;
+
 
 }
 
@@ -111,11 +257,12 @@ Sistema de Gestión de Citas Odontológicas
 .Factura-table th {
 
 
-    background: #007f73;
+    background:#007f73;
 
-    color: white;
+    color:white;
 
-    padding: 10px;
+    padding:10px;
+
 
 }
 
@@ -124,27 +271,221 @@ Sistema de Gestión de Citas Odontológicas
 .Factura-table td {
 
 
-    padding: 10px;
+    padding:10px;
 
-    border-bottom: 1px solid #ddd;
+    border-bottom:1px solid #ddd;
+
 
 }
 
 
 
-.Factura-table button {
+
+/*
+============================================================
+ACCIONES TABLA FACTURAS
+============================================================
+*/
 
 
-    background: #d9534f;
+.Factura-table td:last-child {
 
-    color: white;
 
-    border: none;
+    min-width:190px;
 
-    padding: 6px 10px;
+    text-align:center;
 
-    border-radius: 5px;
 
-    cursor: pointer;
+}
+
+
+
+.factura-actions {
+
+
+    display:flex;
+
+    flex-direction:row;
+
+    flex-wrap:nowrap;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:15px;
+
+
+}
+
+
+
+
+.factura-actions button {
+
+
+    border:none;
+
+    padding:7px 14px;
+
+    border-radius:7px;
+
+    cursor:pointer;
+
+    font-weight:700;
+
+    white-space:nowrap;
+
+
+}
+
+
+
+
+/*
+Eliminar
+*/
+
+
+.factura-actions .btn-delete {
+
+
+    background:#d9534f;
+
+    color:white;
+
+
+}
+
+
+
+.factura-actions .btn-delete:hover {
+
+
+    background:#c62828;
+
+
+}
+
+
+
+
+
+/*
+Imprimir
+*/
+
+
+.factura-actions .btn-print {
+
+
+    background:#2563eb;
+
+    color:white;
+
+
+}
+
+
+
+.factura-actions .btn-print:hover {
+
+
+    background:#1d4ed8;
+
+
+}
+
+/*
+============================================================
+ALINEACIÓN DE VALORES MONETARIOS
+============================================================
+*/
+
+
+.Factura-table th:nth-child(6) {
+
+    text-align:right;
+
+}
+
+.Factura-table td:nth-child(6) {
+
+    text-align:right;
+
+    font-weight:400;
+
+}
+
+/*
+============================================================
+ESTADOS FACTURA
+============================================================
+*/
+
+
+.estado-pendiente {
+
+
+    background:#fef3c7;
+
+    color:#92400e;
+
+    padding:5px 12px;
+
+    border-radius:20px;
+
+    font-size:12px;
+
+    font-weight:700;
+
+    display:inline-block;
+
+
+}
+
+
+
+
+.estado-pagada {
+
+
+    background:#d1fae5;
+
+    color:#065f46;
+
+    padding:5px 12px;
+
+    border-radius:20px;
+
+    font-size:12px;
+
+    font-weight:700;
+
+    display:inline-block;
+
+
+}
+
+
+
+
+.estado-cancelada {
+
+
+    background:#fee2e2;
+
+    color:#991b1b;
+
+    padding:5px 12px;
+
+    border-radius:20px;
+
+    font-size:12px;
+
+    font-weight:700;
+
+    display:inline-block;
+
 
 }

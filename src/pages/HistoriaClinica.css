@@ -8,7 +8,7 @@ Sistema de Gestión de Citas Odontológicas
 
 .historia-container {
 
-    padding: 20px;
+    padding:0;
 
 }
 
@@ -21,6 +21,64 @@ Sistema de Gestión de Citas Odontológicas
 
 }
 
+/*
+============================================================
+ENCABEZADO DEL MÓDULO
+============================================================
+*/
+
+
+.module-header {
+
+    margin-bottom:25px;
+
+}
+
+
+
+.module-tag {
+
+    display:inline-block;
+
+    padding:5px 12px;
+
+    background:#e3f2fd;
+
+    color:#1565c0;
+
+    border-radius:20px;
+
+    font-size:12px;
+
+    font-weight:700;
+
+}
+
+
+
+.module-header h2 {
+
+    margin:10px 0 5px;
+
+    font-size:27px;
+
+    color:#263238;
+
+    font-weight:700;
+
+}
+
+
+
+.module-header p {
+
+    margin:0;
+
+    color:#607d8b;
+
+    line-height:1.5;
+
+}
 
 
 .historia-form {
@@ -73,24 +131,45 @@ Sistema de Gestión de Citas Odontológicas
 .historia-form button {
 
 
-    grid-column: span 2;
+    background:#2563eb;
 
-    background: #007f73;
+    color:white;
 
-    color: white;
+    border:none;
 
-    border: none;
+    padding:12px 25px;
 
-    padding: 12px;
+    border-radius:7px;
 
-    border-radius: 6px;
+    cursor:pointer;
 
-    cursor: pointer;
+    font-weight:700;
 
-    font-weight: bold;
+    width:auto;
+
+    justify-self:start;
+
 
 }
 
+
+
+.historia-form button:hover {
+
+
+    background:#1d4ed8;
+
+
+}
+
+
+.historia-form button:hover {
+
+
+    background:#00796b;
+
+
+}
 
 
 .historia-form button:hover {
@@ -140,16 +219,28 @@ Sistema de Gestión de Citas Odontológicas
 .Historia-table button {
 
 
-    background: #d9534f;
+    background:#d9534f;
 
     color:white;
 
     border:none;
 
-    padding:6px 10px;
+    padding:7px 12px;
 
-    border-radius:5px;
+    border-radius:7px;
 
     cursor:pointer;
+
+    font-weight:700;
+
+
+}
+
+
+.Historia-table button:hover {
+
+
+    background:#c62828;
+
 
 }

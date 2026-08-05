@@ -113,9 +113,25 @@ function ProfesionalTable({
                     {profesional.municipio || '—'}
                   </td>
 
-                  <td>
-                    {profesional.estado}
-                  </td>
+<td>
+
+    <span
+
+        className={
+            profesional.estado === "Activo"
+            ? "estado-activo"
+            : "estado-inactivo"
+        }
+
+    >
+
+        {
+            profesional.estado
+        }
+
+    </span>
+
+</td>
 
                   <td>
 
@@ -141,7 +157,7 @@ function ProfesionalTable({
                           )
                         }
                       >
-                        Eliminar
+                        Desactivar
                       </button>
 
                     </div>

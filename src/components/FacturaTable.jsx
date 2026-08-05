@@ -10,20 +10,27 @@ Componente encargado de mostrar las facturas registradas.
 
 
 function FacturaTable({
+
     facturas,
+
     eliminarFactura,
+
     imprimirFactura
+
 }) {
 
 
     return (
+
 
         <table className="Factura-table">
 
 
             <thead>
 
+
                 <tr>
+
 
                     <th>ID</th>
 
@@ -39,25 +46,37 @@ function FacturaTable({
 
                     <th>Acciones</th>
 
+
                 </tr>
 
+
             </thead>
+
+
 
 
 
             <tbody>
 
 
+
                 {
+
                     facturas.length === 0 ? (
+
 
                         <tr>
 
-                            <td colSpan="7">
+
+                            <td
+                                colSpan="7"
+                            >
 
                                 No hay facturas registradas.
 
+
                             </td>
+
 
                         </tr>
 
@@ -65,9 +84,12 @@ function FacturaTable({
                     ) : (
 
 
+
                         facturas.map(
 
+
                             (factura) => (
+
 
                                 <tr
 
@@ -76,6 +98,8 @@ function FacturaTable({
                                     }
 
                                 >
+
+
 
                                     <td>
 
@@ -86,6 +110,8 @@ function FacturaTable({
                                     </td>
 
 
+
+
                                     <td>
 
                                         {
@@ -93,6 +119,8 @@ function FacturaTable({
                                         }
 
                                     </td>
+
+
 
 
                                     <td>
@@ -110,6 +138,8 @@ function FacturaTable({
                                     </td>
 
 
+
+
                                     <td>
 
                                         {
@@ -119,13 +149,40 @@ function FacturaTable({
                                     </td>
 
 
-                                    <td>
 
-                                        {
-                                            factura.estadoPago
-                                        }
 
-                                    </td>
+<td>
+
+
+    <span
+
+        className={
+
+            factura.estadoPago === "PAGADA"
+
+            ? "estado-pagada"
+
+            : factura.estadoPago === "CANCELADA"
+
+            ? "estado-cancelada"
+
+            : "estado-pendiente"
+
+        }
+
+    >
+
+        {
+            factura.estadoPago
+        }
+
+
+    </span>
+
+
+</td>
+
+
 
 
                                     <td>
@@ -133,66 +190,106 @@ function FacturaTable({
                                         $
 
                                         {
-                                            factura.total?.toLocaleString()
+                                            factura.total?.toLocaleString("es-CO")
                                         }
 
                                     </td>
 
 
+
+
                                     <td>
 
 
-                                        <button
+                                        <div className="factura-actions">
 
-                                            onClick={() =>
-                                                eliminarFactura(
-                                                    factura.idFactura
-                                                )
-                                            }
 
-                                        >
 
-                                            Eliminar
+                                            <button
 
-                                        </button>
+                                                type="button"
 
-                                        <button
+                                                className="btn-delete"
 
-                                            onClick={() =>
-                                                imprimirFactura(
-                                                    factura
-                                                )
-                                            }
+                                                title="Eliminar factura"
 
-                                        >
+                                                onClick={() =>
+                                                    eliminarFactura(
+                                                        factura.idFactura
+                                                    )
+                                                }
 
-                                            Imprimir
+                                            >
 
-                                        </button>
+                                                Eliminar
+
+
+                                            </button>
+
+
+
+
+
+                                            <button
+
+                                                type="button"
+
+                                                className="btn-print"
+
+                                                title="Imprimir factura"
+
+                                                onClick={() =>
+                                                    imprimirFactura(
+                                                        factura
+                                                    )
+                                                }
+
+                                            >
+
+                                                Imprimir
+
+
+                                            </button>
+
+
+
+                                        </div>
+
+
 
                                     </td>
 
 
+
+
                                 </tr>
 
+
                             )
+
 
                         )
 
 
                     )
 
+
                 }
+
 
 
             </tbody>
 
 
+
         </table>
+
 
     );
 
+
 }
+
 
 
 export default FacturaTable;

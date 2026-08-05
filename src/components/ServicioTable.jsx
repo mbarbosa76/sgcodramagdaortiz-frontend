@@ -19,6 +19,23 @@ function ServicioTable({
 
 }) {
 
+
+    const formatearPrecio = (valor) => {
+
+        return new Intl.NumberFormat(
+            "es-CO",
+            {
+                style: "currency",
+                currency: "COP",
+                minimumFractionDigits: 0
+            }
+        ).format(
+            Number(valor)
+        );
+
+    };
+
+
     return (
 
         <table className="servicio-table">
@@ -73,43 +90,55 @@ function ServicioTable({
 
                         </td>
 
+<td>
+
+    {
+        formatearPrecio(
+            servicio.precio
+        )
+    }
+
+</td>
+
                         <td>
 
-                            ${Number(servicio.precio).toLocaleString("es-CO")}
+    <div className="action-buttons">
 
-                        </td>
 
-                        <td>
+        <button
 
-                            <button
+            type="button"
 
-                                type="button"
+            onClick={() => onEditar(servicio)}
 
-                                onClick={() => onEditar(servicio)}
+        >
 
-                            >
+            Editar
 
-                                Editar
+        </button>
 
-                            </button>
 
-                            <button
 
-                                type="button"
+        <button
 
-                                onClick={() =>
+            type="button"
 
-                                    onEliminar(servicio.idServicio)
+            onClick={() =>
 
-                                }
+                onEliminar(servicio.idServicio)
 
-                            >
+            }
 
-                                Eliminar
+        >
 
-                            </button>
+            Eliminar
 
-                        </td>
+        </button>
+
+
+    </div>
+
+</td>
 
                     </tr>
 

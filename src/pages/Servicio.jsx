@@ -484,29 +484,34 @@ function Servicio() {
                 ================================================= */}
 
 
-            <span className="module-label">
-
-                Módulo Servicio
-
-            </span>
+<div className="module-header">
 
 
+    <span className="module-tag">
 
+        Módulo Servicio
 
-            <h2>
-
-                Gestión de Servicios Odontológicos
-
-            </h2>
+    </span>
 
 
 
-            <p className="module-description">
+    <h2>
 
-                Administra los servicios odontológicos
-                disponibles en el consultorio.
+        Gestión de Servicios Odontológicos
 
-            </p>
+    </h2>
+
+
+
+    <p>
+
+        Administra los servicios odontológicos
+        disponibles en el consultorio.
+
+    </p>
+
+
+</div>
 
 
 
@@ -820,49 +825,74 @@ function Servicio() {
 
 
 
-                            <td>
+<td>
 
-                                ${item.precio}
+    {
 
-                            </td>
+        new Intl.NumberFormat(
 
+            "es-CO",
 
+            {
 
+                style:"currency",
 
-                            <td>
+                currency:"COP",
 
+                minimumFractionDigits:0
 
-                                <button
+            }
 
-                                    onClick={() =>
-                                        editarServicio(item)
-                                    }
+        ).format(
 
-                                >
+            Number(item.precio)
 
-                                    Editar
+        )
 
-                                </button>
+    }
 
-
-
-                                <button
-
-                                    onClick={() =>
-                                        eliminarServicio(
-                                            item.idServicio
-                                        )
-                                    }
-
-                                >
-
-                                    Eliminar
-
-                                </button>
+</td>
 
 
 
-                            </td>
+<td>
+
+    <div className="action-buttons">
+
+
+        <button
+
+            onClick={() =>
+                editarServicio(item)
+            }
+
+        >
+
+            Editar
+
+        </button>
+
+
+
+
+        <button
+
+            onClick={() =>
+                eliminarServicio(
+                    item.idServicio
+                )
+            }
+
+        >
+
+            Eliminar
+
+        </button>
+
+
+    </div>
+
+</td>
 
 
 

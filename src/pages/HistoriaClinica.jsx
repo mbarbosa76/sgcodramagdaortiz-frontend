@@ -269,14 +269,37 @@ await crearHistoria(historiaEnviar);
 
     return (
 
-        <section className="historia-container">
+<section className="historia-container">
 
 
-            <h2>
+    <div className="module-header">
 
-                Historia Clínica
 
-            </h2>
+        <span className="module-tag">
+
+            Módulo Historia Clínica
+
+        </span>
+
+
+
+        <h2>
+
+            Gestión de Historias Clínicas
+
+        </h2>
+
+
+
+        <p>
+
+            Registra y consulta la información clínica
+            de los pacientes del consultorio.
+
+        </p>
+
+
+    </div>
 
 
 
