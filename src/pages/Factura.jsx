@@ -502,10 +502,19 @@ function Factura() {
 
 
 
-            await crearFacturaCompleta(
-                datos
-            );
+const nuevaFactura =
+    await crearFacturaCompleta(
+        datos
+    );
 
+
+console.log(
+    "NUEVA FACTURA CREADA:",
+    nuevaFactura
+);
+
+
+await cargarFacturas();
 
 
 
