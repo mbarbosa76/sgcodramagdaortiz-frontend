@@ -244,3 +244,102 @@ ENCABEZADO DEL MÓDULO
 
 
 }
+
+/*
+============================================================
+ACCIONES TABLA HISTORIA CLÍNICA
+============================================================
+*/
+
+
+.Historia-table td:last-child {
+
+    min-width:150px;
+
+    white-space:nowrap;
+
+}
+
+
+
+.Historia-table .action-buttons {
+
+    display:flex;
+
+    flex-direction:row;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:8px;
+
+}
+
+
+
+
+.Historia-table .btn-edit {
+
+    background:#2e9d78;
+
+    color:white;
+
+    border:none;
+
+    padding:7px 12px;
+
+    border-radius:7px;
+
+    cursor:pointer;
+
+    font-weight:700;
+
+}
+
+
+
+.Historia-table .btn-edit:hover {
+
+    background:#247e61;
+
+}
+
+
+
+
+.Historia-table .btn-delete {
+
+    background:#d9534f;
+
+    color:white;
+
+    border:none;
+
+    padding:7px 12px;
+
+    border-radius:7px;
+
+    cursor:pointer;
+
+    font-weight:700;
+
+}
+
+
+
+.Historia-table .btn-delete:hover {
+
+    background:#b93f3b;
+
+}
+
+.historia-form select:disabled {
+
+    background:#f1f5f9;
+
+    color:#455a64;
+
+    cursor:not-allowed;
+
+}

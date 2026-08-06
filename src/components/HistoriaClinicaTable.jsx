@@ -2,8 +2,13 @@ import React from "react";
 
 
 function HistoriaClinicaTable({
+
     historias,
+
+    editarHistoria,
+
     eliminarHistoria
+
 }) {
 
 
@@ -25,7 +30,7 @@ function HistoriaClinicaTable({
 
                     <th>Diagnóstico</th>
 
-                    <th>Acción</th>
+                    <th>Acciones</th>
 
                 </tr>
 
@@ -53,13 +58,26 @@ function HistoriaClinicaTable({
 
 
                         historias.map(
+
                             (historia) => (
 
-                                <tr key={historia.idHistoria}>
+                                <tr
+
+                                    key={
+                                        historia.idHistoria
+                                    }
+
+                                >
+
 
                                     <td>
-                                        {historia.idHistoria}
+
+                                        {
+                                            historia.idHistoria
+                                        }
+
                                     </td>
+
 
 
                                     <td>
@@ -77,6 +95,7 @@ function HistoriaClinicaTable({
                                     </td>
 
 
+
                                     <td>
 
                                         {
@@ -92,6 +111,7 @@ function HistoriaClinicaTable({
                                     </td>
 
 
+
                                     <td>
 
                                         {
@@ -99,6 +119,7 @@ function HistoriaClinicaTable({
                                         }
 
                                     </td>
+
 
 
                                     <td>
@@ -110,21 +131,55 @@ function HistoriaClinicaTable({
                                     </td>
 
 
+
                                     <td>
 
-                                        <button
 
-                                            onClick={() =>
-                                                eliminarHistoria(
-                                                    historia.idHistoria
-                                                )
-                                            }
+                                        <div className="action-buttons">
 
-                                        >
 
-                                            Eliminar
+                                            <button
 
-                                        </button>
+                                                type="button"
+
+                                                className="btn-edit"
+
+                                                onClick={() =>
+                                                    editarHistoria(
+                                                        historia
+                                                    )
+                                                }
+
+                                            >
+
+                                                Editar
+
+                                            </button>
+
+
+
+
+                                            <button
+
+                                                type="button"
+
+                                                className="btn-delete"
+
+                                                onClick={() =>
+                                                    eliminarHistoria(
+                                                        historia.idHistoria
+                                                    )
+                                                }
+
+                                            >
+
+                                                Eliminar
+
+                                            </button>
+
+
+                                        </div>
+
 
                                     </td>
 

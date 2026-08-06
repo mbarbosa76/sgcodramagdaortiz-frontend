@@ -47,10 +47,15 @@ function HistoriaClinica() {
 
     const [profesionales, setProfesionales] = useState([]);
 
+    const [profesionalesFiltrados, setProfesionalesFiltrados] =
+    useState([]);
+
 
     const [citas, setCitas] = useState([]);
 
+    const [idHistoriaEditando, setIdHistoriaEditando] = useState(null);
 
+    const [citasFiltradas, setCitasFiltradas] = useState([]);
 
     const [historia, setHistoria] = useState({
 
@@ -171,13 +176,19 @@ function HistoriaClinica() {
 
 
 
-    const cargarCitas = async () => {
+const cargarCitas = async () => {
+
+
+    try {
 
 
         const respuesta =
             await fetch(
+
                 "http://localhost:8765/api/citas",
+
                 obtenerConfigAuth()
+
             );
 
 
@@ -185,10 +196,31 @@ function HistoriaClinica() {
             await respuesta.json();
 
 
+
+        console.log(
+            "CITAS RECIBIDAS:",
+            datos
+        );
+
+
+
         setCitas(datos);
 
-    };
 
+    }
+    catch(error) {
+
+
+        console.error(
+            "Error cargando citas:",
+            error
+        );
+
+
+    }
+
+
+};
 
 
 
@@ -219,57 +251,362 @@ function HistoriaClinica() {
 const guardar = async()=>{
 
 
-    console.log(
-        "DATOS HISTORIA ENVIADOS:",
-        historia
-    );
+    try {
 
 
-    const historiaEnviar = {
-
-    ...historia,
-
-    fecha:
-        historia.fecha ||
-        new Date().toISOString().split("T")[0]
-
-};
+        console.log(
+            "DATOS HISTORIA ENVIADOS:",
+            historia
+        );
 
 
-await crearHistoria(historiaEnviar);
+        const historiaEnviar = {
 
+            ...historia,
 
-    await cargarHistorias();
+            fecha:
+                historia.fecha ||
+                new Date().toISOString().split("T")[0]
 
-
-    alert(
-        "Historia clínica creada correctamente"
-    );
-
-
-};
+        };
 
 
 
+        /*
+        ====================================================
+        ACTUALIZAR HISTORIA CLÍNICA
+        ====================================================
+        */
 
-    const eliminar = async (id) => {
+        if (
+            idHistoriaEditando !== null
+        ) {
 
 
-        await eliminarHistoria(id);
+            await fetch(
+
+                `http://localhost:8765/api/historias/${idHistoriaEditando}`,
+
+                {
+
+                    method:"PUT",
+
+                    headers:{
+
+                        ...obtenerConfigAuth().headers,
+
+                        "Content-Type":
+                            "application/json"
+
+                    },
+
+                    body:
+                        JSON.stringify(
+                            historiaEnviar
+                        )
+
+                }
+
+            );
+
+
+            alert(
+                "Historia clínica actualizada correctamente"
+            );
+
+
+        }
+
+
+        /*
+        ====================================================
+        CREAR NUEVA HISTORIA CLÍNICA
+        ====================================================
+        */
+
+        else {
+
+
+            await crearHistoria(
+                historiaEnviar
+            );
+
+
+            alert(
+                "Historia clínica creada correctamente"
+            );
+
+
+        }
+
+
 
 
         await cargarHistorias();
 
 
-    };
+
+        setIdHistoriaEditando(
+            null
+        );
 
 
 
+    }
+
+    catch(error){
 
 
-    return (
+        console.error(
+            "Error guardando historia clínica:",
+            error
+        );
 
-<section className="historia-container">
+
+        alert(
+            "No fue posible guardar la historia clínica"
+        );
+
+
+    }
+
+
+};
+
+
+    const eliminar = async (id) => {
+
+
+    await eliminarHistoria(id);
+
+
+    await cargarHistorias();
+
+
+};
+
+const editarHistoria = (
+
+    historiaSeleccionada
+
+) => {
+
+
+    setIdHistoriaEditando(
+
+        historiaSeleccionada.idHistoria
+
+    );
+
+
+
+    setHistoria({
+
+
+        paciente:{
+
+            idPaciente:
+            historiaSeleccionada.paciente.idPaciente
+
+        },
+
+
+        profesional:{
+
+            idProfesional:
+            historiaSeleccionada.profesional.idProfesional
+
+        },
+
+
+        cita:{
+
+            idCita:
+            historiaSeleccionada.cita.idCita
+
+        },
+
+
+        fecha:
+
+            historiaSeleccionada.fecha,
+
+
+        motivoConsulta:
+
+            historiaSeleccionada.motivoConsulta || "",
+
+
+        diagnostico:
+
+            historiaSeleccionada.diagnostico || "",
+
+
+        tratamiento:
+
+            historiaSeleccionada.tratamiento || "",
+
+
+        observaciones:
+
+            historiaSeleccionada.observaciones || ""
+
+
+    });
+
+
+};
+
+
+const cambiarPaciente = (
+
+    idPaciente
+
+) => {
+
+
+const citasPaciente =
+
+    citas.filter(
+
+        cita =>
+
+        cita.paciente?.idPaciente
+        ===
+        Number(idPaciente)
+
+        &&
+
+        cita.estado === "ASISTIDA"
+
+    );
+
+
+    const profesionalesUnicos =
+
+        citasPaciente
+
+            .map(
+
+                cita => cita.profesional
+
+            )
+
+            .filter(
+
+                (profesional, index, array) =>
+
+                profesional &&
+
+                array.findIndex(
+
+                    item =>
+
+                    item.idProfesional ===
+                    profesional.idProfesional
+
+                ) === index
+
+            );
+
+
+
+    setCitasFiltradas(
+
+        citasPaciente
+
+    );
+
+
+
+    setProfesionalesFiltrados(
+
+        profesionalesUnicos
+
+    );
+
+
+
+    setHistoria({
+
+        ...historia,
+
+
+        paciente:{
+
+            idPaciente:idPaciente
+
+        },
+
+
+        profesional:{
+
+            idProfesional:""
+
+        },
+
+
+        cita:{
+
+            idCita:""
+
+        }
+
+
+    });
+
+
+};
+
+
+const cambiarCita = (
+
+    idCita
+
+) => {
+
+
+    const citaSeleccionada =
+
+        citas.find(
+
+            cita =>
+
+            cita.idCita === Number(idCita)
+
+        );
+
+
+
+    setHistoria({
+
+        ...historia,
+
+
+        cita:{
+
+            idCita:idCita
+
+        },
+
+
+        profesional:{
+
+            idProfesional:
+
+            citaSeleccionada?.profesional?.idProfesional || ""
+
+        }
+
+
+    });
+
+
+};
+    
+return (
+
+    <section className="historia-container">
 
 
     <div className="module-header">
@@ -299,36 +636,30 @@ await crearHistoria(historiaEnviar);
         </p>
 
 
-    </div>
+    </div>  
 
 
 
             <div className="historia-form">
 
 
-                <select
+<select
 
-                    value={
-                        historia.paciente.idPaciente
-                    }
+    value={
+        historia.paciente.idPaciente
+    }
 
-                    onChange={
-                        e =>
-                        setHistoria({
+    onChange={
 
-                            ...historia,
+        e =>
 
-                            paciente:{
+        cambiarPaciente(
+            e.target.value
+        )
 
-                                idPaciente:
-                                    e.target.value
+    }
 
-                            }
-
-                        })
-                    }
-
-                >
+>
 
                     <option value="">
 
@@ -370,129 +701,114 @@ await crearHistoria(historiaEnviar);
 
 
 
-                <select
+<select
 
-                    value={
-                        historia.profesional.idProfesional
+    value={
+        historia.profesional.idProfesional
+    }
+
+    disabled
+
+>
+
+    <option value="">
+
+        Profesional asignado
+
+    </option>
+
+
+    {
+        profesionalesFiltrados.map(
+
+            profesional => (
+
+                <option
+
+                    key={
+                        profesional.idProfesional
                     }
 
-                    onChange={
-                        e =>
-                        setHistoria({
-
-                            ...historia,
-
-                            profesional:{
-
-                                idProfesional:
-                                    e.target.value
-
-                            }
-
-                        })
+                    value={
+                        profesional.idProfesional
                     }
 
                 >
 
-                    <option value="">
+                    {profesional.nombre}
 
-                        Seleccione profesional
+                    {" "}
 
-                    </option>
+                    {profesional.apellido}
 
+                </option>
 
-                    {
-                        profesionales.map(
-                            profesional => (
+            )
 
-                                <option
-
-                                    key={
-                                        profesional.idProfesional
-                                    }
-
-                                    value={
-                                        profesional.idProfesional
-                                    }
-
-                                >
-
-                                    {profesional.nombre}
-                                    {" "}
-                                    {profesional.apellido}
-
-                                </option>
-
-                            )
-                        )
-                    }
+        )
+    }
 
 
-                </select>
-
+</select>
 
 
 
 
                 <select
 
-                    value={
-                        historia.cita.idCita
+    value={
+        historia.cita.idCita
+    }
+
+    onChange={
+
+        e =>
+
+        cambiarCita(
+            e.target.value
+        )
+
+    }
+
+>
+
+    <option value="">
+
+        Seleccione cita
+
+    </option>
+
+
+    {
+        citasFiltradas.map(
+
+            cita => (
+
+                <option
+
+                    key={
+                        cita.idCita
                     }
 
-                    onChange={
-                        e =>
-                        setHistoria({
-
-                            ...historia,
-
-                            cita:{
-
-                                idCita:
-                                    e.target.value
-
-                            }
-
-                        })
+                    value={
+                        cita.idCita
                     }
 
                 >
 
-                    <option value="">
+                    Cita #{cita.idCita}
+                    {" - "}
+                    {cita.fecha}
 
-                        Seleccione cita
+                </option>
 
-                    </option>
+            )
 
-
-                    {
-                        citas.map(
-                            cita => (
-
-                                <option
-
-                                    key={
-                                        cita.idCita
-                                    }
-
-                                    value={
-                                        cita.idCita
-                                    }
-
-                                >
-
-                                    Cita #{cita.idCita}
-                                    -
-                                    {cita.fecha}
-
-                                </option>
-
-                            )
-                        )
-                    }
+        )
+    }
 
 
-                </select>
+</select>
 
 
 
@@ -574,15 +890,25 @@ await crearHistoria(historiaEnviar);
 
 
 
-                <button
+<button
 
-                    onClick={guardar}
+    onClick={guardar}
 
-                >
+>
 
-                    Guardar Historia Clínica
+    {
+        idHistoriaEditando !== null
 
-                </button>
+        ?
+
+        "Actualizar Historia Clínica"
+
+        :
+
+        "Guardar Historia Clínica"
+    }
+
+</button>
 
 
             </div>
@@ -594,6 +920,8 @@ await crearHistoria(historiaEnviar);
             <HistoriaClinicaTable
 
                 historias={historias}
+
+                editarHistoria={editarHistoria}
 
                 eliminarHistoria={eliminar}
 
