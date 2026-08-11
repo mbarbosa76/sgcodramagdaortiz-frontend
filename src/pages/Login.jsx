@@ -39,6 +39,8 @@ import hojasVerdes from "../assets/hojas-verdes.png";
 
 
 
+
+
 function Login({ onLoginExitoso }) {
 
 
@@ -231,7 +233,27 @@ function Login({ onLoginExitoso }) {
 
 
 
-            if(error.response?.status === 404){
+            /*
+            =================================================
+            ERROR DE CREDENCIALES
+            =================================================
+
+            Spring Security responde 401 cuando
+            las credenciales son incorrectas.
+
+            Se mantiene 404 por compatibilidad.
+            */
+
+            if(
+
+                error.response?.status === 401
+
+                ||
+
+                error.response?.status === 404
+
+            ){
+
 
 
                 setMensaje(
@@ -313,15 +335,22 @@ function Login({ onLoginExitoso }) {
 
 
 
-<img
 
-    src={hojasVerdes}
 
-    className="login-decoration"
 
-    alt=""
+                <img
 
-/>
+                    src={hojasVerdes}
+
+                    className="login-decoration"
+
+                    alt=""
+
+                />
+
+
+
+
 
 
 
@@ -414,18 +443,25 @@ function Login({ onLoginExitoso }) {
                         >
 
 
-<User 
-    size={17}
-    className="label-icon"
-/>
+                            <User
 
-<span>
-    Nombre de usuario
-</span>
+                                size={17}
+
+                                className="label-icon"
+
+                            />
+
+
+                            <span>
+
+                                Nombre de usuario
+
+                            </span>
 
 
 
                         </label>
+
 
 
 
@@ -489,18 +525,21 @@ function Login({ onLoginExitoso }) {
                         >
 
 
+                            <LockKeyhole
 
-<LockKeyhole
+                                size={17}
 
-    size={17}
+                                className="label-icon"
 
-    className="label-icon"
+                            />
 
-/>
 
-<span>
-    Contraseña
-</span>
+
+                            <span>
+
+                                Contraseña
+
+                            </span>
 
 
 
@@ -603,7 +642,6 @@ function Login({ onLoginExitoso }) {
 
 
 
-
                         </div>
 
 
@@ -613,6 +651,11 @@ function Login({ onLoginExitoso }) {
 
 
                     </div>
+
+
+
+
+
 
 
 
@@ -739,7 +782,6 @@ function Login({ onLoginExitoso }) {
 
 
 
-
             </div>
 
 
@@ -753,9 +795,6 @@ function Login({ onLoginExitoso }) {
 
 
     );
-
-
-
 
 
 }
