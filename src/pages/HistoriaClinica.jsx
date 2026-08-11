@@ -1,237 +1,553 @@
 /*
 ============================================================
 HistoriaClinica.jsx
+
 Sistema de Gestión de Citas Odontológicas
 
 Módulo:
 Historia Clínica
 
-Funciones:
-- Registrar atención odontológica.
-- Relacionar paciente.
-- Relacionar profesional.
-- Relacionar cita.
-- Consultar historias clínicas.
+Regla de negocio:
+
+Solo pacientes con citas ASISTIDAS
+pueden generar una Historia Clínica.
 
 ============================================================
 */
 
 
 import {
+
     useEffect,
+
     useState
+
 } from "react";
 
 
+
 import {
+
     listarHistorias,
+
     crearHistoria,
+
     eliminarHistoria
+
 } from "../services/HistoriaClinicaService";
+
 
 
 import HistoriaClinicaTable from "../components/HistoriaClinicaTable";
 
+
 import "./HistoriaClinica.css";
+
+
+
+
+
 
 
 
 function HistoriaClinica() {
 
 
-    const [historias, setHistorias] = useState([]);
 
 
-    const [pacientes, setPacientes] = useState([]);
+
+    /*
+    ========================================================
+    ESTADOS PRINCIPALES
+    ========================================================
+    */
 
 
-    const [profesionales, setProfesionales] = useState([]);
+
+
+
+    const [historias, setHistorias] =
+
+        useState([]);
+
+
+
+
+
+    /*
+    Pacientes disponibles para Historia Clínica.
+
+    IMPORTANTE:
+
+    Ya no contiene todos los pacientes.
+
+    Solo pacientes con cita ASISTIDA.
+
+    */
+
+    const [pacientes, setPacientes] =
+
+        useState([]);
+
+
+
+
+
+    const [profesionales, setProfesionales] =
+
+        useState([]);
+
+
+
+
 
     const [profesionalesFiltrados, setProfesionalesFiltrados] =
-    useState([]);
+
+        useState([]);
 
 
-    const [citas, setCitas] = useState([]);
 
-    const [idHistoriaEditando, setIdHistoriaEditando] = useState(null);
 
-    const [citasFiltradas, setCitasFiltradas] = useState([]);
 
-    const [historia, setHistoria] = useState({
+    const [citas, setCitas] =
 
-        paciente: {
-            idPaciente: ""
-        },
+        useState([]);
 
-        profesional: {
-            idProfesional: ""
-        },
 
-        cita: {
-            idCita: ""
-        },
 
-        fecha: new Date().toISOString().split("T")[0],
 
-        motivoConsulta: "",
 
-        diagnostico: "",
+    const [citasFiltradas, setCitasFiltradas] =
 
-        tratamiento: "",
+        useState([]);
 
-        observaciones: ""
 
-    });
 
+
+
+    const [idHistoriaEditando, setIdHistoriaEditando] =
+
+        useState(null);
+
+
+
+
+
+
+
+
+
+    /*
+    ========================================================
+    OBJETO HISTORIA CLÍNICA
+    ========================================================
+    */
+
+
+    const [historia, setHistoria] =
+
+        useState({
+
+
+
+            paciente:{
+
+                idPaciente:""
+
+            },
+
+
+
+            profesional:{
+
+                idProfesional:""
+
+            },
+
+
+
+            cita:{
+
+                idCita:""
+
+            },
+
+
+
+            fecha:
+
+                new Date()
+                .toISOString()
+                .split("T")[0],
+
+
+
+            motivoConsulta:"",
+
+
+
+            diagnostico:"",
+
+
+
+            tratamiento:"",
+
+
+
+            observaciones:""
+
+
+
+        });
+
+
+
+
+
+
+
+
+
+    /*
+    ========================================================
+    CARGA INICIAL
+    ========================================================
+    */
 
 
     useEffect(() => {
 
+
         cargarHistorias();
 
-        cargarPacientes();
+
+        cargarPacientesAtendidos();
+
 
         cargarProfesionales();
 
+
         cargarCitas();
+
+
 
     }, []);
 
 
 
 
+
+
+
+
+
+    /*
+    ========================================================
+    CONFIGURACIÓN JWT
+    ========================================================
+    */
+
+
     const obtenerConfigAuth = () => {
 
+
         const token =
+
             localStorage.getItem("token");
+
 
 
         return {
 
-            headers: {
+
+            headers:{
+
 
                 Authorization:
+
                     `Bearer ${token}`
+
 
             }
 
+
         };
+
 
     };
 
 
+
+
+
+
+
+
+
+    /*
+    ========================================================
+    CARGAR HISTORIAS
+    ========================================================
+    */
 
 
     const cargarHistorias = async () => {
 
+
         const datos =
+
             await listarHistorias();
+
+
 
         setHistorias(datos);
 
+
     };
 
 
 
 
-    const cargarPacientes = async () => {
 
 
-        const respuesta =
-            await fetch(
-                "http://localhost:8765/api/pacientes",
-                obtenerConfigAuth()
+
+
+
+    /*
+    ========================================================
+    CARGAR PACIENTES ATENDIDOS
+
+    NUEVA LÓGICA
+
+    Solo devuelve pacientes con:
+
+    Cita.estado = ASISTIDA
+
+    Endpoint:
+
+    GET /api/historias/pacientes-atendidos
+
+    ========================================================
+    */
+
+
+    const cargarPacientesAtendidos = async () => {
+
+
+        try {
+
+
+
+            const respuesta =
+
+                await fetch(
+
+                    "http://localhost:8765/api/historias/pacientes-atendidos",
+
+                    obtenerConfigAuth()
+
+                );
+
+
+
+
+
+            const datos =
+
+                await respuesta.json();
+
+
+
+
+
+            setPacientes(datos);
+
+
+
+
+
+        }
+
+        catch(error){
+
+
+
+            console.error(
+
+                "Error cargando pacientes atendidos:",
+
+                error
+
             );
 
 
-        const datos =
-            await respuesta.json();
+        }
 
-
-        setPacientes(datos);
 
     };
 
 
+
+
+
+
+
+
+
+    /*
+    ========================================================
+    CARGAR PROFESIONALES
+
+    Se mantienen para mostrar
+    profesionales relacionados.
+
+    ========================================================
+    */
 
 
     const cargarProfesionales = async () => {
 
 
-        const respuesta =
-            await fetch(
-                "http://localhost:8765/api/profesionales",
-                obtenerConfigAuth()
+        try {
+
+
+
+            const respuesta =
+
+                await fetch(
+
+                    "http://localhost:8765/api/profesionales",
+
+                    obtenerConfigAuth()
+
+                );
+
+
+
+
+
+            const datos =
+
+                await respuesta.json();
+
+
+
+
+
+            setProfesionales(datos);
+
+
+
+        }
+
+        catch(error){
+
+
+
+            console.error(
+
+                "Error cargando profesionales:",
+
+                error
+
             );
 
 
-        const datos =
-            await respuesta.json();
+        }
 
-
-        setProfesionales(datos);
 
     };
 
 
 
 
-const cargarCitas = async () => {
 
 
-    try {
 
 
-        const respuesta =
-            await fetch(
 
-                "http://localhost:8765/api/citas",
+    /*
+    ========================================================
+    CARGAR CITAS
 
-                obtenerConfigAuth()
+    Luego se filtran por paciente
+    y estado ASISTIDA.
+
+    ========================================================
+    */
+
+
+    const cargarCitas = async () => {
+
+
+        try {
+
+
+
+            const respuesta =
+
+                await fetch(
+
+                    "http://localhost:8765/api/citas",
+
+                    obtenerConfigAuth()
+
+                );
+
+
+
+
+
+            const datos =
+
+                await respuesta.json();
+
+
+
+
+
+            setCitas(datos);
+
+
+
+        }
+
+        catch(error){
+
+
+
+            console.error(
+
+                "Error cargando citas:",
+
+                error
 
             );
 
 
-        const datos =
-            await respuesta.json();
+        }
 
 
+    };
 
-        console.log(
-            "CITAS RECIBIDAS:",
-            datos
-        );
-
-
-
-        setCitas(datos);
-
-
-    }
-    catch(error) {
-
-
-        console.error(
-            "Error cargando citas:",
-            error
-        );
-
-
-    }
-
-
-};
-
-
+    /*
+    ========================================================
+    MANEJAR CAMBIOS GENERALES
+    ========================================================
+    */
 
 
     const manejarCambio = (e) => {
 
 
         const {
+
             name,
+
             value
+
         } = e.target;
+
 
 
 
@@ -241,674 +557,659 @@ const cargarCitas = async () => {
 
             [name]: value
 
+
         });
+
 
     };
 
 
 
 
-const guardar = async()=>{
-
-
-    try {
-
-
-        console.log(
-            "DATOS HISTORIA ENVIADOS:",
-            historia
-        );
-
-
-        const historiaEnviar = {
-
-            ...historia,
-
-            fecha:
-                historia.fecha ||
-                new Date().toISOString().split("T")[0]
-
-        };
 
 
 
-        /*
-        ====================================================
-        ACTUALIZAR HISTORIA CLÍNICA
-        ====================================================
-        */
-
-        if (
-            idHistoriaEditando !== null
-        ) {
 
 
-            await fetch(
+    /*
+    ========================================================
+    GUARDAR HISTORIA CLÍNICA
+    ========================================================
+    */
 
-                `http://localhost:8765/api/historias/${idHistoriaEditando}`,
 
-                {
+    const guardar = async () => {
 
-                    method:"PUT",
 
-                    headers:{
+        try {
 
-                        ...obtenerConfigAuth().headers,
 
-                        "Content-Type":
-                            "application/json"
 
-                    },
+            const historiaEnviar = {
 
-                    body:
-                        JSON.stringify(
-                            historiaEnviar
-                        )
 
-                }
+                ...historia,
+
+
+                fecha:
+
+                    historia.fecha ||
+
+                    new Date()
+                    .toISOString()
+                    .split("T")[0]
+
+
+            };
+
+
+
+
+
+
+
+            /*
+            ====================================================
+            ACTUALIZAR
+            ====================================================
+            */
+
+
+            if(idHistoriaEditando !== null){
+
+
+
+                await fetch(
+
+                    `http://localhost:8765/api/historias/${idHistoriaEditando}`,
+
+                    {
+
+
+                        method:"PUT",
+
+
+                        headers:{
+
+
+                            ...obtenerConfigAuth().headers,
+
+
+                            "Content-Type":
+
+                                "application/json"
+
+
+                        },
+
+
+                        body:
+
+                            JSON.stringify(
+
+                                historiaEnviar
+
+                            )
+
+
+                    }
+
+
+                );
+
+
+
+                alert(
+
+                    "Historia clínica actualizada correctamente"
+
+                );
+
+
+
+            }
+
+
+
+
+
+
+
+            /*
+            ====================================================
+            CREAR
+            ====================================================
+            */
+
+
+            else {
+
+
+
+                await crearHistoria(
+
+                    historiaEnviar
+
+                );
+
+
+
+                alert(
+
+                    "Historia clínica creada correctamente"
+
+                );
+
+
+
+            }
+
+
+
+
+
+
+
+            await cargarHistorias();
+
+
+
+
+            setIdHistoriaEditando(null);
+
+
+
+        }
+
+        catch(error){
+
+
+
+            console.error(
+
+                "Error guardando historia clínica:",
+
+                error
 
             );
+
 
 
             alert(
-                "Historia clínica actualizada correctamente"
+
+                "No fue posible guardar la historia clínica"
+
             );
+
 
 
         }
 
 
-        /*
-        ====================================================
-        CREAR NUEVA HISTORIA CLÍNICA
-        ====================================================
-        */
-
-        else {
+    };
 
 
-            await crearHistoria(
-                historiaEnviar
-            );
 
 
-            alert(
-                "Historia clínica creada correctamente"
-            );
 
 
-        }
 
 
+
+    /*
+    ========================================================
+    ELIMINAR HISTORIA
+    ========================================================
+    */
+
+
+    const eliminar = async(id)=>{
+
+
+        await eliminarHistoria(id);
 
 
         await cargarHistorias();
 
 
+    };
+
+
+
+
+
+
+
+
+
+    /*
+    ========================================================
+    EDITAR HISTORIA
+    ========================================================
+    */
+
+
+    const editarHistoria = (
+
+        historiaSeleccionada
+
+    ) => {
+
+
 
         setIdHistoriaEditando(
-            null
+
+            historiaSeleccionada.idHistoria
+
         );
 
 
 
-    }
 
-    catch(error){
 
 
-        console.error(
-            "Error guardando historia clínica:",
-            error
-        );
 
+        setHistoria({
 
-        alert(
-            "No fue posible guardar la historia clínica"
-        );
 
 
-    }
+            paciente:{
 
+                idPaciente:
 
-};
+                    historiaSeleccionada
+                    .paciente
+                    .idPaciente
 
+            },
 
-    const eliminar = async (id) => {
 
 
-    await eliminarHistoria(id);
 
 
-    await cargarHistorias();
+            profesional:{
 
+                idProfesional:
 
-};
+                    historiaSeleccionada
+                    .profesional
+                    .idProfesional
 
-const editarHistoria = (
+            },
 
-    historiaSeleccionada
 
-) => {
 
 
-    setIdHistoriaEditando(
 
-        historiaSeleccionada.idHistoria
+            cita:{
 
-    );
+                idCita:
 
+                    historiaSeleccionada
+                    .cita
+                    .idCita
 
+            },
 
-    setHistoria({
 
 
-        paciente:{
 
-            idPaciente:
-            historiaSeleccionada.paciente.idPaciente
 
-        },
+            fecha:
 
+                historiaSeleccionada.fecha,
 
-        profesional:{
 
-            idProfesional:
-            historiaSeleccionada.profesional.idProfesional
 
-        },
 
 
-        cita:{
+            motivoConsulta:
 
-            idCita:
-            historiaSeleccionada.cita.idCita
+                historiaSeleccionada
+                .motivoConsulta || "",
 
-        },
 
 
-        fecha:
 
-            historiaSeleccionada.fecha,
 
+            diagnostico:
 
-        motivoConsulta:
+                historiaSeleccionada
+                .diagnostico || "",
 
-            historiaSeleccionada.motivoConsulta || "",
 
 
-        diagnostico:
 
-            historiaSeleccionada.diagnostico || "",
 
+            tratamiento:
 
-        tratamiento:
+                historiaSeleccionada
+                .tratamiento || "",
 
-            historiaSeleccionada.tratamiento || "",
 
 
-        observaciones:
 
-            historiaSeleccionada.observaciones || ""
 
+            observaciones:
 
-    });
+                historiaSeleccionada
+                .observaciones || ""
 
 
-};
 
+        });
 
-const cambiarPaciente = (
 
-    idPaciente
 
-) => {
+    };
 
 
-const citasPaciente =
 
-    citas.filter(
 
-        cita =>
 
-        cita.paciente?.idPaciente
-        ===
-        Number(idPaciente)
 
-        &&
 
-        cita.estado === "ASISTIDA"
 
-    );
 
+    /*
+    ========================================================
+    CAMBIAR PACIENTE
 
-    const profesionalesUnicos =
+    NUEVA REGLA:
 
-        citasPaciente
+    Solo se buscan citas ASISTIDAS.
 
-            .map(
+    ========================================================
+    */
 
-                cita => cita.profesional
 
-            )
+    const cambiarPaciente = (
 
-            .filter(
+        idPaciente
 
-                (profesional, index, array) =>
+    ) => {
 
-                profesional &&
 
-                array.findIndex(
 
-                    item =>
+        const citasPaciente =
 
-                    item.idProfesional ===
-                    profesional.idProfesional
 
-                ) === index
+            citas.filter(
+
+
+                cita =>
+
+
+
+                    cita.paciente?.idPaciente ===
+
+                    Number(idPaciente)
+
+
+
+                    &&
+
+
+
+                    cita.estado === "ASISTIDA"
+
+
 
             );
 
 
 
-    setCitasFiltradas(
-
-        citasPaciente
-
-    );
 
 
 
-    setProfesionalesFiltrados(
-
-        profesionalesUnicos
-
-    );
 
 
 
-    setHistoria({
-
-        ...historia,
+        const profesionalesUnicos =
 
 
-        paciente:{
+            citasPaciente
 
-            idPaciente:idPaciente
+            .map(
 
-        },
+                cita =>
 
+                    cita.profesional
 
-        profesional:{
+            )
 
-            idProfesional:""
-
-        },
-
-
-        cita:{
-
-            idCita:""
-
-        }
+            .filter(
 
 
-    });
+                (profesional,index,array) =>
 
 
-};
+
+                    profesional &&
 
 
-const cambiarCita = (
 
-    idCita
-
-) => {
+                    array.findIndex(
 
 
-    const citaSeleccionada =
+                        item =>
 
-        citas.find(
 
-            cita =>
+                            item.idProfesional ===
 
-            cita.idCita === Number(idCita)
+                            profesional.idProfesional
+
+
+                    ) === index
+
+
+
+            );
+
+
+
+
+
+
+
+
+
+        setCitasFiltradas(
+
+            citasPaciente
 
         );
 
 
 
-    setHistoria({
 
-        ...historia,
 
+        setProfesionalesFiltrados(
 
-        cita:{
+            profesionalesUnicos
 
-            idCita:idCita
+        );
 
-        },
 
 
-        profesional:{
 
-            idProfesional:
 
-            citaSeleccionada?.profesional?.idProfesional || ""
 
-        }
 
 
-    });
 
+        setHistoria({
 
-};
-    
-return (
 
-    <section className="historia-container">
+            ...historia,
 
 
-    <div className="module-header">
 
+            paciente:{
 
-        <span className="module-tag">
 
-            Módulo Historia Clínica
+                idPaciente:idPaciente
 
-        </span>
 
+            },
 
 
-        <h2>
 
-            Gestión de Historias Clínicas
+            profesional:{
 
-        </h2>
 
+                idProfesional:""
 
 
-        <p>
+            },
 
-            Registra y consulta la información clínica
-            de los pacientes del consultorio.
 
-        </p>
 
+            cita:{
 
-    </div>  
 
+                idCita:""
 
 
-            <div className="historia-form">
+            }
 
 
-<select
 
-    value={
-        historia.paciente.idPaciente
-    }
+        });
 
-    onChange={
 
-        e =>
 
-        cambiarPaciente(
-            e.target.value
-        )
 
-    }
+    };
 
->
 
-                    <option value="">
 
-                        Seleccione paciente
 
-                    </option>
 
 
-                    {
-                        pacientes.map(
-                            paciente => (
 
-                                <option
 
-                                    key={
-                                        paciente.idPaciente
-                                    }
 
-                                    value={
-                                        paciente.idPaciente
-                                    }
+    /*
+    ========================================================
+    CAMBIAR CITA
 
-                                >
+    Al seleccionar una cita asistida:
 
-                                    {paciente.nombre}
-                                    {" "}
-                                    {paciente.apellido}
+    - Guarda la cita.
+    - Asigna profesional automáticamente.
 
-                                </option>
+    ========================================================
+    */
 
-                            )
-                        )
-                    }
 
+    const cambiarCita = (
 
-                </select>
+        idCita
 
+    ) => {
 
 
 
+        const citaSeleccionada =
 
-<select
 
-    value={
-        historia.profesional.idProfesional
-    }
+            citas.find(
 
-    disabled
 
->
+                cita =>
 
-    <option value="">
 
-        Profesional asignado
+                    cita.idCita ===
 
-    </option>
+                    Number(idCita)
 
 
-    {
-        profesionalesFiltrados.map(
 
-            profesional => (
+            );
 
-                <option
 
-                    key={
-                        profesional.idProfesional
-                    }
 
-                    value={
-                        profesional.idProfesional
-                    }
 
-                >
 
-                    {profesional.nombre}
 
-                    {" "}
 
-                    {profesional.apellido}
+        setHistoria({
 
-                </option>
 
-            )
 
-        )
-    }
+            ...historia,
 
 
-</select>
 
+            cita:{
 
 
+                idCita:idCita
 
-                <select
 
-    value={
-        historia.cita.idCita
-    }
+            },
 
-    onChange={
 
-        e =>
 
-        cambiarCita(
-            e.target.value
-        )
 
-    }
 
->
+            profesional:{
 
-    <option value="">
 
-        Seleccione cita
 
-    </option>
+                idProfesional:
 
 
-    {
-        citasFiltradas.map(
+                    citaSeleccionada
+                    ?.profesional
+                    ?.idProfesional || ""
 
-            cita => (
 
-                <option
 
-                    key={
-                        cita.idCita
-                    }
+            }
 
-                    value={
-                        cita.idCita
-                    }
 
-                >
 
-                    Cita #{cita.idCita}
-                    {" - "}
-                    {cita.fecha}
+        });
 
-                </option>
 
-            )
 
-        )
-    }
+    };
 
+    return (
 
-</select>
+        <section className="historia-container">
 
 
 
 
 
-                <input
+            <div className="module-header">
 
-                    name="motivoConsulta"
 
-                    placeholder="Motivo consulta"
+                <span className="module-tag">
 
-                    value={
-                        historia.motivoConsulta
-                    }
+                    Módulo Historia Clínica
 
-                    onChange={
-                        manejarCambio
-                    }
+                </span>
 
-                />
 
 
+                <h2>
 
+                    Gestión de Historias Clínicas
 
-                <input
+                </h2>
 
-                    name="diagnostico"
 
-                    placeholder="Diagnóstico"
 
-                    value={
-                        historia.diagnostico
-                    }
+                <p>
 
-                    onChange={
-                        manejarCambio
-                    }
+                    Registra la atención clínica de pacientes
+                    que ya fueron atendidos en consulta.
 
-                />
-
-
-
-
-                <input
-
-                    name="tratamiento"
-
-                    placeholder="Tratamiento"
-
-                    value={
-                        historia.tratamiento
-                    }
-
-                    onChange={
-                        manejarCambio
-                    }
-
-                />
-
-
-
-
-                <textarea
-
-                    name="observaciones"
-
-                    placeholder="Observaciones"
-
-                    value={
-                        historia.observaciones
-                    }
-
-                    onChange={
-                        manejarCambio
-                    }
-
-                />
-
-
-
-
-<button
-
-    onClick={guardar}
-
->
-
-    {
-        idHistoriaEditando !== null
-
-        ?
-
-        "Actualizar Historia Clínica"
-
-        :
-
-        "Guardar Historia Clínica"
-    }
-
-</button>
+                </p>
 
 
             </div>
@@ -917,22 +1218,602 @@ return (
 
 
 
+
+
+
+
+            <div className="historia-form">
+
+
+
+
+
+
+
+                {/* ==================================================
+                    PACIENTE
+
+                    SOLO PACIENTES CON CITA ASISTIDA
+
+                    ================================================== */}
+
+
+
+                <select
+
+
+                    value={
+
+                        historia.paciente.idPaciente
+
+                    }
+
+
+
+                    onChange={
+
+                        e =>
+
+                        cambiarPaciente(
+
+                            e.target.value
+
+                        )
+
+                    }
+
+
+
+                >
+
+
+
+                    <option value="">
+
+
+                        Seleccione paciente atendido
+
+
+                    </option>
+
+
+
+
+
+                    {
+
+
+                        pacientes.map(
+
+                            paciente => (
+
+
+
+                                <option
+
+
+                                    key={
+
+                                        paciente.idPaciente
+
+                                    }
+
+
+
+                                    value={
+
+                                        paciente.idPaciente
+
+                                    }
+
+
+
+                                >
+
+
+
+                                    {paciente.nombre}
+
+                                    {" "}
+
+                                    {paciente.apellido}
+
+
+
+                                </option>
+
+
+                            )
+
+
+                        )
+
+
+                    }
+
+
+
+                </select>
+
+
+
+
+
+
+
+
+
+                {/* ==================================================
+                    PROFESIONAL
+
+                    Se carga automáticamente
+                    según la cita asistida.
+
+                    ================================================== */}
+
+
+
+                <select
+
+
+                    value={
+
+                        historia.profesional.idProfesional
+
+                    }
+
+
+
+                    disabled
+
+
+
+                >
+
+
+
+                    <option value="">
+
+
+                        Profesional asignado
+
+
+                    </option>
+
+
+
+
+
+                    {
+
+
+                        profesionalesFiltrados.map(
+
+
+
+                            profesional => (
+
+
+
+                                <option
+
+
+                                    key={
+
+                                        profesional.idProfesional
+
+                                    }
+
+
+
+                                    value={
+
+                                        profesional.idProfesional
+
+                                    }
+
+
+
+                                >
+
+
+
+                                    {profesional.nombre}
+
+                                    {" "}
+
+                                    {profesional.apellido}
+
+
+
+                                </option>
+
+
+
+                            )
+
+
+                        )
+
+
+                    }
+
+
+
+                </select>
+
+
+
+
+
+
+
+
+
+                {/* ==================================================
+                    CITA
+
+                    SOLO CITAS ASISTIDAS DEL PACIENTE
+
+                    ================================================== */}
+
+
+
+                <select
+
+
+
+                    value={
+
+                        historia.cita.idCita
+
+                    }
+
+
+
+                    onChange={
+
+
+                        e =>
+
+                        cambiarCita(
+
+                            e.target.value
+
+                        )
+
+
+                    }
+
+
+
+                >
+
+
+
+                    <option value="">
+
+
+                        Seleccione cita atendida
+
+
+                    </option>
+
+
+
+
+
+                    {
+
+
+                        citasFiltradas.map(
+
+
+
+                            cita => (
+
+
+
+                                <option
+
+
+                                    key={
+
+                                        cita.idCita
+
+                                    }
+
+
+
+                                    value={
+
+                                        cita.idCita
+
+                                    }
+
+
+
+                                >
+
+
+
+                                    Cita #
+
+                                    {cita.idCita}
+
+
+
+                                    {" - "}
+
+
+
+                                    {cita.fecha}
+
+
+
+                                </option>
+
+
+
+                            )
+
+
+                        )
+
+
+                    }
+
+
+
+                </select>
+
+
+
+
+
+
+
+
+
+                <input
+
+
+                    name="motivoConsulta"
+
+
+
+                    placeholder="Motivo consulta"
+
+
+
+                    value={
+
+                        historia.motivoConsulta
+
+                    }
+
+
+
+                    onChange={
+
+                        manejarCambio
+
+                    }
+
+
+
+                />
+
+
+
+
+
+
+
+
+
+                <input
+
+
+                    name="diagnostico"
+
+
+
+                    placeholder="Diagnóstico"
+
+
+
+                    value={
+
+                        historia.diagnostico
+
+                    }
+
+
+
+                    onChange={
+
+                        manejarCambio
+
+                    }
+
+
+
+                />
+
+
+
+
+
+
+
+
+
+                <input
+
+
+                    name="tratamiento"
+
+
+
+                    placeholder="Tratamiento"
+
+
+
+                    value={
+
+                        historia.tratamiento
+
+                    }
+
+
+
+                    onChange={
+
+                        manejarCambio
+
+                    }
+
+
+
+                />
+
+
+
+
+
+
+
+
+
+                <textarea
+
+
+                    name="observaciones"
+
+
+
+                    placeholder="Observaciones"
+
+
+
+                    value={
+
+                        historia.observaciones
+
+                    }
+
+
+
+                    onChange={
+
+                        manejarCambio
+
+                    }
+
+
+
+                />
+
+
+
+
+
+
+
+
+
+                <button
+
+
+                    onClick={
+
+                        guardar
+
+                    }
+
+
+
+                >
+
+
+
+                    {
+
+
+                        idHistoriaEditando !== null
+
+
+
+                        ?
+
+
+
+                        "Actualizar Historia Clínica"
+
+
+
+                        :
+
+
+
+                        "Guardar Historia Clínica"
+
+
+
+                    }
+
+
+
+                </button>
+
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+
+
+
+
             <HistoriaClinicaTable
+
+
 
                 historias={historias}
 
+
+
                 editarHistoria={editarHistoria}
 
+
+
                 eliminarHistoria={eliminar}
+
+
 
             />
 
 
+
+
+
+
         </section>
+
 
     );
 
 }
+
+
 
 
 export default HistoriaClinica;

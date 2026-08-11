@@ -1,639 +1,529 @@
 /*
-  ============================================================
-  App.jsx
-  ============================================================
+============================================================
+App.jsx
 
-  Componente principal del Sistema de Gestión de Citas
-  Odontológicas.
+Sistema de Gestión de Citas Odontológicas
 
-  Funcionalidades:
+Componente raíz de la aplicación.
 
-  - Control de autenticación mediante JWT.
-  - Manejo de sesión del usuario.
-  - Navegación entre módulos.
-  - Carga dinámica de componentes.
+Responsabilidades:
 
-  Módulos disponibles:
+- Validar sesión mediante JWT.
+- Controlar usuario autenticado.
+- Mostrar Login cuando no existe sesión.
+- Administrar navegación de módulos.
+- Integrar Layout principal.
+- Cargar Dashboard y módulos según selección.
 
-  - Pacientes.
-  - Citas.
-  - Usuarios.
-  - Profesionales.
-  - Servicios.
+Arquitectura:
 
-  ============================================================
+Login
+ |
+App.jsx
+ |
+MainLayout
+ |
+Dashboard / Módulos
+
+============================================================
 */
 
 
-import { useState, useEffect } from 'react'
+import {
+    useEffect,
+    useState
+} from "react";
 
-import './App.css'
+
+import "./App.css";
 
 
-// ============================================================
-// Importación de módulos del sistema
-// ============================================================
 
-import Paciente from './pages/Paciente'
-import Cita from './pages/Cita'
-import Usuario from './pages/Usuario'
-import Profesional from './pages/Profesional'
-import Servicio from './pages/Servicio'
-import HistoriaClinica from './pages/HistoriaClinica'
-import Login from './pages/Login'
-import Factura from './pages/Factura'
+/*
+============================================================
+LAYOUT PRINCIPAL
 
-// ============================================================
-// Servicio de autenticación
-// ============================================================
+Contiene:
 
-import { logout } from './services/AuthService'
+- Navbar.
+- Sidebar.
+- Área de contenido.
+
+============================================================
+*/
+
+import MainLayout from "./layout/MainLayout";
+
+
+
+/*
+============================================================
+PÁGINA DASHBOARD
+
+Pantalla inicial después del login.
+
+============================================================
+*/
+
+import Dashboard from "./pages/Dashboard";
+
+
+
+/*
+============================================================
+MÓDULOS DEL SISTEMA
+
+Cada módulo representa una funcionalidad
+del consultorio odontológico.
+
+============================================================
+*/
+
+import Paciente from "./pages/Paciente";
+
+import Cita from "./pages/Cita";
+
+import Usuario from "./pages/Usuario";
+
+import Profesional from "./pages/Profesional";
+
+import Servicio from "./pages/Servicio";
+
+import HistoriaClinica from "./pages/HistoriaClinica";
+
+import Factura from "./pages/Factura";
+
+import Login from "./pages/Login";
+
+
+
+/*
+============================================================
+SERVICIO DE AUTENTICACIÓN
+
+Permite cerrar la sesión actual.
+
+============================================================
+*/
+
+import {
+    logout
+} from "./services/AuthService";
+
+
 
 
 
 function App() {
 
 
-  /*
-    Módulo que se encuentra seleccionado actualmente.
 
-    Por defecto inicia mostrando Pacientes.
-  */
-  const [moduloActivo, setModuloActivo] =
-    useState('pacientes')
+    /*
+    ========================================================
+    MÓDULO ACTIVO
 
+    Controla qué pantalla se muestra
+    dentro del Layout.
 
+    Por defecto:
+    Dashboard.
 
-  /*
-    Información del usuario autenticado.
+    ========================================================
+    */
 
-    null:
-    No existe sesión activa.
-
-    objeto:
-    Usuario con sesión iniciada.
-  */
-  const [usuarioAutenticado, setUsuarioAutenticado] =
-    useState(null)
+    const [moduloActivo, setModuloActivo] =
+        useState("dashboard");
 
 
 
-  /*
-    Controla la verificación inicial
-    del almacenamiento local.
-  */
-  const [verificando, setVerificando] =
-    useState(true)
+
+
+    /*
+    ========================================================
+    USUARIO AUTENTICADO
+
+    Guarda la información recibida
+    desde Login:
+
+    - Nombre.
+    - Apellido.
+    - Rol.
+
+    ========================================================
+    */
+
+    const [usuarioAutenticado, setUsuarioAutenticado] =
+        useState(null);
 
 
 
-  /*
-    Al cargar la aplicación verifica
-    si existe un token JWT almacenado.
-  */
-  useEffect(() => {
 
 
-    const token =
-      localStorage.getItem('token')
+    /*
+    ========================================================
+    ESTADO DE VERIFICACIÓN
+
+    Evita mostrar pantallas mientras
+    se revisa localStorage.
+
+    ========================================================
+    */
+
+    const [verificando, setVerificando] =
+        useState(true);
 
 
-    const usuario =
-      localStorage.getItem('usuario')
 
 
 
-    if (token && usuario) {
+    /*
+    ========================================================
+    RECUPERAR SESIÓN
+
+    Al iniciar la aplicación revisa:
+
+    - Token JWT.
+    - Usuario almacenado.
+
+    ========================================================
+    */
+
+    useEffect(() => {
 
 
-      setUsuarioAutenticado(
-        JSON.parse(usuario)
-      )
+        const token =
+            localStorage.getItem("token");
+
+
+        const usuario =
+            localStorage.getItem("usuario");
+
+
+
+        if(token && usuario){
+
+
+            setUsuarioAutenticado(
+
+                JSON.parse(usuario)
+
+            );
+
+
+        }
+
+
+
+        setVerificando(false);
+
+
+
+    }, []);
+
+
+
+
+
+
+    /*
+    ========================================================
+    LOGIN EXITOSO
+
+    Recibe desde Login.jsx
+    los datos del usuario.
+
+    ========================================================
+    */
+
+    const manejarLoginExitoso = (
+        usuario
+    ) => {
+
+
+        setUsuarioAutenticado(
+            usuario
+        );
+
+
+        /*
+        Después del login siempre inicia
+        en Dashboard.
+        */
+
+        setModuloActivo(
+            "dashboard"
+        );
+
+
+    };
+
+
+
+
+
+
+    /*
+    ========================================================
+    CERRAR SESIÓN
+
+    Elimina:
+
+    - Token JWT.
+    - Usuario almacenado.
+
+    ========================================================
+    */
+
+    const manejarLogout = () => {
+
+
+        logout();
+
+
+        setUsuarioAutenticado(
+            null
+        );
+
+
+        setModuloActivo(
+            "dashboard"
+        );
+
+
+    };
+
+
+
+
+
+
+
+    /*
+    ========================================================
+    CARGA DINÁMICA DE MÓDULOS
+
+    Según la opción seleccionada
+    en Sidebar se renderiza
+    el componente correspondiente.
+
+    ========================================================
+    */
+
+    const renderizarModulo = () => {
+
+
+        switch(moduloActivo){
+
+
+
+            case "dashboard":
+
+                return (
+
+                    <Dashboard
+
+                        usuario={
+                            usuarioAutenticado
+                        }
+
+                    />
+
+                );
+
+
+
+
+
+            case "pacientes":
+
+                return <Paciente />;
+
+
+
+
+
+            case "citas":
+
+                return <Cita />;
+
+
+
+
+
+            case "usuarios":
+
+                return <Usuario />;
+
+
+
+
+
+            case "profesionales":
+
+                return <Profesional />;
+
+
+
+
+
+            case "servicios":
+
+                return <Servicio />;
+
+
+
+
+
+            case "historias":
+
+                return <HistoriaClinica />;
+
+
+
+
+
+            case "facturas":
+
+                return <Factura />;
+
+
+
+
+
+            default:
+
+                return (
+
+                    <Dashboard
+
+                        usuario={
+                            usuarioAutenticado
+                        }
+
+                    />
+
+                );
+
+
+        }
+
+
+    };
+
+
+
+
+
+
+
+    /*
+    ========================================================
+    VALIDACIÓN INICIAL
+
+    Mientras revisa la sesión
+    no muestra contenido.
+
+    ========================================================
+    */
+
+    if(verificando){
+
+
+        return null;
 
 
     }
 
 
 
-    setVerificando(false)
-
-
-  }, [])
 
 
 
-  /*
-    Se ejecuta cuando Login devuelve
-    los datos del usuario autenticado.
-  */
-  const manejarLoginExitoso = (usuario) => {
+    /*
+    ========================================================
+    USUARIO NO AUTENTICADO
+
+    Muestra únicamente Login.
+
+    ========================================================
+    */
+
+    if(!usuarioAutenticado){
 
 
-    setUsuarioAutenticado(usuario)
+        return (
+
+            <Login
+
+                onLoginExitoso={
+                    manejarLoginExitoso
+                }
+
+            />
+
+        );
 
 
-  }
-
-
-
-  /*
-    Cierra la sesión actual.
-  */
-  const manejarLogout = () => {
-
-
-    logout()
-
-
-    setUsuarioAutenticado(null)
-
-
-  }
-
-
-
-  /*
-    Mientras se valida la sesión
-    no muestra contenido.
-  */
-  if (verificando) {
-
-
-    return null
-
-
-  }
+    }
 
 
 
-  /*
-    Si no existe usuario autenticado,
-    muestra solamente Login.
-  */
-  if (!usuarioAutenticado) {
 
+
+
+    /*
+    ========================================================
+    APLICACIÓN PRINCIPAL
+
+    Cuando existe sesión:
+
+    Renderiza Layout completo.
+
+    ========================================================
+    */
 
     return (
 
-      <Login
-        onLoginExitoso={manejarLoginExitoso}
-      />
 
-    )
+        <MainLayout
 
 
-  }
-
-
-
-  return (
-
-
-    <div className="app">
-
-
-      {/* =====================================================
-          ENCABEZADO DEL SISTEMA
-          ===================================================== */}
-
-
-      <header className="app-header">
-
-
-        <div className="app-header-content">
-
-
-          <div className="app-brand">
-
-
-            <div className="app-logo">
-
-              🦷
-
-            </div>
-
-
-
-            <div>
-
-
-              <h1>
-                Sistema de Gestión de Citas Odontológicas
-              </h1>
-
-
-              <p>
-                Consultorio Odontológico Dra. Magda Ortiz
-              </p>
-
-
-            </div>
-
-
-          </div>
-
-
-
-
-          <div className="app-user-info">
-
-
-            <span>
-
-              {usuarioAutenticado.nombre}
-              {' '}
-              ({usuarioAutenticado.rol})
-
-            </span>
-
-
-
-            <button
-              type="button"
-              onClick={manejarLogout}
-            >
-
-              Cerrar sesión
-
-            </button>
-
-
-          </div>
-
-
-
-        </div>
-
-
-      </header>
-
-
-
-
-
-      {/* =====================================================
-          CONTENIDO PRINCIPAL
-          ===================================================== */}
-
-
-      <main className="app-content">
-
-
-
-
-
-        {/* ===================================================
-            MENÚ DE MÓDULOS
-            =================================================== */}
-
-
-        <nav className="module-navigation">
-
-
-
-          <button
-
-            type="button"
-
-            className={
-              moduloActivo === 'pacientes'
-              ? 'module-tab active'
-              : 'module-tab'
+            usuario={
+                usuarioAutenticado
             }
 
-            onClick={() =>
-              setModuloActivo('pacientes')
+
+            moduloActivo={
+                moduloActivo
             }
 
-          >
 
-            <span className="tab-icon">
-
-              👤
-
-            </span>
-
-
-            <span>
-
-              Pacientes
-
-            </span>
-
-
-          </button>
-
-
-
-
-
-          <button
-
-            type="button"
-
-            className={
-              moduloActivo === 'citas'
-              ? 'module-tab active'
-              : 'module-tab'
+            cambiarModulo={
+                setModuloActivo
             }
 
-            onClick={() =>
-              setModuloActivo('citas')
+
+            onLogout={
+                manejarLogout
             }
 
-          >
 
-            <span className="tab-icon">
-
-              📅
-
-            </span>
+        >
 
 
-            <span>
-
-              Citas
-
-            </span>
-
-
-          </button>
-
-
-
-
-
-          <button
-
-            type="button"
-
-            className={
-              moduloActivo === 'usuarios'
-              ? 'module-tab active'
-              : 'module-tab'
+            {
+                renderizarModulo()
             }
 
-            onClick={() =>
-              setModuloActivo('usuarios')
-            }
 
-          >
+        </MainLayout>
 
-            <span className="tab-icon">
 
-              🔐
+    );
 
-            </span>
-
-
-            <span>
-
-              Usuarios
-
-            </span>
-
-
-          </button>
-
-
-
-
-
-          <button
-
-            type="button"
-
-            className={
-              moduloActivo === 'profesionales'
-              ? 'module-tab active'
-              : 'module-tab'
-            }
-
-            onClick={() =>
-              setModuloActivo('profesionales')
-            }
-
-          >
-
-            <span className="tab-icon">
-
-              🩺
-
-            </span>
-
-
-            <span>
-
-              Profesionales
-
-            </span>
-
-
-          </button>
-
-
-
-
-
-          <button
-
-            type="button"
-
-            className={
-              moduloActivo === 'servicios'
-              ? 'module-tab active'
-              : 'module-tab'
-            }
-
-            onClick={() =>
-              setModuloActivo('servicios')
-            }
-
-          >
-
-            <span className="tab-icon">
-
-              🦷
-
-            </span>
-
-
-            <span>
-
-              Servicios
-
-            </span>
-
-
-          </button>
-
-          <button
-
-            type="button"
-
-            className={
-              moduloActivo === 'historias'
-              ? 'module-tab active'
-              : 'module-tab'
-            }
-
-            onClick={() =>
-              setModuloActivo('historias')
-            }
-
-          >
-
-            <span className="tab-icon">
-
-              📋
-
-            </span>
-
-
-            <span>
-
-              Historia Clínica
-
-            </span>
-
-
-          </button>
-
-          <button
-
-            type="button"
-
-            className={
-              moduloActivo === 'facturas'
-              ? 'module-tab active'
-              : 'module-tab'
-            }
-
-            onClick={() =>
-              setModuloActivo('facturas')
-            }
-
-          >
-
-            <span className="tab-icon">
-
-              💰
-
-            </span>
-
-
-            <span>
-
-              Facturación
-
-            </span>
-
-
-          </button>
-
-        </nav>
-
-
-
-
-
-        {/* ===================================================
-            CARGA DINÁMICA DE MÓDULOS
-            =================================================== */}
-
-
-        <section className="module-content">
-
-
-          {
-            moduloActivo === 'pacientes'
-            &&
-            <Paciente />
-          }
-
-
-
-          {
-            moduloActivo === 'citas'
-            &&
-            <Cita />
-          }
-
-
-
-          {
-            moduloActivo === 'usuarios'
-            &&
-            <Usuario />
-          }
-
-
-
-          {
-            moduloActivo === 'profesionales'
-            &&
-            <Profesional />
-          }
-
-
-
-          {
-            moduloActivo === 'servicios'
-            &&
-            <Servicio />
-          }
-
-          {
-            moduloActivo === 'historias'
-            &&
-            <HistoriaClinica />
-          }
-
-          {
-            moduloActivo === 'facturas'
-            &&
-            <Factura />
-          }
-
-        </section>
-
-
-
-      </main>
-
-
-
-
-
-      {/* =====================================================
-          PIE DE PÁGINA
-          ===================================================== */}
-
-
-      <footer className="app-footer">
-
-
-        <p>
-          Sistema de Gestión de Citas Odontológicas
-        </p>
-
-
-        <p>
-          Consultorio Odontológico Dra. Magda Ortiz
-        </p>
-
-
-      </footer>
-
-
-
-    </div>
-
-
-  )
 
 }
 
 
 
-export default App
+export default App;

@@ -240,28 +240,970 @@ body {
 
 
 /*
-  ============================================================
-  VISTA DE LOGIN (MÓDULO INDEPENDIENTE)
-  ============================================================
+============================================================
+LOGIN PREMIUM FINAL
+Consultorio Odontológico Dra. Magda Ortiz
+
+Versión final:
+- Tarjeta flotante.
+- Fondo clínico.
+- Identidad institucional.
+- Decoración orgánica.
+============================================================
 */
 
+
 .login-container {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #f0f4f3;
+
+
+    min-height:100vh;
+
+
+    display:flex;
+
+
+    align-items:center;
+
+
+    justify-content:center;
+
+
+    padding:30px;
+
+
+    position:relative;
+
+
+    overflow:hidden;
+
+
+
+    background:
+
+
+    radial-gradient(
+
+        circle at top left,
+
+        rgba(23,124,107,.18),
+
+        transparent 35%
+
+    ),
+
+
+    radial-gradient(
+
+        circle at bottom right,
+
+        rgba(23,124,107,.12),
+
+        transparent 35%
+
+    ),
+
+
+    #f3f8f7;
+
+
+
 }
+
+
+
+
+
+/*
+============================================================
+DECORACIONES DE FONDO
+============================================================
+*/
+
+
+.login-container::before {
+
+
+    content:"";
+
+
+    position:absolute;
+
+
+    width:420px;
+
+
+    height:420px;
+
+
+    left:-180px;
+
+
+    bottom:-160px;
+
+
+
+    background:
+
+
+    radial-gradient(
+
+        circle,
+
+        rgba(23,124,107,.15),
+
+        transparent 70%
+
+    );
+
+
+}
+
+
+
+
+
+
+.login-container::after {
+
+
+    content:"";
+
+
+    position:absolute;
+
+
+    width:300px;
+
+
+    height:300px;
+
+
+    right:-120px;
+
+
+    top:-100px;
+
+
+
+    background:
+
+
+    radial-gradient(
+
+        circle,
+
+        rgba(23,124,107,.12),
+
+        transparent 70%
+
+    );
+
+
+}
+
+
+
+
+
+
+
+
+
+/*
+============================================================
+TARJETA LOGIN
+============================================================
+*/
+
 
 .login-box {
-  background: #fff;
-  padding: 2rem;
-  border-radius: 8px;
-  width: 100%;
-  max-width: 400px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+
+
+    width:100%;
+
+
+    max-width:480px;
+
+
+    background:white;
+
+
+    padding:45px 50px;
+
+
+    border-radius:30px;
+
+
+    border-top:
+
+    6px solid #177c6b;
+
+
+
+    box-shadow:
+
+
+    0 25px 60px rgba(0,0,0,.16);
+
+
+
+    position:relative;
+
+
+    overflow:hidden;
+
+
+    z-index:2;
+
+
 }
 
+
+
+
+/*
+============================================================
+DECORACIÓN BOTÁNICA LOGIN
+============================================================
+*/
+
+
+.login-decoration {
+
+    position:absolute;
+
+    right:-25px;
+
+    bottom:10px;
+
+    width:180px;
+
+    opacity:.20;
+
+    pointer-events:none;
+
+    z-index:0;
+
+}
+
+/*
+============================================================
+LOGO
+============================================================
+*/
+
+
+.login-logo {
+
+
+    display:flex;
+
+
+    justify-content:center;
+
+
+    margin-bottom:-5px;
+
+
+}
+
+
+
+
+
+.login-logo img {
+
+
+    width:220px;
+
+
+    height:220px;
+
+
+    object-fit:contain;
+
+
+}
+
+
+
+
+
+
+
+
+
+/*
+============================================================
+TÍTULO
+============================================================
+*/
+
+
+.module-title {
+
+
+    text-align:center;
+
+
+    margin-bottom:30px;
+
+
+}
+
+
+
+
+
+.module-title h2 {
+
+
+    margin:0 0 10px;
+
+
+    color:#263238;
+
+
+    font-size:30px;
+
+
+    font-weight:700;
+
+
+}
+
+
+
+
+
+.module-title p {
+
+
+    margin:0;
+
+
+    color:#607d8b;
+
+
+    line-height:1.6;
+
+
+    font-size:14px;
+
+
+}
+
+
+
+
+
+
+
+
+
+/*
+============================================================
+MENSAJE
+============================================================
+*/
+
+
+.message {
+
+
+    background:#e8f5f3;
+
+
+    color:#00695c;
+
+
+    padding:13px;
+
+
+    border-radius:12px;
+
+
+    margin-bottom:20px;
+
+
+    text-align:center;
+
+
+}
+
+
+
+
+
+
+
+
+
+/*
+============================================================
+ETIQUETAS
+============================================================
+*/
+
+
+.input-label svg {
+
+    color:#177c6b;
+
+}
+
+
+.label-icon {
+
+    flex-shrink:0;
+
+}
+
+
+
+
+
+
+.form-group {
+
+
+    margin-bottom:22px;
+
+
+}
+
+
+
+
+
+
+
+
+
+/*
+============================================================
+CAMPOS
+============================================================
+*/
+
+
+.input-icon-wrapper {
+
+
+    position:relative;
+
+
+}
+
+
+
+
+
+.input-icon-wrapper input {
+
+
+    width:100%;
+
+
+    padding:15px 45px 15px 16px;
+
+
+    border:1px solid #cfdedb;
+
+
+    border-radius:12px;
+
+
+    font-size:15px;
+
+
+    color:#37474f;
+
+
+
+    transition:.25s;
+
+
+}
+
+
+
+
+
+.input-icon-wrapper input::placeholder {
+
+
+    color:#9eacb5;
+
+
+}
+
+
+
+
+
+.input-icon-wrapper input:focus {
+
+
+    outline:none;
+
+
+    border-color:#177c6b;
+
+
+    box-shadow:
+
+
+    0 0 0 4px rgba(23,124,107,.12);
+
+
+}
+
+
+
+
+
+
+
+
+
+/*
+============================================================
+BOTÓN OJO
+============================================================
+*/
+
+
+.password-toggle {
+
+
+    position:absolute;
+
+
+    right:12px;
+
+
+    top:50%;
+
+
+    transform:translateY(-50%);
+
+
+
+    border:none;
+
+
+    background:transparent;
+
+
+    color:#607d8b;
+
+
+    cursor:pointer;
+
+
+
+    display:flex;
+
+
+    align-items:center;
+
+
+    justify-content:center;
+
+
+}
+
+
+
+
+
+.password-toggle:hover {
+
+
+    color:#177c6b;
+
+
+}
+
+
+
+
+
+
+
+
+
+/*
+============================================================
+BOTÓN INGRESO
+============================================================
+*/
+
+
+.form-buttons {
+
+
+    margin-top:30px;
+
+
+}
+
+
+
+
+
+.btn-primary {
+
+
+    width:100%;
+
+
+    display:flex;
+
+
+    justify-content:center;
+
+
+    align-items:center;
+
+
+    gap:10px;
+
+
+
+    padding:15px;
+
+
+    border:none;
+
+
+    border-radius:12px;
+
+
+
+    background:#177c6b;
+
+
+    color:white;
+
+
+
+    font-size:16px;
+
+
+    font-weight:700;
+
+
+
+    cursor:pointer;
+
+
+    transition:.25s;
+
+
+}
+
+
+
+
+
+.btn-primary:hover {
+
+
+    background:#126657;
+
+
+    transform:translateY(-2px);
+
+
+}
+
+
+
+
+
+
+
+
+
+/*
+============================================================
+PIE INSTITUCIONAL
+============================================================
+*/
+
+
+.login-footer-message {
+
+
+    margin-top:35px;
+
+
+    display:flex;
+
+
+    align-items:center;
+
+
+    justify-content:center;
+
+
+    gap:12px;
+
+
+}
+
+
+
+
+
+.login-footer-message p {
+
+
+    margin:0;
+
+
+    color:#177c6b;
+
+
+    font-size:14px;
+
+
+    font-style:italic;
+
+
+    text-align:center;
+
+
+}
+
+
+
+
+
+.login-footer-message .line {
+
+
+    width:45px;
+
+
+    height:1px;
+
+
+    background:#9ed4cb;
+
+
+}
+
+
+
+
+
+.footer-tooth {
+
+
+    font-size:20px;
+
+
+}
+
+/*
+============================================================
+ENCABEZADO LOGIN
+============================================================
+*/
+
+
+.module-title {
+
+    text-align:center;
+
+    margin-bottom:25px;
+
+}
+
+
+
+
+.module-title h2 {
+
+    margin:0 0 10px;
+
+    color:#263238;
+
+    font-size:28px;
+
+}
+
+
+
+.module-title p {
+
+    margin:0;
+
+    color:#607d8b;
+
+    font-size:15px;
+
+}
+
+
+
+
+
+/*
+============================================================
+MENSAJE ERROR
+============================================================
+*/
+
+
+.message {
+
+    background:#e8f5f3;
+
+    color:#00695c;
+
+    padding:12px;
+
+    border-radius:10px;
+
+    margin-bottom:20px;
+
+    font-size:14px;
+
+    text-align:center;
+
+}
+
+
+
+
+
+/*
+============================================================
+FORMULARIO LOGIN
+============================================================
+*/
+
+
+.form-group {
+
+    margin-bottom:18px;
+
+}
+
+
+
+.form-group label {
+
+    display:block;
+
+    margin-bottom:7px;
+
+    color:#37474f;
+
+    font-weight:600;
+
+    font-size:14px;
+
+}
+
+
+
+.form-group input {
+
+    width:100%;
+
+    padding:13px 15px;
+
+    border:
+
+    1px solid #cfdedb;
+
+    border-radius:10px;
+
+    font-size:15px;
+
+    outline:none;
+
+    transition:.2s;
+
+}
+
+
+
+.form-group input:focus {
+
+    border-color:#177c6b;
+
+    box-shadow:
+
+    0 0 0 3px rgba(23,124,107,.15);
+
+}
+
+
+
+
+
+/*
+============================================================
+BOTÓN LOGIN
+============================================================
+*/
+
+
+.form-buttons {
+
+    margin-top:25px;
+
+}
+
+
+
+.btn-primary {
+
+    width:100%;
+
+    border:none;
+
+    padding:14px;
+
+    border-radius:10px;
+
+    background:#177c6b;
+
+    color:white;
+
+    font-size:16px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:.2s;
+
+}
+
+
+
+.btn-primary:hover {
+
+    background:#126657;
+
+}
+
+
+
+.btn-primary:disabled {
+
+    opacity:.6;
+
+    cursor:not-allowed;
+
+}
 
 /*
   ============================================================
@@ -325,4 +1267,721 @@ body {
   .app-footer {
     padding: 18px 15px;
   }
+}
+
+/*
+============================================================
+ESTILOS DASHBOARD
+============================================================
+*/
+
+
+.dashboard-container {
+
+    width:100%;
+
+}
+
+
+
+.dashboard-header {
+
+    background:white;
+
+    padding:25px;
+
+    border-radius:12px;
+
+    margin-bottom:25px;
+
+    box-shadow:
+    0 3px 12px rgba(0,0,0,0.06);
+
+}
+
+
+
+.dashboard-header h2 {
+
+    margin:0 0 8px;
+
+    color:#263238;
+
+}
+
+
+
+.dashboard-header p {
+
+    margin:0;
+
+    color:#607d8b;
+
+}
+
+
+
+
+.dashboard-cards {
+
+    display:grid;
+
+    grid-template-columns:
+
+    repeat(auto-fit,minmax(240px,1fr));
+
+    gap:20px;
+
+}
+
+
+
+.dashboard-card {
+
+    background:white;
+
+    border-radius:15px;
+
+    padding:25px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:20px;
+
+    box-shadow:
+
+    0 3px 12px rgba(0,0,0,0.06);
+
+    transition:0.2s;
+
+}
+
+
+
+.dashboard-card:hover {
+
+    transform:translateY(-3px);
+
+}
+
+
+
+.dashboard-icon {
+
+    width:60px;
+
+    height:60px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    background:#e3f2fd;
+
+    color:#1565c0;
+
+    border-radius:15px;
+
+}
+
+
+
+.dashboard-card h3 {
+
+    margin:0 0 8px;
+
+    color:#263238;
+
+}
+
+
+
+.dashboard-card p {
+
+    margin:0;
+
+    color:#607d8b;
+
+} 
+
+/*
+============================================================
+LAYOUT PRINCIPAL
+Nueva estructura:
+Navbar + Sidebar + Contenido
+
+============================================================
+*/
+
+
+.main-layout {
+
+    min-height:100vh;
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+
+
+/*
+============================================================
+NAVBAR SUPERIOR
+============================================================
+*/
+
+
+.navbar {
+
+
+    height:75px;
+
+    background:#007f73;
+
+    color:white;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:0 30px;
+
+    box-shadow:
+    0 3px 12px rgba(0,0,0,0.15);
+
+
+}
+
+
+
+.navbar-brand {
+
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+
+}
+
+
+
+.navbar-logo {
+
+
+    width:45px;
+
+    height:45px;
+
+    background:white;
+
+    color:#007f73;
+
+    border-radius:12px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:25px;
+
+
+}
+
+
+
+.navbar-brand h1 {
+
+
+    margin:0;
+
+    font-size:22px;
+
+
+}
+
+
+
+.navbar-brand p {
+
+
+    margin:3px 0 0;
+
+    font-size:13px;
+
+    opacity:.9;
+
+
+}
+
+
+
+.navbar-user {
+
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+
+}
+
+
+
+.user-info {
+
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    background:
+    rgba(255,255,255,.15);
+
+    padding:8px 14px;
+
+    border-radius:20px;
+
+
+}
+
+
+
+.navbar-user button {
+
+
+    border:none;
+
+    background:white;
+
+    color:#007f73;
+
+    padding:9px 15px;
+
+    border-radius:8px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+
+}
+
+
+
+/*
+============================================================
+CUERPO PRINCIPAL
+============================================================
+*/
+
+
+.layout-body {
+
+
+    display:flex;
+
+    flex:1;
+
+
+}
+
+
+
+/*
+============================================================
+SIDEBAR
+============================================================
+*/
+
+
+.sidebar {
+
+
+    width:260px;
+
+    background:white;
+
+    min-height:calc(100vh - 75px);
+
+    padding:20px 15px;
+
+    box-shadow:
+
+    3px 0 10px rgba(0,0,0,.08);
+
+
+}
+
+
+
+.sidebar-title {
+
+
+    font-size:13px;
+
+    color:#78909c;
+
+    font-weight:bold;
+
+    margin-bottom:20px;
+
+    padding-left:10px;
+
+
+}
+
+
+
+.sidebar-item {
+
+
+    width:100%;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    padding:12px 15px;
+
+    margin-bottom:8px;
+
+    border:none;
+
+    background:transparent;
+
+    color:#455a64;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    font-size:15px;
+
+    font-weight:600;
+
+
+}
+
+
+
+.sidebar-item:hover {
+
+
+    background:#e8f5f3;
+
+    color:#007f73;
+
+
+}
+
+
+
+.sidebar-item.active {
+
+
+    background:#007f73;
+
+    color:white;
+
+
+}
+
+
+
+/*
+============================================================
+CONTENIDO
+============================================================
+*/
+
+
+.layout-content {
+
+
+    flex:1;
+
+    padding:30px;
+
+    background:#f3f8f7;
+
+
+}
+
+/*
+============================================================
+DASHBOARD PROFESIONAL
+============================================================
+*/
+
+
+.dashboard {
+
+    width:100%;
+
+}
+
+
+
+.dashboard-welcome {
+
+
+    background:white;
+
+    padding:25px;
+
+    border-radius:15px;
+
+    margin-bottom:25px;
+
+    box-shadow:
+    0 3px 12px rgba(0,0,0,.08);
+
+
+}
+
+
+
+.dashboard-welcome h2 {
+
+
+    margin:0 0 10px;
+
+    color:#263238;
+
+
+}
+
+
+
+.dashboard-welcome p {
+
+
+    margin:0;
+
+    color:#607d8b;
+
+
+}
+
+
+
+.dashboard h3 {
+
+
+    margin:25px 0 15px;
+
+    color:#263238;
+
+
+}
+
+
+
+.dashboard-indicators {
+
+
+    display:grid;
+
+    grid-template-columns:
+
+    repeat(auto-fit,minmax(220px,1fr));
+
+    gap:20px;
+
+
+}
+
+
+
+.indicator-card {
+
+
+    background:white;
+
+    padding:20px;
+
+    border-radius:15px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    box-shadow:
+
+    0 3px 12px rgba(0,0,0,.08);
+
+
+}
+
+
+
+.indicator-icon {
+
+
+    width:55px;
+
+    height:55px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border-radius:12px;
+
+    background:#e0f2f1;
+
+    color:#00796b;
+
+
+}
+
+
+
+.indicator-card h4 {
+
+
+    margin:0 0 5px;
+
+
+}
+
+
+
+.indicator-card p {
+
+
+    margin:0;
+
+    color:#607d8b;
+
+
+}
+
+
+
+.quick-access {
+
+
+    display:grid;
+
+    grid-template-columns:
+
+    repeat(auto-fit,minmax(220px,1fr));
+
+    gap:20px;
+
+
+}
+
+
+
+.quick-card {
+
+
+    background:white;
+
+    padding:25px;
+
+    border-radius:15px;
+
+    text-align:center;
+
+    box-shadow:
+
+    0 3px 12px rgba(0,0,0,.08);
+
+
+}
+
+
+
+.quick-card svg {
+
+
+    color:#007f73;
+
+    width:35px;
+
+    height:35px;
+
+
+}
+
+
+
+.quick-card h4 {
+
+
+    margin:15px 0 8px;
+
+
+}
+
+
+
+.quick-card p {
+
+
+    color:#607d8b;
+
+    font-size:14px;
+
+
+}
+
+/*
+============================================================
+ESTADO DE CARGA DASHBOARD
+============================================================
+*/
+
+
+.dashboard-loading {
+
+    padding:40px;
+
+    text-align:center;
+
+    color:#607d8b;
+
+    font-size:18px;
+
+}
+
+.btn-primary {
+
+    background:#177c6b !important;
+
+    color:white;
+
+}
+
+
+.btn-primary:hover {
+
+    background:#126657 !important;
+
 }
