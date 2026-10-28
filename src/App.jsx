@@ -1,566 +1,443 @@
 /*
-  ============================================================
-  App.jsx
-  ============================================================
+============================================================
+App.jsx
 
-  Componente principal del Sistema de Gestión de Citas
-  Odontológicas.
+Sistema de Gestión de Citas Odontológicas
+Consultorio Odontológico Dra. Magda Ortiz
 
-  Funcionalidades:
+Componente raíz de la aplicación.
 
-  - Control de autenticación mediante JWT.
-  - Manejo de sesión del usuario.
-  - Navegación entre módulos.
-  - Carga dinámica de componentes.
+Responsabilidades:
 
-  Módulos disponibles:
+- Validar la sesión mediante JWT.
+- Controlar el usuario autenticado.
+- Administrar la navegación interna por módulos.
+- Mantener el periodo seleccionado del Dashboard.
+- Integrar el Layout principal.
+- Renderizar los módulos según la opción seleccionada.
 
-  - Pacientes.
-  - Citas.
-  - Usuarios.
-  - Profesionales.
-  - Servicios.
+Arquitectura:
 
-  ============================================================
+Login
+ |
+App.jsx
+ |
+MainLayout
+ |
+Dashboard / Módulos
+
+============================================================
 */
 
+import {
+    useEffect,
+    useState
+} from "react";
 
-import { useState, useEffect } from 'react'
+import "./App.css";
 
-import './App.css'
-
-
-// ============================================================
-// Importación de módulos del sistema
-// ============================================================
-
-import Paciente from './pages/Paciente'
-import Cita from './pages/Cita'
-import Usuario from './pages/Usuario'
-import Profesional from './pages/Profesional'
-import Servicio from './pages/Servicio'
-import Login from './pages/Login'
+import {
+    crearFiltroPeriodoInicial
+} from "./utils/dashboardPeriodo";
 
 
-// ============================================================
-// Servicio de autenticación
-// ============================================================
+/*
+============================================================
+LAYOUT PRINCIPAL
+============================================================
+*/
 
-import { logout } from './services/AuthService'
+import MainLayout from "./layout/MainLayout";
 
+
+/*
+============================================================
+MÓDULOS DEL SISTEMA
+============================================================
+*/
+
+import Dashboard from "./pages/Dashboard";
+import Paciente from "./pages/Paciente";
+import Cita from "./pages/Cita";
+import Usuario from "./pages/Usuario";
+import Profesional from "./pages/Profesional";
+import Servicio from "./pages/Servicio";
+import HistoriaClinica from "./pages/HistoriaClinica";
+import Factura from "./pages/Factura";
+import Login from "./pages/Login";
+
+/* Estándar visual único para todas las tablas. */
+import "./styles/DataTable.css";
+
+
+/*
+============================================================
+SERVICIO DE AUTENTICACIÓN
+============================================================
+*/
+
+import {
+    logout
+} from "./services/AuthService";
 
 
 function App() {
 
 
-  /*
-    Módulo que se encuentra seleccionado actualmente.
+    /*
+    ========================================================
+    MÓDULO ACTIVO
 
-    Por defecto inicia mostrando Pacientes.
-  */
-  const [moduloActivo, setModuloActivo] =
-    useState('pacientes')
+    Controla la pantalla que se muestra dentro del Layout.
+    El módulo inicial es Dashboard.
+    ========================================================
+    */
 
-
-
-  /*
-    Información del usuario autenticado.
-
-    null:
-    No existe sesión activa.
-
-    objeto:
-    Usuario con sesión iniciada.
-  */
-  const [usuarioAutenticado, setUsuarioAutenticado] =
-    useState(null)
+    const [moduloActivo, setModuloActivo] =
+        useState("dashboard");
 
 
+    /*
+    ========================================================
+    CONTEXTO DE NAVEGACIÓN
 
-  /*
-    Controla la verificación inicial
-    del almacenamiento local.
-  */
-  const [verificando, setVerificando] =
-    useState(true)
+    Guarda un filtro opcional cuando el usuario llega a un
+    módulo desde una interacción del Dashboard.
 
+    Ejemplos:
 
+    - Estado ASISTIDA -> módulo Citas.
+    - Fecha 20/08/2026 -> módulo Citas.
+    - Mayo/2026 -> módulo Facturación.
+    - Paciente específico -> módulo Pacientes.
 
-  /*
-    Al cargar la aplicación verifica
-    si existe un token JWT almacenado.
-  */
-  useEffect(() => {
+    El filtro se limpia automáticamente cuando la navegación
+    se realiza desde Sidebar/Navbar de forma normal.
+    ========================================================
+    */
 
-
-    const token =
-      localStorage.getItem('token')
-
-
-    const usuario =
-      localStorage.getItem('usuario')
+    const [filtroNavegacion, setFiltroNavegacion] =
+        useState(null);
 
 
+    /*
+    ========================================================
+    USUARIO AUTENTICADO
 
-    if (token && usuario) {
+    Contiene los datos obtenidos durante el inicio de sesión.
+    ========================================================
+    */
+
+    const [usuarioAutenticado, setUsuarioAutenticado] =
+        useState(null);
 
 
-      setUsuarioAutenticado(
-        JSON.parse(usuario)
-      )
+    /*
+    ========================================================
+    VERIFICACIÓN DE SESIÓN
 
+    Evita renderizar contenido antes de revisar localStorage.
+    ========================================================
+    */
+
+    const [verificando, setVerificando] =
+        useState(true);
+
+
+    /*
+    ========================================================
+    PERIODO DEL DASHBOARD
+
+    El filtro híbrido conserva en un solo estado:
+
+    - El periodo rápido seleccionado.
+    - La fecha inicial personalizada.
+    - La fecha final personalizada.
+
+    El estado se mantiene en App.jsx para compartirlo entre
+    Navbar y Dashboard sin modificar la navegación existente.
+    ========================================================
+    */
+
+    const [periodoDashboard, setPeriodoDashboard] =
+        useState(() => crearFiltroPeriodoInicial());
+
+
+    /*
+    ========================================================
+    RECUPERAR SESIÓN
+    ========================================================
+    */
+
+    useEffect(() => {
+
+        const token =
+            localStorage.getItem("token");
+
+        const usuario =
+            localStorage.getItem("usuario");
+
+        if(token && usuario){
+
+            try {
+
+                setUsuarioAutenticado(
+                    JSON.parse(usuario)
+                );
+
+            }
+            catch(error){
+
+                console.error(
+                    "No fue posible recuperar la sesión almacenada:",
+                    error
+                );
+
+                logout();
+
+            }
+
+        }
+
+        setVerificando(false);
+
+    }, []);
+
+
+    /*
+    ========================================================
+    LOGIN EXITOSO
+    ========================================================
+    */
+
+    const manejarLoginExitoso = (
+        usuario
+    ) => {
+
+        setUsuarioAutenticado(
+            usuario
+        );
+
+        setModuloActivo(
+            "dashboard"
+        );
+
+        setPeriodoDashboard(
+            crearFiltroPeriodoInicial()
+        );
+
+        setFiltroNavegacion(
+            null
+        );
+
+    };
+
+
+    /*
+    ========================================================
+    CERRAR SESIÓN
+    ========================================================
+    */
+
+    const manejarLogout = () => {
+
+        logout();
+
+        setUsuarioAutenticado(
+            null
+        );
+
+        setModuloActivo(
+            "dashboard"
+        );
+
+        setPeriodoDashboard(
+            crearFiltroPeriodoInicial()
+        );
+
+        setFiltroNavegacion(
+            null
+        );
+
+    };
+
+
+    /*
+    ========================================================
+    NAVEGACIÓN CON CONTEXTO OPCIONAL
+
+    Permite conservar la arquitectura existente sin React
+    Router y, al mismo tiempo, transportar un filtro desde
+    el Dashboard hasta el módulo de destino.
+
+    La firma se mantiene compatible con las llamadas
+    anteriores: manejarNavegacion("citas") sigue funcionando.
+    ========================================================
+    */
+
+    const manejarNavegacion = (
+        modulo,
+        filtro = null
+    ) => {
+
+        setModuloActivo(
+            modulo
+        );
+
+        setFiltroNavegacion(
+            filtro
+        );
+
+    };
+
+
+    /*
+    ========================================================
+    CARGA DINÁMICA DE MÓDULOS
+
+    Se conserva el patrón de navegación interna existente.
+    No se incorpora React Router para evitar alterar la
+    arquitectura actual del proyecto.
+    ========================================================
+    */
+
+    const renderizarModulo = () => {
+
+        switch(moduloActivo){
+
+            case "dashboard":
+
+                return (
+                    <Dashboard
+                        usuario={usuarioAutenticado}
+                        onNavegar={manejarNavegacion}
+                        periodo={periodoDashboard}
+                    />
+                );
+
+            case "pacientes":
+
+                return (
+                    <Paciente
+                        filtroNavegacion={filtroNavegacion}
+                        onLimpiarFiltro={() => setFiltroNavegacion(null)}
+                        periodo={periodoDashboard}
+                    />
+                );
+
+            case "citas":
+
+                return (
+                    <Cita
+                        filtroNavegacion={filtroNavegacion}
+                        onLimpiarFiltro={() => setFiltroNavegacion(null)}
+                    periodo={periodoDashboard}
+                    />
+                );
+
+            case "usuarios":
+
+                return (
+                    <Usuario
+                        filtroNavegacion={filtroNavegacion}
+                        onLimpiarFiltro={() => setFiltroNavegacion(null)}
+                    />
+                );
+
+            case "profesionales":
+
+                return <Profesional />;
+
+            case "servicios":
+
+                return <Servicio />;
+
+            case "historias":
+
+                return (
+                    <HistoriaClinica
+                        filtroNavegacion={filtroNavegacion}
+                        onLimpiarFiltro={() => setFiltroNavegacion(null)}
+                    />
+                );
+
+            case "facturas":
+
+                return (
+                    <Factura
+                        filtroNavegacion={filtroNavegacion}
+                        onLimpiarFiltro={() => setFiltroNavegacion(null)}
+                    />
+                );
+
+            default:
+
+                return (
+                    <Dashboard
+                        usuario={usuarioAutenticado}
+                        onNavegar={manejarNavegacion}
+                        periodo={periodoDashboard}
+                    />
+                );
+
+        }
+
+    };
+
+
+    /*
+    ========================================================
+    VALIDACIÓN INICIAL
+    ========================================================
+    */
+
+    if(verificando){
+
+        return null;
 
     }
 
 
+    /*
+    ========================================================
+    USUARIO NO AUTENTICADO
+    ========================================================
+    */
 
-    setVerificando(false)
+    if(!usuarioAutenticado){
 
+        return (
+            <Login
+                onLoginExitoso={manejarLoginExitoso}
+            />
+        );
 
-  }, [])
-
-
-
-  /*
-    Se ejecuta cuando Login devuelve
-    los datos del usuario autenticado.
-  */
-  const manejarLoginExitoso = (usuario) => {
-
-
-    setUsuarioAutenticado(usuario)
-
-
-  }
+    }
 
 
-
-  /*
-    Cierra la sesión actual.
-  */
-  const manejarLogout = () => {
-
-
-    logout()
-
-
-    setUsuarioAutenticado(null)
-
-
-  }
-
-
-
-  /*
-    Mientras se valida la sesión
-    no muestra contenido.
-  */
-  if (verificando) {
-
-
-    return null
-
-
-  }
-
-
-
-  /*
-    Si no existe usuario autenticado,
-    muestra solamente Login.
-  */
-  if (!usuarioAutenticado) {
-
+    /*
+    ========================================================
+    APLICACIÓN PRINCIPAL
+    ========================================================
+    */
 
     return (
-
-      <Login
-        onLoginExitoso={manejarLoginExitoso}
-      />
-
-    )
-
-
-  }
-
-
-
-  return (
-
-
-    <div className="app">
-
-
-      {/* =====================================================
-          ENCABEZADO DEL SISTEMA
-          ===================================================== */}
-
-
-      <header className="app-header">
-
-
-        <div className="app-header-content">
-
-
-          <div className="app-brand">
-
-
-            <div className="app-logo">
-
-              🦷
-
-            </div>
-
-
-
-            <div>
-
-
-              <h1>
-                Sistema de Gestión de Citas Odontológicas
-              </h1>
-
-
-              <p>
-                Consultorio Odontológico Dra. Magda Ortiz
-              </p>
-
-
-            </div>
-
-
-          </div>
-
-
-
-
-          <div className="app-user-info">
-
-
-            <span>
-
-              {usuarioAutenticado.nombre}
-              {' '}
-              ({usuarioAutenticado.rol})
-
-            </span>
-
-
-
-            <button
-              type="button"
-              onClick={manejarLogout}
-            >
-
-              Cerrar sesión
-
-            </button>
-
-
-          </div>
-
-
-
-        </div>
-
-
-      </header>
-
-
-
-
-
-      {/* =====================================================
-          CONTENIDO PRINCIPAL
-          ===================================================== */}
-
-
-      <main className="app-content">
-
-
-
-
-
-        {/* ===================================================
-            MENÚ DE MÓDULOS
-            =================================================== */}
-
-
-        <nav className="module-navigation">
-
-
-
-          <button
-
-            type="button"
-
-            className={
-              moduloActivo === 'pacientes'
-              ? 'module-tab active'
-              : 'module-tab'
+        <MainLayout
+            usuario={usuarioAutenticado}
+            moduloActivo={moduloActivo}
+            cambiarModulo={manejarNavegacion}
+            onLogout={manejarLogout}
+            periodoDashboard={periodoDashboard}
+            onCambiarPeriodo={setPeriodoDashboard}
+        >
+
+            {
+                renderizarModulo()
             }
 
-            onClick={() =>
-              setModuloActivo('pacientes')
-            }
-
-          >
-
-            <span className="tab-icon">
-
-              👤
-
-            </span>
-
-
-            <span>
-
-              Pacientes
-
-            </span>
-
-
-          </button>
-
-
-
-
-
-          <button
-
-            type="button"
-
-            className={
-              moduloActivo === 'citas'
-              ? 'module-tab active'
-              : 'module-tab'
-            }
-
-            onClick={() =>
-              setModuloActivo('citas')
-            }
-
-          >
-
-            <span className="tab-icon">
-
-              📅
-
-            </span>
-
-
-            <span>
-
-              Citas
-
-            </span>
-
-
-          </button>
-
-
-
-
-
-          <button
-
-            type="button"
-
-            className={
-              moduloActivo === 'usuarios'
-              ? 'module-tab active'
-              : 'module-tab'
-            }
-
-            onClick={() =>
-              setModuloActivo('usuarios')
-            }
-
-          >
-
-            <span className="tab-icon">
-
-              🔐
-
-            </span>
-
-
-            <span>
-
-              Usuarios
-
-            </span>
-
-
-          </button>
-
-
-
-
-
-          <button
-
-            type="button"
-
-            className={
-              moduloActivo === 'profesionales'
-              ? 'module-tab active'
-              : 'module-tab'
-            }
-
-            onClick={() =>
-              setModuloActivo('profesionales')
-            }
-
-          >
-
-            <span className="tab-icon">
-
-              🩺
-
-            </span>
-
-
-            <span>
-
-              Profesionales
-
-            </span>
-
-
-          </button>
-
-
-
-
-
-          <button
-
-            type="button"
-
-            className={
-              moduloActivo === 'servicios'
-              ? 'module-tab active'
-              : 'module-tab'
-            }
-
-            onClick={() =>
-              setModuloActivo('servicios')
-            }
-
-          >
-
-            <span className="tab-icon">
-
-              🦷
-
-            </span>
-
-
-            <span>
-
-              Servicios
-
-            </span>
-
-
-          </button>
-
-
-
-        </nav>
-
-
-
-
-
-        {/* ===================================================
-            CARGA DINÁMICA DE MÓDULOS
-            =================================================== */}
-
-
-        <section className="module-content">
-
-
-          {
-            moduloActivo === 'pacientes'
-            &&
-            <Paciente />
-          }
-
-
-
-          {
-            moduloActivo === 'citas'
-            &&
-            <Cita />
-          }
-
-
-
-          {
-            moduloActivo === 'usuarios'
-            &&
-            <Usuario />
-          }
-
-
-
-          {
-            moduloActivo === 'profesionales'
-            &&
-            <Profesional />
-          }
-
-
-
-          {
-            moduloActivo === 'servicios'
-            &&
-            <Servicio />
-          }
-
-
-
-        </section>
-
-
-
-      </main>
-
-
-
-
-
-      {/* =====================================================
-          PIE DE PÁGINA
-          ===================================================== */}
-
-
-      <footer className="app-footer">
-
-
-        <p>
-          Sistema de Gestión de Citas Odontológicas
-        </p>
-
-
-        <p>
-          Consultorio Odontológico Dra. Magda Ortiz
-        </p>
-
-
-      </footer>
-
-
-
-    </div>
-
-
-  )
+        </MainLayout>
+    );
 
 }
 
-
-
-export default App
+export default App;

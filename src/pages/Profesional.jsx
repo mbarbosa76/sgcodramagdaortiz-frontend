@@ -68,7 +68,8 @@ import {
   getProfesionales,
   crearProfesional,
   actualizarProfesional,
-  eliminarProfesional
+  eliminarProfesional,
+  reactivarProfesional
 } from '../services/ProfesionalService'
 
 /*
@@ -555,13 +556,35 @@ function Profesional() {
 
   /*
     ============================================================
-    ELIMINAR PROFESIONAL
+    ACTIVAR / DESACTIVAR PROFESIONAL
     ============================================================
+
+    Un solo handler decide qué acción ejecutar según el
+    estado actual del profesional:
+
+    - Si está "Activo"   -> se desactiva (soft delete,
+                             el backend NUNCA borra el
+                             registro de la base de datos).
+
+    - Si está "Inactivo" -> se reactiva (vuelve a "Activo").
+
+    Recibe el profesional completo (no solo el ID) porque
+    necesita conocer su estado actual para decidir el
+    mensaje de confirmación y el endpoint correcto.
   */
-  const eliminarProfesionalHandler = async (idProfesional) => {
+  const alternarEstadoProfesionalHandler = async (profesional) => {
+
+    const estaActivo =
+      profesional.estado === 'Activo'
+
+    const mensajeConfirmacion = estaActivo
+      ? '¿Está seguro de desactivar este profesional? ' +
+        'No se eliminará su historial, solo dejará de ' +
+        'aparecer disponible para nuevas citas.'
+      : '¿Activar de nuevo a este profesional?'
 
     const confirmar = window.confirm(
-      '¿Está seguro de eliminar este profesional?'
+      mensajeConfirmacion
     )
 
     if (!confirmar) {
@@ -570,24 +593,41 @@ function Profesional() {
 
     try {
 
-      await eliminarProfesional(idProfesional)
+      if (estaActivo) {
 
-      mostrarMensaje(
-        'Profesional eliminado correctamente.',
-        'success'
-      )
+        await eliminarProfesional(
+          profesional.idProfesional
+        )
+
+        mostrarMensaje(
+          'Profesional desactivado correctamente.',
+          'success'
+        )
+
+      } else {
+
+        await reactivarProfesional(
+          profesional.idProfesional
+        )
+
+        mostrarMensaje(
+          'Profesional activado correctamente.',
+          'success'
+        )
+
+      }
 
       cargarProfesionales()
 
     } catch (error) {
 
       console.error(
-        'Error al eliminar el profesional:',
+        'Error al cambiar el estado del profesional:',
         error
       )
 
       mostrarMensaje(
-        'No fue posible eliminar el profesional.',
+        'No fue posible actualizar el estado del profesional.',
         'error'
       )
 
@@ -1050,7 +1090,7 @@ function Profesional() {
       <ProfesionalTable
         profesionales={profesionales}
         onEditar={editarProfesional}
-        onEliminar={eliminarProfesionalHandler}
+        onEliminar={alternarEstadoProfesionalHandler}
       />
 
     </section>

@@ -1,7 +1,16 @@
+import { useState } from "react";
+import ModuleTableHeader from "./ModuleTableHeader";
+
 /*
   Componente encargado exclusivamente
   de mostrar la tabla de pacientes.
 */
+
+/*
+  Iconos modernos para las acciones de la tabla.
+  (lucide-react ya es una dependencia del proyecto)
+*/
+import { Pencil, Trash2, Phone } from 'lucide-react'
 
 function PacienteTable({
   pacientes,
@@ -9,27 +18,37 @@ function PacienteTable({
   onEliminar
 }) {
 
+  const [busqueda, setBusqueda] = useState("");
+
+  const registrosFiltrados = (pacientes)?.filter((item) =>
+    JSON.stringify(item)
+      .toLowerCase()
+      .includes(busqueda.toLowerCase())
+  ) || [];
+
+
   return (
 
-    <div className="card table-card">
+    <div className="card table-card data-table-card">
 
-      <div className="table-title">
+<ModuleTableHeader
 
-        <h3>
-          Pacientes Registrados
-        </h3>
+    titulo="Pacientes Registrados"
 
-        <p>
-          Información obtenida directamente
-          desde la base de datos.
-        </p>
+    descripcion="Información obtenida directamente desde la base de datos."
 
-      </div>
+    busqueda={busqueda}
+
+    setBusqueda={setBusqueda}
+
+    placeholder="Buscar por documento, nombre, correo..."
+
+/>
 
 
-      <div className="table-container">
+      <div className="table-container data-table-scroll">
 
-        <table className="Paciente-table">
+        <table className="Paciente-table data-table">
 
           <thead>
 
@@ -45,6 +64,8 @@ function PacienteTable({
 
               <th>Correo</th>
 
+              <th>Teléfono</th>
+
               <th>Acciones</th>
 
             </tr>
@@ -54,12 +75,12 @@ function PacienteTable({
 
           <tbody>
 
-            {pacientes.length === 0 ? (
+            {registrosFiltrados.length === 0 ? (
 
               <tr>
 
                 <td
-                  colSpan="6"
+                  colSpan="7"
                   className="empty-table"
                 >
                   No hay pacientes registrados.
@@ -69,7 +90,7 @@ function PacienteTable({
 
             ) : (
 
-              pacientes.map((paciente) => (
+              registrosFiltrados.map((paciente) => (
 
                 <tr key={paciente.idPaciente}>
 
@@ -95,6 +116,18 @@ function PacienteTable({
 
                   <td>
 
+                    <span className="telefono-cell">
+
+                      <Phone size={13} />
+
+                      {paciente.telefono || 'Sin teléfono'}
+
+                    </span>
+
+                  </td>
+
+                  <td>
+
                     <div className="action-buttons">
 
                       <button
@@ -104,6 +137,7 @@ function PacienteTable({
                           onEditar(paciente)
                         }
                       >
+                        <Pencil size={15} />
                         Editar
                       </button>
 
@@ -117,6 +151,7 @@ function PacienteTable({
                           )
                         }
                       >
+                        <Trash2 size={15} />
                         Eliminar
                       </button>
 

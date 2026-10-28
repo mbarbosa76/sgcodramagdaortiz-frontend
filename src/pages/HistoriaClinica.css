@@ -1,0 +1,461 @@
+/*
+============================================================
+HistoriaClinica.css
+Sistema de Gestión de Citas Odontológicas
+============================================================
+*/
+
+
+.historia-container {
+
+    padding:0;
+
+}
+
+
+.historia-container h2 {
+
+    margin-bottom: 20px;
+
+    color: #123;
+
+}
+
+/*
+============================================================
+ENCABEZADO DEL MÓDULO
+============================================================
+*/
+
+
+.module-header {
+
+    margin-bottom:25px;
+
+}
+
+
+
+.module-tag {
+
+    display:inline-block;
+
+    padding:5px 12px;
+
+    background:#e3f2fd;
+
+    color:#1565c0;
+
+    border-radius:20px;
+
+    font-size:12px;
+
+    font-weight:700;
+
+}
+
+
+
+.module-header h2 {
+
+    margin:10px 0 5px;
+
+    font-size:27px;
+
+    color:#263238;
+
+    font-weight:700;
+
+}
+
+
+
+.module-header p {
+
+    margin:0;
+
+    color:#607d8b;
+
+    line-height:1.5;
+
+}
+
+
+.historia-form {
+
+    background: white;
+
+    padding: 25px;
+
+    border-radius: 12px;
+
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 15px;
+
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+
+}
+
+
+
+.historia-form select,
+.historia-form input,
+.historia-form textarea {
+
+
+    padding: 10px;
+
+    border: 1px solid #ccc;
+
+    border-radius: 6px;
+
+    font-size: 14px;
+
+}
+
+
+
+.historia-form textarea {
+
+    grid-column: span 2;
+
+    min-height: 90px;
+
+}
+
+
+
+.historia-form button {
+
+
+    background:#2563eb;
+
+    color:white;
+
+    border:none;
+
+    padding:12px 25px;
+
+    border-radius:7px;
+
+    cursor:pointer;
+
+    font-weight:700;
+
+    width:auto;
+
+    justify-self:start;
+
+
+}
+
+
+
+.historia-form button:hover {
+
+
+    background:#1d4ed8;
+
+
+}
+
+
+.historia-form button:hover {
+
+
+    background:#00796b;
+
+
+}
+
+
+.historia-form button:hover {
+
+    background: #00665c;
+
+}
+
+
+
+.Historia-table {
+
+    width: 100%;
+
+    margin-top: 25px;
+
+    border-collapse: collapse;
+
+    background: white;
+
+}
+
+
+
+.Historia-table th {
+
+    background: linear-gradient(135deg, #1c9683, #177c6b);
+
+    color: white;
+
+    padding: 14px 12px;
+
+    text-align: left;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.4px;
+
+    text-transform: uppercase;
+
+    white-space: nowrap;
+
+}
+
+
+
+.Historia-table td {
+
+    padding: 10px;
+
+    border-bottom: 1px solid #ddd;
+
+}
+
+
+
+.Historia-table button {
+
+
+    background:#d9534f;
+
+    color:white;
+
+    border:none;
+
+    padding:7px 12px;
+
+    border-radius:7px;
+
+    cursor:pointer;
+
+    font-weight:700;
+
+
+}
+
+
+.Historia-table button:hover {
+
+
+    background:#c62828;
+
+
+}
+
+/*
+============================================================
+ACCIONES TABLA HISTORIA CLÍNICA
+============================================================
+*/
+
+
+.Historia-table td:last-child {
+
+    min-width:150px;
+
+    white-space:nowrap;
+
+}
+
+
+
+.Historia-table .action-buttons {
+
+    display:flex;
+
+    flex-direction:row;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:8px;
+
+}
+
+
+
+
+.Historia-table .btn-edit {
+
+    background:#2e9d78;
+
+    color:white;
+
+    border:none;
+
+    padding:7px 12px;
+
+    border-radius:7px;
+
+    cursor:pointer;
+
+    font-weight:700;
+
+}
+
+
+
+.Historia-table .btn-edit:hover {
+
+    background:#247e61;
+
+}
+
+
+
+
+.Historia-table .btn-delete {
+
+    background:#d9534f;
+
+    color:white;
+
+    border:none;
+
+    padding:7px 12px;
+
+    border-radius:7px;
+
+    cursor:pointer;
+
+    font-weight:700;
+
+}
+
+
+
+.Historia-table .btn-delete:hover {
+
+    background:#b93f3b;
+
+}
+
+.historia-form select:disabled {
+
+    background:#f1f5f9;
+
+    color:#455a64;
+
+    cursor:not-allowed;
+
+}
+
+
+/* ============================================================
+   SGCO - HISTORIA CLINICA RESPONSIVE PARA MOVILES
+   Mantiene el formulario funcional y evita desbordamientos.
+   ============================================================ */
+
+.historia-container {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+@media (max-width: 720px) {
+
+    .historia-container,
+    .historia-container * {
+        box-sizing: border-box;
+    }
+
+    /* Encabezado del modulo */
+    .historia-container .module-header {
+        width: 100%;
+        min-width: 0;
+        margin-bottom: 18px;
+    }
+
+    .historia-container .module-header h2 {
+        font-size: clamp(23px, 6vw, 28px);
+        line-height: 1.25;
+        overflow-wrap: anywhere;
+    }
+
+    .historia-container .module-header p {
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    /* Formulario: una sola columna */
+    .historia-container .historia-form {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        width: 100%;
+        min-width: 0;
+        padding: 16px;
+        gap: 12px;
+        border-radius: 14px;
+    }
+
+    /* Todos los campos respetan el ancho de la tarjeta */
+    .historia-container .historia-form > * {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        grid-column: 1 / -1;
+        justify-self: stretch;
+    }
+
+    .historia-container .historia-form select,
+    .historia-container .historia-form input,
+    .historia-container .historia-form textarea {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        padding: 11px 10px;
+        font-size: 14px;
+    }
+
+    /* Evita que el texto largo desborde los campos */
+    .historia-container .historia-form select {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .historia-container .historia-form textarea {
+        grid-column: 1 / -1;
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    /* Boton de guardado */
+    .historia-container .historia-form button {
+        width: 100%;
+        min-height: 44px;
+        padding: 12px 10px;
+        justify-self: stretch;
+        white-space: normal;
+        line-height: 1.35;
+    }
+
+    /* Tabla: permite desplazamiento si tiene muchas columnas */
+    .historia-container .Historia-table {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .historia-container .Historia-table th,
+    .historia-container .Historia-table td {
+        white-space: nowrap;
+    }
+}

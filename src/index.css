@@ -109,3 +109,29 @@ code {
   padding: 4px 8px;
   background: var(--code-bg);
 }
+
+
+/* ============================================================
+   ESTANDAR VISUAL TABLAS INSTITUCIONALES
+   ============================================================ */
+
+.table-card .table-title h3 {
+  color: #263238;
+}
+
+.table-card table thead th {
+  background: #078c78;
+  color: #ffffff;
+}
+
+.table-card table thead th:first-child {
+  border-top-left-radius: 8px;
+}
+
+.table-card table thead th:last-child {
+  border-top-right-radius: 8px;
+}
+
+.table-card .search-bar {
+  margin-bottom: 18px;
+}

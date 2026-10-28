@@ -231,32 +231,82 @@
 }
 
 
+/*
+  Estilos base compartidos por todos los botones del
+  módulo (formulario y tabla). Se agrega "display: inline-flex"
+  y "gap" porque ahora los botones combinan un ícono
+  (lucide-react) con su texto, y necesitamos que ambos
+  queden alineados verticalmente con un pequeño espacio
+  entre ellos.
+*/
 .btn-primary,
 .btn-secondary,
 .btn-edit,
 .btn-delete {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   border: none;
-  border-radius: 7px;
+  border-radius: 10px;
   cursor: pointer;
   font-family: inherit;
   font-weight: 700;
   transition:
     background 0.2s ease,
     transform 0.15s ease,
+    box-shadow 0.2s ease,
     opacity 0.2s ease;
 }
 
 
+/*
+  Botón principal ("Registrar usuario" / "Actualizar usuario").
+
+  Se usa un degradado (linear-gradient) en vez de un color
+  plano, junto con una sombra de color (box-shadow con el
+  mismo tono azul pero transparente), para dar una sensación
+  más moderna y de mayor "peso" visual al botón principal
+  frente al resto de botones secundarios.
+*/
 .btn-primary {
-  background: #1565c0;
+  background: linear-gradient(135deg, #1c7bdb, #1565c0);
   color: #ffffff;
   padding: 12px 25px;
+  box-shadow: 0 4px 12px rgba(21, 101, 192, 0.3);
 }
 
 
 .btn-primary:hover {
-  background: #104f96;
+  background: linear-gradient(135deg, #166bc0, #104f96);
   transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(21, 101, 192, 0.38);
+}
+
+
+/*
+  Icono giratorio (Loader2) que se muestra dentro del
+  botón principal mientras "cargando" es true, es decir,
+  mientras la petición de crear/actualizar el usuario
+  todavía no ha recibido respuesta del backend.
+
+  La animación "girar" simplemente rota el ícono 360°
+  de forma continua para simular el efecto de "cargando".
+*/
+.spin-icon {
+  animation: girar 0.8s linear infinite;
+}
+
+
+@keyframes girar {
+
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+
 }
 
 
@@ -270,6 +320,23 @@
 .btn-secondary:hover {
   background: #d8e2e2;
   transform: translateY(-1px);
+}
+
+
+/*
+  Estado deshabilitado: se aplica a los botones del
+  formulario mientras "cargando" es true, para evitar que
+  el usuario dispare peticiones duplicadas al backend con
+  clics repetidos.
+*/
+.btn-primary:disabled,
+.btn-secondary:disabled,
+.btn-edit:disabled,
+.btn-delete:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  transform: none;
+  box-shadow: none;
 }
 
 
@@ -300,6 +367,30 @@
 
 /*
   ============================================================
+  TARJETA DE LA TABLA
+  ============================================================
+
+  ".table-card" recorta ("overflow: hidden") el contenido que
+  se salga de sus bordes redondeados. Esto es necesario porque
+  el encabezado de la tabla ocupa el 100% del ancho de la
+  tarjeta; sin este recorte, las esquinas superiores del
+  encabezado se verían "cuadradas" en vez de seguir la curva
+  de la tarjeta.
+*/
+
+.table-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+
+.table-card .table-title {
+  padding: 22px 25px 0;
+}
+
+
+/*
+  ============================================================
   CONTENEDOR RESPONSIVO DE LA TABLA
   ============================================================
 */
@@ -307,6 +398,7 @@
 .table-container {
   width: 100%;
   overflow-x: auto;
+  padding: 0 0 6px;
 }
 
 
@@ -323,13 +415,21 @@
 }
 
 
+/*
+  Encabezado de la tabla con degradado, igual que en los
+  demás módulos ya modernizados (Profesional, Paciente),
+  para que el sistema se vea visualmente coherente entre
+  módulos.
+*/
 .Usuario-table th {
-  background: #177c6b;
+  background: linear-gradient(135deg, #1c7bdb, #1565c0);
   color: #ffffff;
-  padding: 12px;
+  padding: 14px 12px;
   text-align: left;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
   white-space: nowrap;
 }
 
@@ -342,54 +442,145 @@
 }
 
 
+/*
+  Filas cebra (colores alternados): ayuda a que el ojo
+  siga cada fila sin perderse en tablas con muchos
+  usuarios registrados.
+*/
+.Usuario-table tbody tr:nth-child(even) {
+  background: #f8fafc;
+}
+
+
 .Usuario-table tbody tr:hover {
-  background: #f5f9fd;
+  background: #eaf2fc;
 }
 
 
 /*
   ============================================================
-  ACCIONES DE LA TABLA
+  COLUMNA ACCIONES
   ============================================================
+
+  Se le da un ancho mínimo fijo a la última columna (donde
+  están los botones Editar/Eliminar) para que, sin importar
+  el contenido de las demás columnas, los dos botones siempre
+  queden en una sola línea y alineados entre sí en todas las
+  filas de la tabla.
 */
+
+.Usuario-table th:last-child,
+.Usuario-table td:last-child {
+  width: 190px;
+  min-width: 190px;
+  white-space: nowrap;
+}
+
 
 .action-buttons {
   display: flex;
-  gap: 7px;
-  align-items: center;
+  flex-direction: row;
   flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+}
+
+
+.action-buttons button {
+  display: inline-flex;
+  width: auto;
+  flex-shrink: 0;
   white-space: nowrap;
 }
 
-.action-buttons .btn-edit,
-.action-buttons .btn-delete {
+
+/*
+  ============================================================
+  INSIGNIA (BADGE) DE ROL
+  ============================================================
+
+  En vez de mostrar el rol como texto plano, se muestra
+  dentro de una "píldora" de color para que se identifique
+  de inmediato el tipo de cuenta de cada usuario en la tabla.
+
+  ".rol-badge" define el estilo COMÚN (forma, tamaño de
+  fuente, relleno). Cada rol específico define solo su color
+  de fondo y de texto, combinando la clase con
+  "rol-<nombreDelRol>" en minúsculas (ver UsuarioTable.jsx).
+
+  Los tres roles del sistema son: Admin, Profesional y
+  Recepcionista (así están escritos exactamente en el
+  backend, en SecurityConfig.java y en la base de datos).
+*/
+
+.rol-badge {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
   white-space: nowrap;
+  background: #eceff1;
+  color: #455a64;
 }
 
+
+.rol-admin {
+  background: #ede7fb;
+  color: #6f2dbd;
+}
+
+
+.rol-profesional {
+  background: #e3ecfb;
+  color: #1d5fbf;
+}
+
+
+.rol-recepcionista {
+  background: #fef3e0;
+  color: #b26a00;
+}
+
+
+/*
+  Botón Editar.
+*/
 
 .btn-edit {
   background: #2e9d78;
   color: #ffffff;
-  padding: 7px 12px;
+  padding: 8px 14px;
+  font-size: 13px;
+  box-shadow: 0 2px 6px rgba(46, 157, 120, 0.3);
 }
 
 
 .btn-edit:hover {
   background: #247e61;
   transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(46, 157, 120, 0.4);
 }
 
 
+/*
+  Botón Eliminar.
+*/
+
 .btn-delete {
-  background: #d9534f;
+  background: #e05c58;
   color: #ffffff;
-  padding: 7px 12px;
+  padding: 8px 14px;
+  font-size: 13px;
+  box-shadow: 0 2px 6px rgba(224, 92, 88, 0.3);
 }
 
 
 .btn-delete:hover {
-  background: #b93f3b;
+  background: #c8433f;
   transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(224, 92, 88, 0.4);
 }
 
 
@@ -404,7 +595,6 @@
   padding: 30px !important;
   color: #78909c;
 }
-
 
 /*
   ============================================================

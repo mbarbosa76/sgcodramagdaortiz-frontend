@@ -1,0 +1,130 @@
+/*
+============================================================
+FacturaImprimir.css
+Sistema de Gestión de Citas Odontológicas
+
+Estilos para impresión de factura.
+============================================================
+*/
+
+
+.factura-imprimir {
+
+    width: 800px;
+
+    margin: 30px auto;
+
+    padding: 30px;
+
+    background: white;
+
+    font-family: Arial, sans-serif;
+
+    color: #222;
+
+}
+
+
+
+.factura-imprimir h1 {
+
+    text-align: center;
+
+    color: #007f73;
+
+    margin-bottom: 10px;
+
+}
+
+
+
+.factura-imprimir h2 {
+
+    text-align: center;
+
+}
+
+
+
+.factura-imprimir p {
+
+    font-size: 16px;
+
+}
+
+
+
+.factura-imprimir table {
+
+    width: 100%;
+
+    border-collapse: collapse;
+
+    margin-top: 25px;
+
+}
+
+
+
+.factura-imprimir th {
+
+    background: #007f73;
+
+    color: white;
+
+    padding: 10px;
+
+}
+
+
+
+.factura-imprimir td {
+
+    padding: 10px;
+
+    border-bottom: 1px solid #ddd;
+
+}
+
+
+
+.factura-imprimir button {
+
+    display: block;
+
+    margin: 30px auto;
+
+    background: #007f73;
+
+    color: white;
+
+    border: none;
+
+    padding: 12px 30px;
+
+    border-radius: 6px;
+
+    cursor: pointer;
+
+}
+
+
+
+@media print {
+
+
+    .factura-imprimir button {
+
+        display: none;
+
+    }
+
+
+    body {
+
+        background: white;
+
+    }
+
+
+}

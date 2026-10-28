@@ -22,3 +22,13 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# ============================================================
+# VARIABLES DE ENTORNO
+# ============================================================
+# Evita publicar claves, credenciales y configuraciones locales.
+# La URL publica de la API se configurara directamente en Vercel.
+
+.env
+.env.*
+!.env.example

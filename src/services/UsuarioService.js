@@ -1,185 +1,233 @@
-/*
-  ============================================================
-  USUARIOSERVICE.JS
-  SISTEMA DE GESTIÓN DE CITAS ODONTOLÓGICAS
-  ============================================================
-
-  Servicio encargado de realizar las peticiones HTTP
-  relacionadas con el módulo Usuario.
-
-  Utiliza Axios para comunicarse con Spring Boot.
-*/
-
-// Importa Axios para realizar peticiones HTTP.
-import axios from 'axios'
-
 
 /*
-  ============================================================
-  URL BASE
-  ============================================================
-*/
+ * ============================================================
+ * USUARIOSERVICE.JS
+ * SISTEMA DE GESTION DE CITAS ODONTOLOGICAS
+ * Consultorio Odontologico Dra. Magda Ortiz (SGCO)
+ * ============================================================
+ *
+ * Servicio encargado de realizar las peticiones HTTP
+ * relacionadas con el modulo de usuarios.
+ *
+ * RESPONSABILIDADES:
+ *
+ * - Consultar los usuarios registrados.
+ * - Consultar un usuario por su identificador.
+ * - Crear nuevos usuarios.
+ * - Actualizar usuarios existentes.
+ * - Eliminar usuarios cuando el backend lo permita.
+ *
+ * La comunicacion se realiza mediante Axios con el backend
+ * desarrollado en Spring Boot.
+ *
+ * La URL base se obtiene desde src/config/api.js para
+ * permitir el funcionamiento local y en la nube.
+ *
+ * Las operaciones protegidas utilizan el token JWT
+ * almacenado durante el inicio de sesion.
+ *
+ * ============================================================
+ */
 
-const API = 'http://localhost:8765/api/usuarios'
+// Importa Axios para realizar solicitudes HTTP.
+import axios from "axios";
+
+// Importa la URL centralizada del backend.
+import { API_BASE_URL } from "../config/api";
 
 
 /*
-  ============================================================
-  OBTENER TOKEN JWT
-  ============================================================
-*/
+ * ============================================================
+ * URL DEL MODULO DE USUARIOS
+ * ============================================================
+ *
+ * La ruta se construye a partir de la configuracion central.
+ *
+ * En desarrollo local utiliza la URL configurada en api.js.
+ * En la nube utiliza la direccion publica definida mediante
+ * la variable de entorno VITE_API_URL.
+ */
+
+const API = `${API_BASE_URL}/usuarios`;
+
+
+/*
+ * ============================================================
+ * OBTENER TOKEN JWT
+ * ============================================================
+ */
 
 /**
  * Obtiene el token JWT almacenado en el navegador.
  *
- * @returns {string|null} Token JWT.
+ * @returns {string|null} Token JWT o null si no existe.
  */
 const obtenerToken = () => {
 
-  return localStorage.getItem('token')
+    return localStorage.getItem("token");
 
-}
+};
 
 
 /*
-  ============================================================
-  CONFIGURACIÓN DE AUTORIZACIÓN
-  ============================================================
-*/
+ * ============================================================
+ * CONFIGURACION DE AUTORIZACION
+ * ============================================================
+ *
+ * Construye los encabezados HTTP para acceder a los
+ * endpoints protegidos del modulo de usuarios.
+ */
 
 /**
- * Crea los encabezados necesarios para acceder
- * a endpoints protegidos.
+ * Prepara la configuracion de autenticacion.
  *
- * @returns {Object} Encabezados HTTP.
+ * @returns {Object} Encabezados HTTP con el token JWT.
  */
 const obtenerConfigAuth = () => {
 
-  const token = obtenerToken()
+    const token = obtenerToken();
 
-  return {
+    return {
 
-    headers: {
+        headers: {
 
-      Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}`
 
-    }
+        }
 
-  }
+    };
 
-}
+};
 
 
 /*
-  ============================================================
-  LISTAR USUARIOS
-  ============================================================
-*/
+ * ============================================================
+ * LISTAR USUARIOS
+ * ============================================================
+ *
+ * Endpoint:
+ * GET /api/usuarios
+ */
 
 /**
- * Consulta todos los usuarios.
+ * Consulta los usuarios registrados en el sistema.
  *
- * @returns Respuesta HTTP de Axios.
+ * @returns {Promise} Respuesta HTTP de Axios.
  */
 export const getUsuarios = () => {
 
-  return axios.get(
-    API,
-    obtenerConfigAuth()
-  )
+    return axios.get(
+        API,
+        obtenerConfigAuth()
+    );
 
-}
+};
 
 
 /*
-  ============================================================
-  OBTENER USUARIO POR ID
-  ============================================================
-*/
+ * ============================================================
+ * OBTENER USUARIO POR IDENTIFICADOR
+ * ============================================================
+ *
+ * Endpoint:
+ * GET /api/usuarios/{idUsuario}
+ */
 
 /**
- * Consulta un usuario específico.
+ * Consulta un usuario especifico.
  *
- * @param {number} idUsuario Identificador del usuario.
- * @returns Respuesta HTTP de Axios.
+ * @param {number|string} idUsuario Identificador del usuario.
+ * @returns {Promise} Respuesta HTTP de Axios.
  */
 export const getUsuarioPorId = (idUsuario) => {
 
-  return axios.get(
-    `${API}/${idUsuario}`,
-    obtenerConfigAuth()
-  )
+    return axios.get(
+        `${API}/${idUsuario}`,
+        obtenerConfigAuth()
+    );
 
-}
+};
 
 
 /*
-  ============================================================
-  CREAR USUARIO
-  ============================================================
-*/
+ * ============================================================
+ * CREAR USUARIO
+ * ============================================================
+ *
+ * Endpoint:
+ * POST /api/usuarios
+ */
 
 /**
- * Crea un nuevo usuario.
+ * Registra un nuevo usuario.
  *
- * @param {Object} usuario Datos del usuario.
- * @returns Respuesta HTTP de Axios.
+ * @param {Object} usuario Datos del usuario que se desea crear.
+ * @returns {Promise} Respuesta HTTP de Axios.
  */
 export const crearUsuario = (usuario) => {
 
-  return axios.post(
-    API,
-    usuario,
-    obtenerConfigAuth()
-  )
+    return axios.post(
+        API,
+        usuario,
+        obtenerConfigAuth()
+    );
 
-}
+};
 
 
 /*
-  ============================================================
-  ACTUALIZAR USUARIO
-  ============================================================
-*/
+ * ============================================================
+ * ACTUALIZAR USUARIO
+ * ============================================================
+ *
+ * Endpoint:
+ * PUT /api/usuarios/{idUsuario}
+ */
 
 /**
- * Actualiza un usuario existente.
+ * Actualiza los datos de un usuario existente.
  *
- * @param {number} idUsuario Identificador del usuario.
- * @param {Object} usuario Datos actualizados.
- * @returns Respuesta HTTP de Axios.
+ * @param {number|string} idUsuario Identificador del usuario.
+ * @param {Object} usuario Datos actualizados del usuario.
+ * @returns {Promise} Respuesta HTTP de Axios.
  */
 export const actualizarUsuario = (
-  idUsuario,
-  usuario
+    idUsuario,
+    usuario
 ) => {
 
-  return axios.put(
-    `${API}/${idUsuario}`,
-    usuario,
-    obtenerConfigAuth()
-  )
+    return axios.put(
+        `${API}/${idUsuario}`,
+        usuario,
+        obtenerConfigAuth()
+    );
 
-}
+};
 
 
 /*
-  ============================================================
-  ELIMINAR USUARIO
-  ============================================================
-*/
+ * ============================================================
+ * ELIMINAR USUARIO
+ * ============================================================
+ *
+ * Endpoint:
+ * DELETE /api/usuarios/{idUsuario}
+ *
+ * La operacion esta sujeta a las reglas de negocio
+ * y los permisos definidos en el backend.
+ */
 
 /**
- * Elimina un usuario.
+ * Solicita la eliminacion de un usuario.
  *
- * @param {number} idUsuario Identificador del usuario.
- * @returns Respuesta HTTP de Axios.
+ * @param {number|string} idUsuario Identificador del usuario.
+ * @returns {Promise} Respuesta HTTP de Axios.
  */
 export const eliminarUsuario = (idUsuario) => {
 
-  return axios.delete(
-    `${API}/${idUsuario}`,
-    obtenerConfigAuth()
-  )
+    return axios.delete(
+        `${API}/${idUsuario}`,
+        obtenerConfigAuth()
+    );
 
-}
+};

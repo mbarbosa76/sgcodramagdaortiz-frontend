@@ -1,0 +1,86 @@
+/*
+============================================================
+MODULE TABLE HEADER CSS
+============================================================
+
+Estilos comunes para encabezados
+de tablas del sistema.
+
+============================================================
+*/
+
+
+.module-table-header {
+
+
+    margin-bottom: 20px;
+
+
+}
+
+
+
+
+/*
+============================================================
+TÍTULO
+============================================================
+*/
+
+
+.module-table-header .table-title {
+
+
+    margin-bottom: 18px;
+
+
+}
+
+
+
+.module-table-header .table-title h3 {
+
+
+    margin:
+
+        0 0 6px 0;
+
+
+    font-size:
+
+        20px;
+
+
+    font-weight:
+
+        700;
+
+
+    color:
+
+        #16324f;
+
+
+}
+
+
+
+.module-table-header .table-title p {
+
+
+    margin:
+
+        0;
+
+
+    color:
+
+        #607d8b;
+
+
+    font-size:
+
+        14px;
+
+
+}

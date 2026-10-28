@@ -1,126 +1,90 @@
-/*
-============================================================
-ServicioTable.jsx
-============================================================
+import { useState } from "react";
+import { Pencil, Trash2 } from "lucide-react";
+import ModuleTableHeader from "./ModuleTableHeader";
 
-Tabla reutilizable para mostrar los servicios
-odontológicos registrados.
+function ServicioTable({ servicios, onEditar, onEliminar }) {
+  const [busqueda, setBusqueda] = useState("");
 
-============================================================
-*/
+  const registrosFiltrados = (servicios || []).filter((item) =>
+    JSON.stringify(item)
+      .toLowerCase()
+      .includes(busqueda.toLowerCase())
+  );
 
-function ServicioTable({
+  const formatearPrecio = (valor) =>
+    new Intl.NumberFormat("es-CO", {
+      style: "currency",
+      currency: "COP",
+      minimumFractionDigits: 0,
+    }).format(Number(valor));
 
-    servicios,
+  return (
+    <div className="card table-card data-table-card">
+      <ModuleTableHeader
+        titulo="Servicios Registrados"
+        descripcion="Información obtenida directamente desde la base de datos."
+        busqueda={busqueda}
+        setBusqueda={setBusqueda}
+        placeholder="Buscar por código, nombre o categoría..."
+      />
 
-    onEditar,
+      <div className="table-container data-table-scroll">
+        <table className="servicio-table data-table">
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Nombre</th>
+              <th>Categoría</th>
+              <th>Duración</th>
+              <th>Precio</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
 
-    onEliminar
+          <tbody>
+            {registrosFiltrados.length === 0 ? (
+              <tr>
+                <td colSpan="6" className="empty-table">
+                  No hay servicios registrados.
+                </td>
+              </tr>
+            ) : (
+              registrosFiltrados.map((servicio) => (
+                <tr key={servicio.idServicio}>
+                  <td>{servicio.codServicio}</td>
+                  <td>{servicio.nombreServicio}</td>
+                  <td>{servicio.categoria}</td>
+                  <td>{servicio.duracionMin} min</td>
+                  <td>{formatearPrecio(servicio.precio)}</td>
+                  <td>
+                    <div className="action-buttons">
+                      <button
+                        type="button"
+                        className="btn-edit"
+                        onClick={() => onEditar(servicio)}
+                      >
+                        <Pencil size={15} />
+                        Editar
+                      </button>
 
-}) {
-
-    return (
-
-        <table className="servicio-table">
-
-            <thead>
-
-                <tr>
-
-                    <th>Código</th>
-
-                    <th>Nombre</th>
-
-                    <th>Categoría</th>
-
-                    <th>Duración</th>
-
-                    <th>Precio</th>
-
-                    <th>Acciones</th>
-
+                      <button
+                        type="button"
+                        className="btn-delete"
+                        onClick={() => onEliminar(servicio.idServicio)}
+                      >
+                        <Trash2 size={15} />
+                        Eliminar
+                      </button>
+                    </div>
+                  </td>
                 </tr>
-
-            </thead>
-
-            <tbody>
-
-                {servicios.map((servicio) => (
-
-                    <tr key={servicio.idServicio}>
-
-                        <td>
-
-                            {servicio.codServicio}
-
-                        </td>
-
-                        <td>
-
-                            {servicio.nombreServicio}
-
-                        </td>
-
-                        <td>
-
-                            {servicio.categoria}
-
-                        </td>
-
-                        <td>
-
-                            {servicio.duracionMin} min
-
-                        </td>
-
-                        <td>
-
-                            ${Number(servicio.precio).toLocaleString("es-CO")}
-
-                        </td>
-
-                        <td>
-
-                            <button
-
-                                type="button"
-
-                                onClick={() => onEditar(servicio)}
-
-                            >
-
-                                Editar
-
-                            </button>
-
-                            <button
-
-                                type="button"
-
-                                onClick={() =>
-
-                                    onEliminar(servicio.idServicio)
-
-                                }
-
-                            >
-
-                                Eliminar
-
-                            </button>
-
-                        </td>
-
-                    </tr>
-
-                ))}
-
-            </tbody>
-
+              ))
+            )}
+          </tbody>
         </table>
-
-    );
-
+      </div>
+    </div>
+  );
 }
 
 export default ServicioTable;

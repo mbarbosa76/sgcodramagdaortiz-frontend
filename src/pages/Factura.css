@@ -1,0 +1,646 @@
+/*
+============================================================
+Factura.css
+Sistema de Gestión de Citas Odontológicas
+============================================================
+*/
+
+
+.factura-container {
+
+    padding:0;
+
+}
+
+
+
+/*
+============================================================
+ENCABEZADO DEL MÓDULO
+============================================================
+*/
+
+
+.module-header {
+
+    margin-bottom:25px;
+
+}
+
+
+
+.module-tag {
+
+    display:inline-block;
+
+    padding:5px 12px;
+
+    background:#e3f2fd;
+
+    color:#1565c0;
+
+    border-radius:20px;
+
+    font-size:12px;
+
+    font-weight:700;
+
+}
+
+
+
+.module-header h2 {
+
+    margin:10px 0 5px;
+
+    font-size:27px;
+
+    color:#263238;
+
+    font-weight:700;
+
+}
+
+
+
+.module-header p {
+
+    margin:0;
+
+    color:#607d8b;
+
+    line-height:1.5;
+
+}
+
+
+
+
+
+/*
+============================================================
+FORMULARIO FACTURA
+============================================================
+*/
+
+
+.factura-form {
+
+    background:white;
+
+    padding:25px;
+
+    border-radius:12px;
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:15px;
+
+    box-shadow:
+    0 2px 10px rgba(0,0,0,0.1);
+
+}
+
+
+
+
+.factura-form input,
+.factura-form select {
+
+
+    padding:10px;
+
+    border-radius:6px;
+
+    border:1px solid #ccc;
+
+    font-size:14px;
+
+
+}
+
+
+
+
+/*
+============================================================
+BOTÓN CREAR FACTURA
+============================================================
+*/
+
+
+.factura-form button {
+
+
+    background:#2563eb;
+
+    color:white;
+
+    border:none;
+
+    padding:12px 25px;
+
+    border-radius:7px;
+
+    cursor:pointer;
+
+    font-weight:700;
+
+    width:auto;
+
+    justify-self:start;
+
+
+}
+
+
+
+.factura-form button:hover {
+
+
+    background:#1d4ed8;
+
+
+}
+
+
+
+
+/*
+============================================================
+SERVICIOS DISPONIBLES
+============================================================
+*/
+
+
+.factura-form label {
+
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    font-size:15px;
+
+    color:#455a64;
+
+    cursor:pointer;
+
+
+}
+
+
+
+.factura-form input[type="checkbox"] {
+
+
+    width:16px;
+
+    height:16px;
+
+
+}
+
+
+
+
+
+/*
+============================================================
+TOTAL FACTURA
+============================================================
+*/
+
+
+.factura-total {
+
+
+    font-size:22px;
+
+    color:#263238;
+
+    margin-top:20px;
+
+}
+
+
+
+
+
+/*
+============================================================
+TABLA FACTURAS
+============================================================
+*/
+
+
+.Factura-table {
+
+
+    width:100%;
+
+    margin-top:25px;
+
+    border-collapse:collapse;
+
+    background:white;
+
+
+}
+
+
+
+.Factura-table th {
+
+
+    background: linear-gradient(135deg, #1c9683, #177c6b);
+
+    color:white;
+
+    padding: 14px 12px;
+
+    text-align: left;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.4px;
+
+    text-transform: uppercase;
+
+    white-space: nowrap;
+
+
+}
+
+
+
+.Factura-table td {
+
+
+    padding:10px;
+
+    border-bottom:1px solid #ddd;
+
+
+}
+
+
+
+
+/*
+============================================================
+ACCIONES TABLA FACTURAS
+============================================================
+*/
+
+
+.Factura-table td:last-child {
+
+
+    min-width:190px;
+
+    text-align:center;
+
+
+}
+
+
+
+.factura-actions {
+
+
+    display:flex;
+
+    flex-direction:row;
+
+    flex-wrap:nowrap;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:15px;
+
+
+}
+
+
+
+
+.factura-actions button {
+
+
+    border:none;
+
+    padding:7px 14px;
+
+    border-radius:7px;
+
+    cursor:pointer;
+
+    font-weight:700;
+
+    white-space:nowrap;
+
+
+}
+
+
+
+
+/*
+Eliminar
+*/
+
+
+.factura-actions .btn-delete {
+
+
+    background:#d9534f;
+
+    color:white;
+
+
+}
+
+
+
+.factura-actions .btn-delete:hover {
+
+
+    background:#c62828;
+
+
+}
+
+
+
+
+/*
+Editar
+*/
+
+
+.factura-actions .btn-edit {
+
+
+    background:#2e9d78;
+
+    color:white;
+
+
+}
+
+
+
+.factura-actions .btn-edit:hover {
+
+
+    background:#25795d;
+
+
+}
+
+
+
+
+
+/*
+Imprimir
+*/
+
+
+.factura-actions .btn-print {
+
+
+    background:#2563eb;
+
+    color:white;
+
+
+}
+
+
+
+.factura-actions .btn-print:hover {
+
+
+    background:#1d4ed8;
+
+
+}
+
+/*
+============================================================
+ALINEACIÓN DE VALORES MONETARIOS
+============================================================
+*/
+
+
+.Factura-table th:nth-child(6) {
+
+    text-align:right;
+
+}
+
+.Factura-table td:nth-child(6) {
+
+    text-align:right;
+
+    font-weight:400;
+
+}
+
+/*
+============================================================
+ESTADOS FACTURA
+============================================================
+*/
+
+
+.estado-pendiente {
+
+
+    background:#fef3c7;
+
+    color:#92400e;
+
+    padding:5px 12px;
+
+    border-radius:20px;
+
+    font-size:12px;
+
+    font-weight:700;
+
+    display:inline-block;
+
+
+}
+
+
+
+
+.estado-pagada {
+
+
+    background:#d1fae5;
+
+    color:#065f46;
+
+    padding:5px 12px;
+
+    border-radius:20px;
+
+    font-size:12px;
+
+    font-weight:700;
+
+    display:inline-block;
+
+
+}
+
+
+
+
+.estado-cancelada {
+
+
+    background:#fee2e2;
+
+    color:#991b1b;
+
+    padding:5px 12px;
+
+    border-radius:20px;
+
+    font-size:12px;
+
+    font-weight:700;
+
+    display:inline-block;
+
+
+}
+
+
+
+
+/*
+  ============================================================
+  PANEL DE EDICIÓN DE FACTURA
+  ============================================================
+  Reutiliza el mismo lenguaje visual (botones, título de
+  tabla, tarjeta) que ya usan los demás módulos, para que el
+  panel de edición se vea consistente con el resto de la app.
+*/
+
+.form-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 5px;
+}
+
+
+.btn-primary,
+.btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 700;
+    padding: 12px 25px;
+    transition:
+        background 0.2s ease,
+        transform 0.15s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.btn-primary {
+    background: linear-gradient(135deg, #1c9683, #177c6b);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(23, 124, 107, 0.3);
+}
+
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #178071, #135f52);
+    transform: translateY(-1px);
+}
+
+
+.btn-secondary {
+    background: #e7eeee;
+    color: #455a64;
+}
+
+
+.btn-secondary:hover {
+    background: #d8e2e2;
+    transform: translateY(-1px);
+}
+
+
+.table-title {
+    margin-bottom: 20px;
+}
+
+
+.table-title h3 {
+    margin-top: 0;
+    margin-bottom: 6px;
+}
+
+
+.table-title p {
+    margin: 0;
+    color: #78909c;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+
+.table-card {
+    padding: 22px 25px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+
+.table-card .form-group input,
+.table-card .form-group select {
+    width: 100%;
+    max-width: 320px;
+    padding: 12px 14px;
+    border: 1px solid #cfdedb;
+    border-radius: 10px;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    transition: 0.2s;
+}
+
+
+.table-card .form-group input:focus,
+.table-card .form-group select:focus {
+    border-color: #177c6b;
+}
+
+
+.table-card .form-group small {
+    display: block;
+    margin-top: 6px;
+    color: #78909c;
+    font-size: 12px;
+}
