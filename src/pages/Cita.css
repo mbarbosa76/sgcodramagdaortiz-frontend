@@ -186,15 +186,31 @@
   ============================================================
   TABLA
   ============================================================
+
+  Configuración del listado de citas.
+
+  Se utiliza table-layout: fixed para controlar
+  el tamaño de cada columna y evitar que el navegador
+  distribuya el espacio automáticamente.
+
+  Esto permite:
+  - Fechas en una sola línea.
+  - Salas visibles completas.
+  - Mejor lectura administrativa.
+  - Preparación para ordenar columnas.
+  ============================================================
 */
+
 
 .table-title {
   margin-bottom: 20px;
 }
 
+
 .table-title h3 {
   margin-bottom: 6px;
 }
+
 
 .table-title p {
   margin: 0;
@@ -202,41 +218,296 @@
   font-size: 14px;
 }
 
+
+
+/*
+  Contenedor responsive.
+
+  Permite desplazamiento horizontal únicamente
+  cuando la pantalla no tiene suficiente espacio.
+*/
 .table-responsive {
+
   width: 100%;
   overflow-x: auto;
+
 }
 
+
+
+
+/*
+  Tabla principal.
+
+  table-layout: fixed permite definir
+  tamaños específicos por columna.
+*/
 .Cita-table {
+
   width: 100%;
+
   border-collapse: collapse;
-  min-width: 1000px;
+
+  table-layout: fixed;
+
+  min-width: 1200px;
+
 }
+
+
+
+
 
 .Cita-table thead {
+
   background: #177c6b;
+
   color: white;
+
 }
+
+
+
 
 .Cita-table th {
+
   padding: 12px 10px;
+
   text-align: left;
+
   font-size: 13px;
+
   font-weight: 700;
+
   white-space: nowrap;
+
 }
+
+
+
 
 .Cita-table td {
+
   padding: 12px 10px;
+
   border-bottom: 1px solid #e5eeee;
+
   font-size: 14px;
+
   vertical-align: middle;
+
+
+  /*
+    Evita que información corta
+    como fecha y sala se divida
+    en varias líneas.
+  */
+  white-space: nowrap;
+
+
+  /*
+    Si un texto supera el ancho disponible,
+    muestra puntos suspensivos.
+  */
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
 }
+
+
+
 
 .Cita-table tbody tr:hover {
+
   background: #faf8ff;
+
 }
 
+
+
+
+
+/*
+  ============================================================
+  ANCHO DE COLUMNAS
+  ============================================================
+
+  Distribución pensada para una agenda odontológica.
+*/
+
+
+/*
+  ID
+*/
+.Cita-table th:nth-child(1),
+.Cita-table td:nth-child(1){
+
+  width: 55px;
+
+  text-align:center;
+
+}
+
+
+
+
+/*
+  Paciente
+*/
+.Cita-table th:nth-child(2),
+.Cita-table td:nth-child(2){
+
+  width: 190px;
+
+}
+
+
+
+
+/*
+  Servicio
+*/
+.Cita-table th:nth-child(3),
+.Cita-table td:nth-child(3){
+
+  width: 170px;
+
+}
+
+
+
+
+/*
+  Fecha
+
+  Se fuerza una sola línea.
+*/
+.Cita-table th:nth-child(4),
+.Cita-table td:nth-child(4){
+
+  width: 120px;
+
+}
+
+
+
+
+/*
+  Hora
+*/
+.Cita-table th:nth-child(5),
+.Cita-table td:nth-child(5){
+
+  width: 80px;
+
+  text-align:center;
+
+}
+
+
+
+
+/*
+  Duración
+*/
+.Cita-table th:nth-child(6),
+.Cita-table td:nth-child(6){
+
+  width: 95px;
+
+  text-align:center;
+
+}
+
+
+
+
+/*
+  Sala / Consultorio
+
+  Evita que:
+  Consultorio
+  1
+
+  aparezca separado.
+*/
+.Cita-table th:nth-child(7),
+.Cita-table td:nth-child(7){
+
+  width: 140px;
+
+}
+
+
+
+
+/*
+  Estado
+*/
+.Cita-table th:nth-child(8),
+.Cita-table td:nth-child(8){
+
+  width: 140px;
+
+  text-align:center;
+
+}
+
+
+
+
+/*
+  Observación
+
+  Mayor espacio porque contiene
+  información descriptiva.
+*/
+.Cita-table th:nth-child(9),
+.Cita-table td:nth-child(9){
+
+  width: 320px;
+
+}
+
+
+
+
+/*
+  Acciones
+*/
+.Cita-table th:nth-child(10),
+.Cita-table td:nth-child(10){
+
+  width: 170px;
+
+}
+
+
+
+
+/*
+  ============================================================
+  COLUMNAS ORDENABLES
+  ============================================================
+
+  Se utilizará posteriormente desde React
+  para ordenar por fecha, hora, sala, etc.
+*/
+.Cita-table th.sortable {
+
+  cursor:pointer;
+
+  user-select:none;
+
+}
+
+
+.Cita-table th.sortable:hover {
+
+  opacity:0.85;
+
+}
 
 /*
 ============================================================

@@ -18,14 +18,40 @@
 */
 
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import './Usuario.css'
+
+/*
+  ------------------------------------------------------------
+  ICONOS DEL MÓDULO (lucide-react)
+  ------------------------------------------------------------
+
+  "lucide-react" ya viene instalado como dependencia del
+  proyecto (ver package.json), por lo que no es necesario
+  instalar nada adicional para usar estos íconos.
+
+  Se importan de forma individual (en vez de importar toda
+  la librería) porque así el empaquetador (Vite) solo incluye
+  en el build final el código de los íconos realmente usados
+  ("tree-shaking"), evitando que el bundle final pese más de
+  lo necesario.
+
+  - UserPlus  -> icono del botón "Registrar usuario".
+  - Loader2   -> icono giratorio que se muestra mientras la
+                 petición al backend (crear/actualizar) está
+                 en curso, para que el usuario sepa que el
+                 clic sí se registró y el sistema está
+                 procesando la solicitud.
+  - X         -> icono del botón "Cancelar edición".
+*/
+import { UserPlus, Loader2, X } from 'lucide-react'
 
 /*
   Importa la tabla de usuarios.
 */
 import UsuarioTable from '../components/UsuarioTable'
+import { estaFechaEnRangoISO } from '../utils/dashboardPeriodo'
 
 
 /*
@@ -82,7 +108,10 @@ const formularioInicial = {
   ============================================================
 */
 
-function Usuario() {
+function Usuario({
+  filtroNavegacion = null,
+  onLimpiarFiltro
+}) {
 
   /*
     Lista de usuarios recibidos desde Spring Boot.
@@ -480,6 +509,32 @@ function Usuario() {
 
   /*
     ============================================================
+    FILTRO RECIBIDO DESDE EL DASHBOARD
+
+    La tarjeta Usuarios calcula su valor con fechaCreacion.
+    Al abrir el modulo se aplica el mismo rango para que la
+    tabla coincida exactamente con el numero de la tarjeta.
+    ============================================================
+  */
+  const usuariosFiltradosDashboard = useMemo(() => {
+
+    if (!filtroNavegacion) return usuarios
+
+    if (filtroNavegacion.tipo === 'periodo') {
+      return usuarios.filter(usuarioActual => estaFechaEnRangoISO(
+        usuarioActual.fechaCreacion,
+        filtroNavegacion.fechaInicio,
+        filtroNavegacion.fechaFin
+      ))
+    }
+
+    return usuarios
+
+  }, [usuarios, filtroNavegacion])
+
+
+  /*
+    ============================================================
     RENDERIZADO
     ============================================================
   */
@@ -756,26 +811,82 @@ function Usuario() {
 
           <div className="form-buttons">
 
+            {/*
+              ==========================================================
+              BOTÓN PRINCIPAL: Registrar usuario / Actualizar usuario
+              ==========================================================
+
+              Este botón cumple dos roles según el estado
+              "usuarioEditando":
+
+              1) Si "usuarioEditando" es null/undefined, el
+                 formulario está en modo CREACIÓN, así que el
+                 texto e icono muestran "Registrar usuario".
+
+              2) Si "usuarioEditando" tiene un valor (el usuario
+                 que se está editando), el formulario está en
+                 modo EDICIÓN, y el texto cambia a
+                 "Actualizar usuario".
+
+              Además, mientras "cargando" es true (la petición
+              HTTP hacia el backend todavía no responde), el
+              botón:
+
+                - se deshabilita (disabled={cargando}) para
+                  evitar que el usuario haga doble clic y se
+                  disparen dos peticiones duplicadas al backend,
+                - cambia su contenido por un ícono giratorio
+                  (Loader2 con la clase "spin-icon") y el texto
+                  "Procesando...", dando una señal visual clara
+                  de que la acción se está ejecutando.
+            */}
             <button
               type="submit"
               className="btn-primary"
+              disabled={cargando}
             >
 
-              {usuarioEditando
-                ? 'Actualizar usuario'
-                : 'Registrar usuario'}
+              {cargando ? (
+                <>
+                  <Loader2 size={17} className="spin-icon" />
+                  Procesando...
+                </>
+              ) : (
+                <>
+                  <UserPlus size={17} />
+                  {usuarioEditando
+                    ? 'Actualizar usuario'
+                    : 'Registrar usuario'}
+                </>
+              )}
 
             </button>
 
 
             {usuarioEditando && (
 
+              /*
+                Botón "Cancelar edición".
+
+                Solo se muestra cuando el formulario está en
+                modo EDICIÓN (usuarioEditando tiene un valor).
+                Al hacer clic, "limpiarFormulario" restaura el
+                formulario a su estado inicial y vuelve al
+                modo CREACIÓN.
+
+                También se deshabilita mientras "cargando" es
+                true, para que el usuario no pueda cancelar la
+                edición justo en medio de una petición que ya
+                está en curso.
+              */
               <button
                 type="button"
                 className="btn-secondary"
                 onClick={limpiarFormulario}
+                disabled={cargando}
               >
 
+                <X size={17} />
                 Cancelar edición
 
               </button>
@@ -795,6 +906,18 @@ function Usuario() {
 
       <div className="list-container">
 
+        {filtroNavegacion && (
+          <div className="module-context-filter">
+            <div>
+              <strong>Filtro desde Dashboard</strong>
+              <span>{filtroNavegacion.etiqueta || 'Usuarios filtrados'}</span>
+            </div>
+            <button type="button" onClick={onLimpiarFiltro}>
+              Quitar filtro
+            </button>
+          </div>
+        )}
+
         <div className="list-header">
 
         </div>
@@ -812,7 +935,7 @@ function Usuario() {
 
           <UsuarioTable
 
-            usuarios={usuarios}
+            usuarios={usuariosFiltradosDashboard}
 
             onEditar={manejarEditar}
 

@@ -8,503 +8,405 @@
   Mantiene la identidad visual del Sistema SGCO:
 
   - Encabezados tipo módulo.
-  - Tarjetas blancas.
-  - Botones corporativos.
-  - Tabla verde institucional.
+  - Tarjetas blancas con esquinas redondeadas.
+  - Botones corporativos con degradado y sombra.
+  - Tabla con encabezado en degradado y filas cebra.
   - Diseño coherente con Pacientes, Usuarios,
     Profesionales y Citas.
 
+  NOTA PARA QUIEN REVISE ESTE ARCHIVO:
+
+  La versión anterior de este CSS tenía las reglas de
+  ".module-header", ".module-tag" y ".action-buttons"
+  definidas DOS VECES cada una (con exactamente los mismos
+  valores), producto de ediciones anteriores hechas por
+  encima de estilos ya existentes. Esta versión las
+  consolida en una sola definición cada una.
   ============================================================
 */
 
 
 .servicio-container {
-
     padding: 0;
-
 }
 
+
 /*
-============================================================
-ENCABEZADO DEL MÓDULO
-Mantiene la misma identidad visual de Pacientes
-============================================================
+  ============================================================
+  ENCABEZADO DEL MÓDULO
+  Mantiene la misma identidad visual de los demás módulos.
+  ============================================================
 */
 
 .module-header {
-
-    margin-bottom:25px;
-
+    margin-bottom: 25px;
 }
-
 
 
 .module-tag {
-
-    display:inline-block;
-
-    padding:5px 12px;
-
-    background:#e3f2fd;
-
-    color:#1565c0;
-
-    border-radius:20px;
-
-    font-size:12px;
-
-    font-weight:700;
-
+    display: inline-block;
+    padding: 5px 12px;
+    background: #e3f2fd;
+    color: #1565c0;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
 }
-
 
 
 .module-header h2 {
-
-    margin:10px 0 5px;
-
-    font-size:27px;
-
-    color:#263238;
-
-    font-weight:700;
-
+    margin: 10px 0 5px;
+    font-size: 27px;
+    color: #263238;
+    font-weight: 700;
 }
-
 
 
 .module-header p {
-
-    margin:0;
-
-    color:#607d8b;
-
-    line-height:1.5;
-
+    margin: 0;
+    color: #607d8b;
+    line-height: 1.5;
 }
+
 
 /*
-============================================================
-ENCABEZADO DEL MÓDULO
-Igual al módulo Pacientes
-============================================================
+  ============================================================
+  FORMULARIO
+  ============================================================
 */
 
-.module-header {
-
-    margin-bottom:25px;
-
-}
-
-
-
-.module-tag {
-
-    display:inline-block;
-
-    padding:5px 12px;
-
-    background:#e3f2fd;
-
-    color:#1565c0;
-
-    border-radius:20px;
-
-    font-size:12px;
-
-    font-weight:700;
-
-}
-
-
-
-.module-header h2 {
-
-    margin:10px 0 5px;
-
-    font-size:27px;
-
-    color:#263238;
-
-    font-weight:700;
-
-}
-
-
-
-.module-header p {
-
-    margin:0;
-
-    color:#607d8b;
-
-    line-height:1.5;
-
-}
-/*
-  Contenedor del formulario
-*/
 .servicio-form {
-
-
     background: white;
-
     border-radius: 12px;
-
     padding: 25px;
-
     margin-top: 25px;
-
-    box-shadow:
-    0 3px 10px rgba(0,0,0,0.08);
-
-
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
     display: grid;
-
     grid-template-columns: repeat(2, 1fr);
-
     gap: 15px;
-
-
 }
 
 
-
 /*
- Campos del formulario
+  Campos del formulario.
+
+  Se agrega la regla para "select" (antes solo existía
+  para "input" y "textarea") porque los campos Categoría
+  y Duración pasaron de ser texto libre a listas
+  desplegables, y necesitan el mismo estilo visual que el
+  resto de campos para que el formulario se vea consistente.
 */
 .servicio-form input,
+.servicio-form select,
 .servicio-form textarea {
-
-
     width: 100%;
-
     padding: 12px;
-
     border-radius: 8px;
-
     border: 1px solid #d1d5db;
-
     font-size: 14px;
-
+    font-family: inherit;
+    color: #263238;
+    background: #ffffff;
     box-sizing: border-box;
-
-
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
+
+.servicio-form input:focus,
+.servicio-form select:focus,
+.servicio-form textarea:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+
+/*
+  Los <select> necesitan cursor "pointer" (a diferencia de
+  los <input>) porque su interacción es elegir de una lista,
+  no escribir texto.
+*/
+.servicio-form select {
+    cursor: pointer;
+}
 
 
 .servicio-form textarea {
-
-
     grid-column: span 2;
-
     height: 90px;
-
     resize: none;
-
-
 }
 
 
-
 /*
- Botón guardar
+  ============================================================
+  BOTONES DEL FORMULARIO
+  ============================================================
+
+  Antes estos botones no tenían clases propias: se
+  estilizaban con selectores genéricos como
+  ".servicio-form button" y ".servicio-form
+  button[type='button']". Ahora usan las mismas clases
+  ".btn-primary" / ".btn-secondary" que el resto de módulos
+  del sistema (Paciente, Profesional, Usuario), para que el
+  botón "Guardar" se vea igual de moderno en todos los
+  módulos y sea más fácil de mantener a futuro.
 */
-.servicio-form button {
 
-
-    background-color: #2563eb;
-
-    color: white;
-
+.btn-primary,
+.btn-secondary,
+.btn-edit,
+.btn-delete {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     border: none;
-
-    border-radius: 8px;
-
-    padding: 12px;
-
+    border-radius: 10px;
     cursor: pointer;
-
-    font-weight: bold;
-
-
+    font-family: inherit;
+    font-weight: 700;
+    transition:
+        background 0.2s ease,
+        transform 0.15s ease,
+        box-shadow 0.2s ease,
+        opacity 0.2s ease;
 }
 
 
-
-.servicio-form button:hover {
-
-
-    background-color: #1d4ed8;
-
-
+.btn-primary {
+    background: linear-gradient(135deg, #2f6fe0, #2563eb);
+    color: #ffffff;
+    padding: 12px 25px;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    grid-column: span 1;
 }
 
 
+.btn-primary:hover {
+    background: linear-gradient(135deg, #2760c9, #1d4ed8);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.38);
+}
 
-/*
- Botón cancelar
-*/
-.servicio-form button[type="button"] {
 
-
-    background-color: #e5e7eb;
-
+.btn-secondary {
+    background: #e5e7eb;
     color: #374151;
-
-
+    padding: 12px 25px;
 }
 
 
-
+.btn-secondary:hover {
+    background: #d5d8dd;
+    transform: translateY(-1px);
+}
 
 
 /*
- Tabla contenedora
+  Estado deshabilitado: se activa mientras "cargando" es
+  true (petición al backend en curso), evitando doble clic.
 */
-.servicio-table {
+.btn-primary:disabled,
+.btn-secondary:disabled,
+.btn-edit:disabled,
+.btn-delete:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+    transform: none;
+    box-shadow: none;
+}
 
 
-    width: 100%;
+/*
+  Icono giratorio (Loader2) que se muestra en el botón
+  "Guardar" mientras la petición al backend está en curso.
+*/
+.spin-icon {
+    animation: girar 0.8s linear infinite;
+}
 
+
+@keyframes girar {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+/*
+  ============================================================
+  TARJETA DE LA TABLA
+  ============================================================
+
+  Se envuelve la tabla en una tarjeta con "overflow: hidden"
+  para que las esquinas redondeadas también apliquen al
+  encabezado en degradado (igual que en Paciente, Profesional
+  y Usuario).
+*/
+
+.table-card {
+    background: #ffffff;
+    border-radius: 12px;
     margin-top: 25px;
-
-    border-collapse: collapse;
-
-    background:white;
-
-    border-radius:12px;
-
-    overflow:hidden;
-
-
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
 }
-
 
 
 /*
- Encabezado tabla
+  ============================================================
+  TABLA DE SERVICIOS
+  ============================================================
 */
-.servicio-table thead {
 
-
-    background-color: #008f83;
-
-    color:white;
-
-
+.servicio-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
 }
 
+
+.servicio-table thead {
+    background: linear-gradient(135deg, #1c9683, #177c6b);
+}
 
 
 .servicio-table th {
-
-
-    padding:14px;
-
-    font-size:14px;
-
-
+    padding: 14px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #ffffff;
+    text-align: left;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    white-space: nowrap;
 }
-
 
 
 .servicio-table td {
-
-
-    padding:14px;
-
-    border-bottom:
-    1px solid #e5e7eb;
-
-    text-align:center;
-
-
+    padding: 14px;
+    border-bottom: 1px solid #e5e7eb;
+    text-align: center;
+    font-size: 14px;
+    color: #374151;
+    vertical-align: middle;
 }
 
 
-
 /*
- Filas tabla
+  Filas cebra: mejora la lectura en listados largos de
+  servicios.
 */
+.servicio-table tbody tr:nth-child(even) {
+    background: #f8fafc;
+}
+
+
 .servicio-table tbody tr:hover {
-
-
-    background-color:#f3f4f6;
-
-
+    background: #eef6f5;
 }
-
-
 
 
 /*
- Botón editar
+  ============================================================
+  ACCIONES DE LA TABLA
+  ============================================================
+
+  Antes los botones "Editar" y "Eliminar" se estilizaban con
+  selectores posicionales (":first-child" / ":last-child"),
+  lo cual es frágil: si algún día se agrega un tercer botón
+  en esa columna, esos estilos posicionales dejarían de
+  aplicar correctamente. Ahora usan las mismas clases
+  ".btn-edit" / ".btn-delete" que el resto del sistema.
 */
-.servicio-table button {
-
-
-    border:none;
-
-    padding:8px 15px;
-
-    border-radius:7px;
-
-    cursor:pointer;
-
-    color:white;
-
-    font-weight:bold;
-
-    margin:2px;
-
-
-}
-
-
-
-.servicio-table button:first-child {
-
-    background-color:#009688;
-
-}
-
-.servicio-table button:first-child:hover {
-
-    background-color:#00796b;
-
-}
 
 .action-buttons {
-
-    display:flex;
-
-    flex-direction:row;
-
-    flex-wrap:nowrap;
-
-    gap:8px;
-
-    align-items:center;
-
-    justify-content:center;
-
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
 }
 
 
 .action-buttons button {
-
-    white-space:nowrap;
-
-}
-
-.servicio-table button:last-child {
-
-
-    background-color:#ef4444;
-
-
+    white-space: nowrap;
 }
 
 
-
-
-.servicio-table button:first-child:hover {
-
-
-    background-color:#00796b;
-
-
+.btn-edit {
+    background: #009688;
+    color: #ffffff;
+    padding: 8px 14px;
+    font-size: 13px;
+    box-shadow: 0 2px 6px rgba(0, 150, 136, 0.3);
 }
 
 
-.servicio-table button:last-child:hover {
-
-
-    background-color:#c62828;
-
-
+.btn-edit:hover {
+    background: #00796b;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0, 150, 136, 0.4);
 }
 
+
+.btn-delete {
+    background: #ef4444;
+    color: #ffffff;
+    padding: 8px 14px;
+    font-size: 13px;
+    box-shadow: 0 2px 6px rgba(239, 68, 68, 0.3);
+}
+
+
+.btn-delete:hover {
+    background: #c62828;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(239, 68, 68, 0.4);
+}
 
 
 /*
- Mensajes
+  ============================================================
+  MENSAJES
+  ============================================================
 */
+
 .mensaje {
-
-
-    background:#d1fae5;
-
-    color:#065f46;
-
-    padding:12px;
-
-    border-radius:8px;
-
-    margin-bottom:15px;
-
+    background: #d1fae5;
+    color: #065f46;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 15px;
 }
 
 
-
 /*
- Adaptación móvil
+  ============================================================
+  ADAPTACIÓN MÓVIL
+  ============================================================
 */
-@media(max-width:768px){
 
+@media (max-width: 768px) {
 
     .servicio-form {
-
-
-        grid-template-columns:1fr;
-
-
+        grid-template-columns: 1fr;
     }
-
 
     .servicio-form textarea {
-
-
-        grid-column:span 1;
-
-
+        grid-column: span 1;
     }
 
-    /*
-============================================================
-ACCIONES TABLA
-============================================================
-*/
-
-.action-buttons {
-
-
-    display:flex;
-
-    flex-direction:row;
-
-    flex-wrap:nowrap;
-
-    gap:8px;
-
-    align-items:center;
-
-    justify-content:center;
-
-
-}
-
-
-.action-buttons button {
-
-
-    white-space:nowrap;
-
-    width:auto;
-
-
-}
+    .btn-primary,
+    .btn-secondary {
+        width: 100%;
+        justify-content: center;
+    }
 
 }

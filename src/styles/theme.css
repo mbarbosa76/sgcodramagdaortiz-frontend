@@ -1,0 +1,418 @@
+/*
+============================================================
+theme.css
+
+Sistema de Gestión de Citas Odontológicas (SGCO)
+
+SISTEMA DE DISEÑO GLOBAL
+
+Este archivo centraliza los "tokens" visuales (colores,
+tipografía, sombras, radios y espaciados) que usan TODOS
+los módulos del frontend (Dashboard, Pacientes, Citas,
+Usuarios, Profesionales, Historia Clínica, Servicios y
+Facturación).
+
+Objetivo:
+
+- Evitar que cada módulo defina sus propios colores o
+  sombras "a mano", lo que generaba inconsistencias
+  visuales entre pantallas.
+- Permitir que, si mañana se quiere ajustar la paleta
+  (por ejemplo el verde institucional), baste con cambiar
+  este archivo y toda la aplicación se actualice.
+- Servir de referencia única para el estándar visual
+  "profesional y moderno" solicitado para el proyecto.
+
+Cómo se usa:
+
+Cualquier archivo .css del proyecto puede usar estas
+variables con la sintaxis var(--nombre-variable).
+
+Ejemplo:
+
+    background: var(--color-primario);
+    border-radius: var(--radio-md);
+    box-shadow: var(--sombra-suave);
+
+Este archivo se importa una única vez en src/main.jsx
+para que las variables queden disponibles globalmente.
+============================================================
+*/
+
+
+:root {
+
+
+    /*
+    ========================================================
+    PALETA DE COLOR — VERDE INSTITUCIONAL (ODONTOLOGÍA)
+
+    Basada en el verde/teal ya usado en el proyecto y en
+    el tablero de referencia entregado por el usuario.
+    Se define en distintas intensidades para dar
+    profundidad sin salir de la identidad del consultorio.
+    ========================================================
+    */
+
+    --color-primario-900: #0b3d33;   /* Verde muy oscuro   - sidebar, texto fuerte   */
+    --color-primario-700: #0f5b4d;   /* Verde oscuro       - hover, títulos          */
+    --color-primario-600: #177c6b;   /* Verde principal    - botones, iconos, acentos*/
+    --color-primario-500: #1f9784;   /* Verde medio        - degradados, badges      */
+    --color-primario-100: #e8f5f3;   /* Verde muy claro    - fondos de icono         */
+    --color-primario-50:  #f2faf8;   /* Verde casi blanco  - fondos suaves de tarjeta*/
+
+    /* Color de acento secundario, para contraste puntual (alertas, montos, gráficas) */
+    --color-acento-azul:     #3498db;
+    --color-acento-naranja:  #f39c12;
+    --color-acento-rojo:     #e74c3c;
+    --color-acento-morado:   #8e6ee0;
+
+
+    /*
+    ========================================================
+    NEUTROS — Textos y fondos
+    ========================================================
+    */
+
+    --color-texto-principal: #1f2d2b;
+    --color-texto-secundario: #5f7570;
+    --color-texto-suave: #8ba39d;
+
+    --color-fondo-app: #f4f8f7;
+    --color-fondo-tarjeta: #ffffff;
+    --color-borde: #e3ebe9;
+
+
+    /*
+    ========================================================
+    ESTADOS (usados en badges de citas, facturas, etc.)
+    ========================================================
+    */
+
+    --color-estado-programada: #3498db;
+    --color-estado-confirmada: #177c6b;
+    --color-estado-asistida:   #16a085;
+    --color-estado-noasistida: #f39c12;
+    --color-estado-cancelada:  #e74c3c;
+
+
+    /*
+    ========================================================
+    TIPOGRAFÍA
+    ========================================================
+    */
+
+    --fuente-base: "Segoe UI", "Inter", system-ui, -apple-system, sans-serif;
+
+    --texto-xs:   12px;
+    --texto-sm:   13.5px;
+    --texto-md:   15px;
+    --texto-lg:   18px;
+    --texto-xl:   24px;
+    --texto-xxl:  30px;
+
+
+    /*
+    ========================================================
+    RADIOS DE BORDE — look moderno con esquinas suaves
+    ========================================================
+    */
+
+    --radio-sm:  8px;
+    --radio-md:  12px;
+    --radio-lg:  18px;
+    --radio-full: 999px; /* para pastillas / badges / botones redondeados */
+
+
+    /*
+    ========================================================
+    SOMBRAS — dan profundidad sin recargar la interfaz
+    ========================================================
+    */
+
+    --sombra-suave:  0 4px 12px rgba(15, 61, 51, 0.07);
+    --sombra-media:  0 8px 20px rgba(15, 61, 51, 0.10);
+    --sombra-fuerte: 0 14px 32px rgba(15, 61, 51, 0.16);
+    --sombra-foco:   0 0 0 3px rgba(23, 124, 107, 0.18);
+
+
+    /*
+    ========================================================
+    TRANSICIONES — coherentes en toda la app
+    ========================================================
+    */
+
+    --transicion-rapida: 0.15s ease;
+    --transicion-normal: 0.25s ease;
+
+}
+
+
+
+/*
+============================================================
+COMPONENTES BASE REUTILIZABLES
+
+Clases genéricas que cualquier módulo puede usar para
+mantener la misma apariencia en botones y badges, sin
+tener que redefinir estilos en cada página.
+============================================================
+*/
+
+
+/*
+------------------------------------------------------------
+Botón primario (acciones principales: Guardar, Registrar...)
+------------------------------------------------------------
+*/
+
+.btn-primario {
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    padding: 12px 22px;
+
+    border: none;
+    border-radius: var(--radio-md);
+
+    background: linear-gradient(
+        135deg,
+        var(--color-primario-600),
+        var(--color-primario-700)
+    );
+
+    color: #ffffff;
+    font-weight: 600;
+    font-size: var(--texto-md);
+
+    cursor: pointer;
+
+    box-shadow: var(--sombra-media);
+
+    transition:
+        transform var(--transicion-rapida),
+        box-shadow var(--transicion-rapida),
+        filter var(--transicion-rapida);
+}
+
+
+.btn-primario:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--sombra-fuerte);
+    filter: brightness(1.05);
+}
+
+
+.btn-primario:active {
+    transform: translateY(0);
+}
+
+
+.btn-primario:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+
+
+/*
+------------------------------------------------------------
+Botón secundario (acciones neutras: Limpiar, Cancelar...)
+------------------------------------------------------------
+*/
+
+.btn-secundario {
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    padding: 12px 22px;
+
+    border: 1.5px solid var(--color-borde);
+    border-radius: var(--radio-md);
+
+    background: #ffffff;
+    color: var(--color-texto-secundario);
+    font-weight: 600;
+    font-size: var(--texto-md);
+
+    cursor: pointer;
+
+    transition:
+        background var(--transicion-rapida),
+        border-color var(--transicion-rapida);
+}
+
+
+.btn-secundario:hover {
+    background: var(--color-fondo-app);
+    border-color: var(--color-primario-600);
+    color: var(--color-primario-700);
+}
+
+
+
+/*
+------------------------------------------------------------
+Botones de acción dentro de tablas (Editar / Eliminar /
+Activar / Desactivar)
+
+Se usan como "pastillas" pequeñas, con icono, que se
+alinean centradas en la columna "Acciones".
+------------------------------------------------------------
+*/
+
+.btn-accion-tabla {
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+
+    padding: 8px 14px;
+
+    border: none;
+    border-radius: var(--radio-full);
+
+    font-size: var(--texto-xs);
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        transform var(--transicion-rapida),
+        box-shadow var(--transicion-rapida),
+        filter var(--transicion-rapida);
+}
+
+
+.btn-accion-tabla svg {
+    width: 15px;
+    height: 15px;
+}
+
+
+.btn-accion-tabla:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.06);
+}
+
+
+/* Variante Editar (azul) */
+.btn-accion-editar {
+    background: #e8f1fc;
+    color: #1d6fb8;
+}
+
+.btn-accion-editar:hover {
+    box-shadow: 0 4px 10px rgba(29, 111, 184, 0.25);
+}
+
+
+/* Variante Eliminar / Desactivar (rojo) */
+.btn-accion-eliminar {
+    background: #fdecea;
+    color: #c0392b;
+}
+
+.btn-accion-eliminar:hover {
+    box-shadow: 0 4px 10px rgba(192, 57, 43, 0.25);
+}
+
+
+/* Variante Activar (verde) — para reactivar un registro inactivo */
+.btn-accion-activar {
+    background: var(--color-primario-100);
+    color: var(--color-primario-700);
+}
+
+.btn-accion-activar:hover {
+    box-shadow: 0 4px 10px rgba(23, 124, 107, 0.25);
+}
+
+
+/* Contenedor que centra los botones de acción en la celda */
+.celda-acciones {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+
+
+/*
+------------------------------------------------------------
+Badges de estado (citas, facturas, profesionales activos...)
+------------------------------------------------------------
+*/
+
+.badge-estado {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: var(--radio-full);
+    font-size: var(--texto-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+/*
+  ============================================================
+  BARRA DE HERRAMIENTAS DE LA TABLA
+  (buscador universal + chip de filtro activo)
+  ============================================================
+*/
+
+.table-toolbar {
+
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  margin: 10px 0 18px 0;
+
+}
+
+
+.chip-filtro-activo {
+
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 9px 16px;
+
+  border: none;
+  border-radius: var(--radio-full);
+
+  background: var(--color-primario-100);
+  color: var(--color-primario-700);
+
+  font-size: var(--texto-sm);
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: filter var(--transicion-rapida);
+
+}
+
+
+.chip-filtro-activo:hover {
+  filter: brightness(0.97);
+}
+
+
+.chip-filtro-cerrar {
+  font-weight: 700;
+}

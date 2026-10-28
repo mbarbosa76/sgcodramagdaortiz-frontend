@@ -33,9 +33,17 @@
 */
 
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import axios from 'axios'
+
+// Importa la URL centralizada del backend para desarrollo y despliegue.
+import { API_BASE_URL } from '../config/api'
+
+import { filtrarServiciosPorEspecialidad } from '../utils/serviciosPorEspecialidad'
+import { estaFechaEnRangoISO, obtenerRangoPeriodo } from '../utils/dashboardPeriodo'
+import ModuleTableHeader from '../components/ModuleTableHeader'
+import { Pencil, Trash2 } from 'lucide-react'
 
 import './Cita.css'
 
@@ -46,7 +54,17 @@ import './Cita.css'
   ============================================================
 */
 
-const API_URL = 'http://localhost:8765/api'
+/*
+  URL base de la API.
+
+  Se obtiene desde la configuracion central del frontend:
+  - En desarrollo utiliza http://localhost:8765/api.
+  - En produccion utiliza la variable VITE_API_URL configurada
+    en la plataforma de despliegue.
+
+  Las rutas especificas de cada modulo se agregan a esta URL.
+*/
+const API_URL = API_BASE_URL
 
 // Obtiene los encabezados con el token JWT
 // almacenado en el navegador tras iniciar sesión.
@@ -92,6 +110,16 @@ const HORA_FIN_SABADO = '14:00'
 /*
   Duración mínima y máxima permitida
   para una cita.
+
+  180 minutos (3 horas) se conserva como tope superior:
+  cubre incluso los procedimientos odontológicos más
+  largos en consultorio, como cirugías de terceros
+  molares (cordales) múltiples, tratamientos de
+  endodoncia complejos en molares con varios conductos,
+  o cirugías de implantes con injerto óseo. Un
+  procedimiento que exceda ese tiempo normalmente se
+  divide en más de una cita, en vez de registrarse como
+  una sola sesión continua.
 */
 
 const DURACION_MINIMA = 15
@@ -100,13 +128,61 @@ const DURACION_MAXIMA = 180
 
 
 /*
+  Opciones fijas de duración que se ofrecen en el
+  formulario de citas. Reemplazan la entrada manual en
+  minutos por una lista desplegable, evitando valores
+  fuera de lo habitual en consulta (ej. "37 minutos").
+
+  Se incluyen bloques de 15 minutos hasta la hora, y
+  luego bloques más amplios (90/120/180) para los
+  procedimientos más extensos (cirugía oral, endodoncia
+  en molares, implantes, etc.).
+*/
+
+const OPCIONES_DURACION = [
+  { valor: 15, etiqueta: '15 minutos' },
+  { valor: 20, etiqueta: '20 minutos' },
+  { valor: 30, etiqueta: '30 minutos' },
+  { valor: 45, etiqueta: '45 minutos' },
+  { valor: 60, etiqueta: '60 minutos (1 hora)' },
+  { valor: 90, etiqueta: '90 minutos (1 hora 30 min)' },
+  { valor: 120, etiqueta: '120 minutos (2 horas)' },
+  { valor: 180, etiqueta: '180 minutos (3 horas)' }
+]
+
+
+/*
+  Consultorios disponibles en la clínica. Se fija la
+  lista a estas 4 opciones para evitar texto libre
+  (errores de tipeo, nombres inconsistentes como
+  "consultorio1" vs "Consultorio 1", etc.).
+
+  Si en el futuro se habilita un quinto consultorio,
+  basta con agregar un elemento aquí.
+*/
+
+const OPCIONES_SALA = [
+  'Consultorio 1',
+  'Consultorio 2',
+  'Consultorio 3',
+  'Consultorio 4'
+]
+
+
+/*
   ============================================================
   COMPONENTE PRINCIPAL
   ============================================================
 */
 
-function Cita() {
+function Cita({
+  filtroNavegacion = null,
+  onLimpiarFiltro,
+  periodo = null
+}) {
 
+console.log("FILTRO RECIBIDO EN CITA:", filtroNavegacion);
+console.log("PERIODO RECIBIDO EN CITA:", periodo);
 
   /*
     ============================================================
@@ -118,6 +194,13 @@ function Cita() {
   */
 
   const encabezadoCitaRef = useRef(null)
+
+  /*
+    Referencia a la tabla. Se usa cuando el usuario llega desde
+    el Dashboard con un filtro específico para ubicar de forma
+    inmediata los resultados solicitados.
+  */
+  const tablaCitasRef = useRef(null)
 
 
   /*
@@ -132,6 +215,32 @@ function Cita() {
 
   const [citas, setCitas] = useState([])
 
+  // Búsqueda local de la tabla, con el mismo patrón visual de Pacientes.
+  const [busquedaTabla, setBusquedaTabla] = useState('')
+
+  /*
+  ============================================================
+  ORDENAMIENTO DE TABLA
+  ============================================================
+
+  Guarda:
+  - columna seleccionada.
+  - dirección del orden.
+
+  Ejemplo:
+
+  {
+    columna: "fecha",
+    direccion: "asc"
+  }
+
+  Permite ordenar las citas haciendo clic
+  sobre los encabezados de la tabla.
+*/
+const [ordenamiento, setOrdenamiento] = useState({
+  columna: null,
+  direccion: "asc"
+})
 
   /*
     Lista de pacientes obtenidos desde Spring Boot.
@@ -367,6 +476,73 @@ function Cita() {
 
   }
 
+/*
+============================================================
+CAMBIAR ORDENAMIENTO DE TABLA
+============================================================
+
+Permite ordenar las citas al hacer clic
+sobre los encabezados de la tabla.
+
+Ejemplo:
+
+Primer clic:
+Fecha ▲
+(ascendente)
+
+Segundo clic:
+Fecha ▼
+(descendente)
+
+============================================================
+*/
+const cambiarOrdenamiento = (columna) => {
+
+
+  setOrdenamiento((actual) => {
+
+
+    /*
+      Si el usuario vuelve a seleccionar
+      la misma columna, se invierte
+      la dirección.
+    */
+    if(actual.columna === columna){
+
+
+      return {
+
+        columna,
+
+        direccion:
+          actual.direccion === "asc"
+            ? "desc"
+            : "asc"
+
+      }
+
+    }
+
+
+
+    /*
+      Si selecciona una nueva columna,
+      comienza ordenando ascendente.
+    */
+    return {
+
+      columna,
+
+      direccion:"asc"
+
+    }
+
+
+  })
+
+
+}
+
 
   /*
     ============================================================
@@ -379,11 +555,47 @@ function Cita() {
     const { name, value } = e.target
 
 
-    setCita({
+    setCita(citaPrevia => {
 
-      ...cita,
+      const citaActualizada = {
+        ...citaPrevia,
+        [name]: value
+      }
 
-      [name]: value
+      /*
+        Si el campo modificado es el profesional, se valida si
+        el servicio ya elegido sigue perteneciendo a la nueva
+        especialidad. Si ya no aplica, se limpia el servicio
+        para evitar que quede guardada una combinación
+        profesional/servicio incompatible.
+      */
+
+      if (name === 'idProfesional') {
+
+        const nuevoProfesional = profesionales.find(
+          profesional =>
+            Number(profesional.idProfesional) === Number(value)
+        )
+
+        const serviciosPermitidos = filtrarServiciosPorEspecialidad(
+          servicios,
+          nuevoProfesional?.especialidad
+        )
+
+        const servicioSigueSiendoValido = serviciosPermitidos.some(
+          servicio =>
+            Number(servicio.idServicio) === Number(citaPrevia.idServicio)
+        )
+
+        if (!servicioSigueSiendoValido) {
+
+          citaActualizada.idServicio = ''
+
+        }
+
+      }
+
+      return citaActualizada
 
     })
 
@@ -1120,6 +1332,21 @@ console.log(
       citaSeleccionada.idCita
     )
 
+    // Normaliza relaciones que pueden venir anidadas desde el backend.
+    // En edición debemos conservar profesional y servicio originales aunque
+    // el usuario solo quiera cambiar fecha u hora.
+    if (!citaSeleccionada.idProfesional && citaSeleccionada.profesional) {
+      citaSeleccionada.idProfesional =
+        citaSeleccionada.profesional.idProfesional ||
+        citaSeleccionada.profesional.id
+    }
+
+    if (!citaSeleccionada.idServicio && citaSeleccionada.servicio) {
+      citaSeleccionada.idServicio =
+        citaSeleccionada.servicio.idServicio ||
+        citaSeleccionada.servicio.id
+    }
+
 
     /*
       Cargamos la información de la cita
@@ -1141,24 +1368,18 @@ console.log(
 
       idProfesional:
 
-        citaSeleccionada.idProfesional
-
-          ? String(
-              citaSeleccionada.idProfesional
-            )
-
-          : '',
+        citaSeleccionada.idProfesional ||
+        citaSeleccionada.profesional?.idProfesional ||
+        citaSeleccionada.profesional?.id ||
+        '',
 
 
       idServicio:
 
-        citaSeleccionada.idServicio
-
-          ? String(
-              citaSeleccionada.idServicio
-            )
-
-          : '',
+        citaSeleccionada.idServicio ||
+        citaSeleccionada.servicio?.idServicio ||
+        citaSeleccionada.servicio?.id ||
+        '',
 
 
       fecha:
@@ -1364,8 +1585,18 @@ console.log(
   */
 
   const obtenerNombreServicio = (
-    idServicio
+    citaActual
   ) => {
+
+    const idServicio = citaActual?.idServicio || citaActual?.servicio?.idServicio || citaActual?.servicioId
+
+    if (citaActual?.servicio && typeof citaActual.servicio === "string") {
+      return citaActual.servicio
+    }
+
+    if (citaActual?.servicio?.nombreServicio) {
+      return citaActual.servicio.nombreServicio
+    }
 
     const servicioEncontrado =
       servicios.find(
@@ -1442,6 +1673,312 @@ console.log(
 
   }
 
+
+  /*
+    ============================================================
+    SERVICIOS DISPONIBLES SEGÚN EL PROFESIONAL SELECCIONADO
+    ============================================================
+
+    Cada profesional tiene una especialidad (Odontología General,
+    Higiene Dental, Endodoncia, etc.). El selector de "Servicio"
+    solo debe ofrecer los servicios cuya categoría corresponde a
+    esa especialidad, en lugar de listar siempre el catálogo
+    completo.
+
+    La relación especialidad -> categorías de servicio vive en
+    utils/serviciosPorEspecialidad.js, así que aquí solo se
+    resuelve cuál es el profesional elegido y se delega el
+    filtrado a esa utilidad.
+  */
+
+  const profesionalSeleccionado = useMemo(
+    () =>
+      profesionales.find(
+        profesional =>
+          Number(profesional.idProfesional) === Number(cita.idProfesional)
+      ) || null,
+    [profesionales, cita.idProfesional]
+  )
+
+  const serviciosDisponibles = useMemo(
+    () =>
+      filtrarServiciosPorEspecialidad(
+        servicios,
+        profesionalSeleccionado?.especialidad
+      ),
+    [servicios, profesionalSeleccionado]
+  )
+
+  /*
+    ============================================================
+    FILTRO RECIBIDO DESDE EL DASHBOARD
+    ============================================================
+
+    El Dashboard puede abrir este módulo con contexto. Ejemplos:
+
+    - estado = ASISTIDA.
+    - fecha = 2026-08-20.
+    - idCita = 35.
+
+    El filtrado se realiza sobre los datos ya obtenidos del
+    backend, por lo que no altera los endpoints ni el CRUD actual.
+  */
+
+  const citasFiltradasDashboard = useMemo(
+    () => {
+      if (!filtroNavegacion) return citas
+
+      switch (filtroNavegacion.tipo) {
+        case 'estado': {
+          const rangoActivo = obtenerRangoPeriodo(periodo)
+          const fechaInicio = filtroNavegacion.fechaInicio || rangoActivo.inicioISO
+          const fechaFin = filtroNavegacion.fechaFin || rangoActivo.finISO
+
+          return citas.filter(citaActual => (
+            citaActual.estado === filtroNavegacion.valor &&
+            estaFechaEnRangoISO(citaActual.fecha, fechaInicio, fechaFin)
+          ))
+        }
+        case 'periodo':
+          return citas.filter(citaActual => estaFechaEnRangoISO(
+            citaActual.fecha,
+            filtroNavegacion.fechaInicio,
+            filtroNavegacion.fechaFin
+          ))
+        case 'fecha':
+          return citas.filter(citaActual => citaActual.fecha === filtroNavegacion.valor)
+        case 'idCita':
+          return citas.filter(citaActual => Number(citaActual.idCita) === Number(filtroNavegacion.valor))
+        case 'idPaciente':
+          return citas.filter(citaActual => Number(citaActual.paciente?.idPaciente) === Number(filtroNavegacion.valor))
+        default:
+          return citas
+      }
+    },
+    [citas, filtroNavegacion, periodo]
+  )
+
+  /*
+    ============================================================
+    BÚSQUEDA DE LA TABLA
+    ============================================================
+    Se aplica después del filtro recibido desde el Dashboard y
+    antes del ordenamiento. Incluye los datos visibles derivados
+    de paciente y servicio.
+  */
+  const citasFiltradasBusqueda = useMemo(() => {
+    const texto = busquedaTabla.trim().toLowerCase()
+
+    if (!texto) return citasFiltradasDashboard
+
+    return citasFiltradasDashboard.filter((citaActual) => {
+      const contenido = [
+        citaActual.idCita,
+        obtenerNombrePaciente(citaActual),
+        obtenerNombreServicio(citaActual),
+        citaActual.fecha,
+        citaActual.horaInicio,
+        citaActual.duracionMin,
+        citaActual.sala,
+        citaActual.estado,
+        citaActual.observacion
+      ]
+        .filter(valor => valor !== null && valor !== undefined)
+        .join(' ')
+        .toLowerCase()
+
+      return contenido.includes(texto)
+    })
+  }, [citasFiltradasDashboard, busquedaTabla])
+
+  /*
+  ============================================================
+  CITAS ORDENADAS
+  ============================================================
+
+  Se aplica después de los filtros del Dashboard.
+
+  Orden de procesamiento:
+
+  Backend
+      ↓
+  Filtro Dashboard
+      ↓
+  Ordenamiento tabla
+      ↓
+  Renderizado
+*/
+const citasOrdenadas = useMemo(()=>{
+
+
+  const lista = [
+    ...citasFiltradasBusqueda
+  ]
+
+
+  if(!ordenamiento.columna){
+
+    return lista
+
+  }
+
+
+
+  return lista.sort((a,b)=>{
+
+
+    let valorA
+
+    let valorB
+
+
+
+    switch(ordenamiento.columna){
+
+
+      case "id":
+
+        valorA = a.idCita
+
+        valorB = b.idCita
+
+        break
+
+
+
+      case "paciente":
+
+        valorA =
+          obtenerNombrePaciente(a)
+          .toLowerCase()
+
+        valorB =
+          obtenerNombrePaciente(b)
+          .toLowerCase()
+
+        break
+
+case "servicio":
+
+ valorA = obtenerNombreServicio(a).toLowerCase()
+
+ valorB = obtenerNombreServicio(b).toLowerCase()
+
+break
+
+      case "fecha":
+
+        valorA =
+          new Date(a.fecha)
+
+        valorB =
+          new Date(b.fecha)
+
+        break
+
+
+
+      case "hora":
+
+        valorA =
+          a.horaInicio || ""
+
+        valorB =
+          b.horaInicio || ""
+
+        break
+
+
+
+      case "duracion":
+
+        valorA =
+          a.duracionMin || 0
+
+        valorB =
+          b.duracionMin || 0
+
+        break
+
+
+
+      case "sala":
+
+        valorA =
+          a.sala || ""
+
+        valorB =
+          b.sala || ""
+
+        break
+
+
+
+      case "estado":
+
+        valorA =
+          a.estado || ""
+
+        valorB =
+          b.estado || ""
+
+        break
+
+
+
+      default:
+
+        return 0
+
+    }
+
+
+
+    if(valorA < valorB){
+
+      return ordenamiento.direccion === "asc"
+        ? -1
+        : 1
+
+    }
+
+
+    if(valorA > valorB){
+
+      return ordenamiento.direccion === "asc"
+        ? 1
+        : -1
+
+    }
+
+
+    return 0
+
+
+  })
+
+
+},[
+  citasFiltradasBusqueda,
+  ordenamiento
+])
+
+  /*
+    Lleva la vista a la tabla cuando el filtro proviene del
+    Dashboard, evitando que el usuario tenga que buscar manualmente.
+  */
+  useEffect(() => {
+    if (!filtroNavegacion || citas.length === 0) return
+
+    const idAnimacion = window.requestAnimationFrame(() => {
+      tablaCitasRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      })
+    })
+
+    return () => window.cancelAnimationFrame(idAnimacion)
+  }, [filtroNavegacion, citas.length])
 
   /*
     ============================================================
@@ -1711,7 +2248,7 @@ console.log(
               </option>
 
 
-              {servicios.map(
+              {serviciosDisponibles.map(
                 (servicio) => (
 
                   <option
@@ -1734,6 +2271,15 @@ console.log(
               )}
 
             </select>
+
+
+            <small>
+
+              {profesionalSeleccionado
+                ? `Servicios disponibles para ${profesionalSeleccionado.especialidad}.`
+                : 'Seleccione primero un profesional para ver sus servicios.'}
+
+            </small>
 
           </div>
 
@@ -1833,11 +2379,9 @@ console.log(
             </label>
 
 
-            <input
+            <select
 
               id="duracionMin"
-
-              type="number"
 
               name="duracionMin"
 
@@ -1845,17 +2389,38 @@ console.log(
 
               onChange={handleChange}
 
-              placeholder="Ej. 45"
-
-              min={DURACION_MINIMA}
-
-              max={DURACION_MAXIMA}
-
-              step="15"
-
               required
 
-            />
+            >
+
+              <option value="">
+
+                Seleccione la duración
+
+              </option>
+
+
+              {OPCIONES_DURACION.map(
+
+                (opcion) => (
+
+                  <option
+
+                    key={opcion.valor}
+
+                    value={opcion.valor}
+
+                  >
+
+                    {opcion.etiqueta}
+
+                  </option>
+
+                )
+
+              )}
+
+            </select>
 
 
             <small>
@@ -1882,11 +2447,9 @@ console.log(
             </label>
 
 
-            <input
+            <select
 
               id="sala"
-
-              type="text"
 
               name="sala"
 
@@ -1894,16 +2457,41 @@ console.log(
 
               onChange={handleChange}
 
-              placeholder="Ej. Consultorio 1"
+            >
 
-              maxLength="50"
+              <option value="">
 
-            />
+                Seleccione un consultorio
+
+              </option>
+
+
+              {OPCIONES_SALA.map(
+
+                (opcionSala) => (
+
+                  <option
+
+                    key={opcionSala}
+
+                    value={opcionSala}
+
+                  >
+
+                    {opcionSala}
+
+                  </option>
+
+                )
+
+              )}
+
+            </select>
 
 
             <small>
 
-              Máximo 50 caracteres.
+              Consultorios disponibles en el consultorio odontológico.
 
             </small>
 
@@ -2073,62 +2661,246 @@ console.log(
           TABLA DE CITAS
           ====================================================== */}
 
-      <div className="card table-card">
+      <div
+        className="card table-card data-table-card"
+        ref={tablaCitasRef}
+      >
 
-        <div className="table-title">
+        {filtroNavegacion && (
+          <div className="module-context-filter">
+            <div>
+              <strong>Filtro desde Dashboard</strong>
+              <span>{filtroNavegacion.etiqueta || 'Resultado filtrado'}</span>
+            </div>
+            <button type="button" onClick={onLimpiarFiltro}>
+              Quitar filtro
+            </button>
+          </div>
+        )}
 
-          <h3>
-
-            Citas Registradas
-
-          </h3>
-
-
-          <p>
-
-            Listado de citas almacenadas en el sistema.
-
-          </p>
-
-        </div>
+        <ModuleTableHeader
+          titulo="Citas Registradas"
+          descripcion="Listado de citas almacenadas en el sistema."
+          busqueda={busquedaTabla}
+          setBusqueda={setBusquedaTabla}
+          placeholder="Buscar por paciente, servicio, fecha, estado..."
+        />
 
 
-        <div className="table-responsive">
+        <div className="table-responsive data-table-scroll">
 
-          <table className="Cita-table">
+          <table className="Cita-table data-table">
 
-            <thead>
+<thead>
 
-              <tr>
+  <tr>
 
-                <th>ID</th>
 
-                <th>Paciente</th>
+    {/* ==================================================
+        ID
+        Permite ordenar de menor a mayor o viceversa.
+    ================================================== */}
+    <th
+      className="sortable"
+      onClick={() => cambiarOrdenamiento("id")}
+    >
+      ID
 
-                <th>Servicio</th>
+      {ordenamiento.columna === "id" &&
+        (
+          ordenamiento.direccion === "asc"
+            ? " ▲"
+            : " ▼"
+        )
+      }
 
-                <th>Fecha</th>
+    </th>
 
-                <th>Hora</th>
 
-                <th>Duración</th>
 
-                <th>Sala</th>
 
-                <th>Estado</th>
+    {/* ==================================================
+        PACIENTE
+    ================================================== */}
+    <th
+      className="sortable"
+      onClick={() => cambiarOrdenamiento("paciente")}
+    >
+      Paciente
 
-                <th>Observación</th>
+      {ordenamiento.columna === "paciente" &&
+        (
+          ordenamiento.direccion === "asc"
+            ? " ▲"
+            : " ▼"
+        )
+      }
 
-                <th>Acciones</th>
+    </th>
 
-              </tr>
 
-            </thead>
+
+
+    {/* ==================================================
+        SERVICIO
+    ================================================== */}
+    <th
+      className="sortable"
+      onClick={() => cambiarOrdenamiento("servicio")}
+    >
+      Servicio
+
+      {ordenamiento.columna === "servicio" &&
+        (
+          ordenamiento.direccion === "asc"
+            ? " ▲"
+            : " ▼"
+        )
+      }
+
+    </th>
+
+
+
+
+    {/* ==================================================
+        FECHA
+    ================================================== */}
+    <th
+      className="sortable"
+      onClick={() => cambiarOrdenamiento("fecha")}
+    >
+      Fecha
+
+      {ordenamiento.columna === "fecha" &&
+        (
+          ordenamiento.direccion === "asc"
+            ? " ▲"
+            : " ▼"
+        )
+      }
+
+    </th>
+
+
+
+
+    {/* ==================================================
+        HORA
+    ================================================== */}
+    <th
+      className="sortable"
+      onClick={() => cambiarOrdenamiento("hora")}
+    >
+      Hora
+
+      {ordenamiento.columna === "hora" &&
+        (
+          ordenamiento.direccion === "asc"
+            ? " ▲"
+            : " ▼"
+        )
+      }
+
+    </th>
+
+
+
+
+    {/* ==================================================
+        DURACIÓN
+    ================================================== */}
+    <th
+      className="sortable"
+      onClick={() => cambiarOrdenamiento("duracion")}
+    >
+      Duración
+
+      {ordenamiento.columna === "duracion" &&
+        (
+          ordenamiento.direccion === "asc"
+            ? " ▲"
+            : " ▼"
+        )
+      }
+
+    </th>
+
+
+
+
+    {/* ==================================================
+        SALA
+    ================================================== */}
+    <th
+      className="sortable"
+      onClick={() => cambiarOrdenamiento("sala")}
+    >
+      Sala
+
+      {ordenamiento.columna === "sala" &&
+        (
+          ordenamiento.direccion === "asc"
+            ? " ▲"
+            : " ▼"
+        )
+      }
+
+    </th>
+
+
+
+
+    {/* ==================================================
+        ESTADO
+    ================================================== */}
+    <th
+      className="sortable"
+      onClick={() => cambiarOrdenamiento("estado")}
+    >
+      Estado
+
+      {ordenamiento.columna === "estado" &&
+        (
+          ordenamiento.direccion === "asc"
+            ? " ▲"
+            : " ▼"
+        )
+      }
+
+    </th>
+
+
+
+
+    {/* ==================================================
+        OBSERVACIÓN
+        No se ordena porque es texto libre.
+    ================================================== */}
+    <th>
+      Observación
+    </th>
+
+
+
+
+    {/* ==================================================
+        ACCIONES
+        No se ordena porque contiene botones.
+    ================================================== */}
+    <th>
+      Acciones
+    </th>
+
+
+  </tr>
+
+</thead>
 
 
             <tbody>
 
-              {citas.length === 0 ? (
+              {citasOrdenadas.length === 0 ? (
 
                 <tr>
 
@@ -2140,7 +2912,11 @@ console.log(
 
                   >
 
-                    No hay citas registradas.
+                    {busquedaTabla.trim()
+                      ? 'No hay citas que coincidan con la búsqueda.'
+                      : filtroNavegacion
+                        ? 'No hay citas que coincidan con el filtro seleccionado.'
+                        : 'No hay citas registradas.'}
 
                   </td>
 
@@ -2148,7 +2924,7 @@ console.log(
 
               ) : (
 
-                citas.map(
+                citasOrdenadas.map(
                   (citaActual) => (
 
                     <tr
@@ -2178,7 +2954,7 @@ console.log(
                       <td>
 
                         {obtenerNombreServicio(
-                          citaActual.idServicio
+                          citaActual
                         )}
 
                       </td>
@@ -2286,9 +3062,8 @@ console.log(
                             }
 
                           >
-
+                            <Pencil size={15} />
                             Editar
-
                           </button>
 
 
@@ -2307,9 +3082,8 @@ console.log(
                             }
 
                           >
-
+                            <Trash2 size={15} />
                             Eliminar
-
                           </button>
 
                         </div>

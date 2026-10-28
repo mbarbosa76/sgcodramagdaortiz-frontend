@@ -22,26 +22,43 @@ Funciones:
 
 import {
     useEffect,
+    useMemo,
+    useRef,
     useState
 } from "react";
+
+// Importa la URL centralizada del backend para desarrollo y despliegue.
+import { API_BASE_URL } from "../config/api";
 
 
 import {
     listarFacturas,
     crearFacturaCompleta,
+    actualizarFactura,
     eliminarFactura
 } from "../services/FacturaService";
 
 
 import FacturaTable from "../components/FacturaTable";
+import { estaFechaEnRangoISO } from "../utils/dashboardPeriodo";
 
 
 import "./Factura.css";
 
 
 
-function Factura() {
+function Factura({
+    filtroNavegacion = null,
+    onLimpiarFiltro
+}) {
 
+    /*
+    ============================================================
+    REFERENCIA A LA TABLA DE FACTURACIÓN
+    ============================================================
+    Permite ubicar el resultado solicitado desde el Dashboard.
+    */
+    const tablaFacturasRef = useRef(null);
 
 
     const [facturas, setFacturas] =
@@ -103,6 +120,40 @@ function Factura() {
 
 
         });
+
+
+    /*
+      ============================================================
+      EDICIÓN DE UNA FACTURA EXISTENTE
+      ============================================================
+      La edición NO recrea la factura desde cero (paciente, cita
+      y servicios quedan fijos, como corresponde a un documento
+      ya emitido). Solo permite corregir:
+
+      - El estado de pago (PENDIENTE / PAGADA / CANCELADA).
+      - La fecha, por si se registró mal (nunca hacia el futuro).
+    */
+    const [facturaEditando, setFacturaEditando] =
+        useState(null);
+
+    const [edicion, setEdicion] =
+        useState({
+            fecha: "",
+            estadoPago: "PENDIENTE"
+        });
+
+    /*
+      Fecha de hoy en formato "yyyy-MM-dd", usada como tope
+      máximo del campo de fecha (atributo "max" del input) para
+      que el navegador ya impida elegir una fecha futura.
+    */
+    const hoyISO = (() => {
+        const hoy = new Date();
+        const anio = hoy.getFullYear();
+        const mes = String(hoy.getMonth() + 1).padStart(2, "0");
+        const dia = String(hoy.getDate()).padStart(2, "0");
+        return `${anio}-${mes}-${dia}`;
+    })();
 
 
 
@@ -205,7 +256,7 @@ function Factura() {
         const respuesta =
             await fetch(
 
-                "http://localhost:8765/api/pacientes",
+                `${API_BASE_URL}/pacientes`,
 
                 obtenerConfigAuth()
 
@@ -236,7 +287,7 @@ function Factura() {
         const respuesta =
             await fetch(
 
-                "http://localhost:8765/api/citas",
+                `${API_BASE_URL}/citas`,
 
                 obtenerConfigAuth()
 
@@ -267,7 +318,7 @@ function Factura() {
         const respuesta =
             await fetch(
 
-                "http://localhost:8765/api/servicios",
+                `${API_BASE_URL}/servicios`,
 
                 obtenerConfigAuth()
 
@@ -602,6 +653,89 @@ const eliminar = async (
 
 
 
+/*
+  ============================================================
+  INICIAR EDICIÓN
+  ============================================================
+  Abre el panel de edición precargado con los valores
+  actuales de la factura seleccionada.
+*/
+const iniciarEdicion = (
+    facturaSeleccionada
+) => {
+
+    setFacturaEditando(
+        facturaSeleccionada
+    );
+
+    setEdicion({
+        fecha:
+            facturaSeleccionada.fecha || "",
+        estadoPago:
+            facturaSeleccionada.estadoPago || "PENDIENTE"
+    });
+
+};
+
+
+
+
+/*
+  ============================================================
+  CANCELAR EDICIÓN
+  ============================================================
+*/
+const cancelarEdicion = () => {
+
+    setFacturaEditando(null);
+
+};
+
+
+
+
+/*
+  ============================================================
+  GUARDAR EDICIÓN
+  ============================================================
+  Envía solo lo que se puede corregir (fecha y estado de
+  pago). El backend valida que la fecha no sea futura y
+  rechaza la operación si lo es.
+*/
+const guardarEdicion = async () => {
+
+    try {
+
+        await actualizarFactura(
+            facturaEditando.idFactura,
+            {
+                estadoPago:
+                    edicion.estadoPago,
+                total:
+                    facturaEditando.total,
+                fecha:
+                    edicion.fecha
+            }
+        );
+
+        await cargarFacturas();
+
+        setFacturaEditando(null);
+
+    } catch(error) {
+
+        alert(
+            error.response?.data ||
+            "No fue posible actualizar la factura."
+        );
+
+    }
+
+};
+
+
+
+
 
 const imprimirFactura = async (
     factura
@@ -619,7 +753,7 @@ const imprimirFactura = async (
         const respuesta =
             await fetch(
 
-                `http://localhost:8765/api/detalles-factura/factura/${factura.idFactura}`,
+                `${API_BASE_URL}/detalles-factura/factura/${factura.idFactura}`,
 
                 {
 
@@ -857,6 +991,90 @@ Imprimir
 
 
 };
+
+    /*
+    ============================================================
+    FILTRO RECIBIDO DESDE EL DASHBOARD
+    ============================================================
+    Soporta una factura específica o la facturación de un mes.
+    El filtrado se hace sobre los registros ya cargados desde
+    Spring Boot, por lo que no cambia los endpoints existentes.
+    */
+    const facturasFiltradasDashboard = useMemo(
+        () => {
+            if(!filtroNavegacion) return facturas;
+
+            if(filtroNavegacion.tipo === "idFactura"){
+                return facturas.filter(
+                    facturaActual => Number(facturaActual.idFactura) === Number(filtroNavegacion.valor)
+                );
+            }
+
+            if(filtroNavegacion.tipo === "idPaciente"){
+                return facturas.filter(
+                    facturaActual => Number(facturaActual.paciente?.idPaciente) === Number(filtroNavegacion.valor)
+                );
+            }
+
+            if(filtroNavegacion.tipo === "mes"){
+                return facturas.filter(
+                    facturaActual => {
+                        if(!facturaActual.fecha) return false;
+
+                        const [anio, mes] = String(facturaActual.fecha)
+                            .slice(0, 10)
+                            .split("-")
+                            .map(Number);
+
+                        return (
+                            anio === Number(filtroNavegacion.anio) &&
+                            mes === Number(filtroNavegacion.mes)
+                        );
+                    }
+                );
+            }
+
+            if(filtroNavegacion.tipo === "periodo"){
+                return facturas.filter(
+                    facturaActual => estaFechaEnRangoISO(
+                        facturaActual.fecha,
+                        filtroNavegacion.fechaInicio,
+                        filtroNavegacion.fechaFin
+                    )
+                );
+            }
+
+            if(filtroNavegacion.tipo === "estadoPago"){
+                return facturas.filter(
+                    facturaActual => (
+                        facturaActual.estadoPago === filtroNavegacion.valor &&
+                        estaFechaEnRangoISO(
+                            facturaActual.fecha,
+                            filtroNavegacion.fechaInicio,
+                            filtroNavegacion.fechaFin
+                        )
+                    )
+                );
+            }
+
+            return facturas;
+        },
+        [facturas, filtroNavegacion]
+    );
+
+    useEffect(() => {
+        if(!filtroNavegacion || facturas.length === 0) return;
+
+        const idAnimacion = window.requestAnimationFrame(() => {
+            tablaFacturasRef.current?.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+        });
+
+        return () => window.cancelAnimationFrame(idAnimacion);
+    }, [filtroNavegacion, facturas.length]);
+
 
     return (
 
@@ -1313,11 +1531,111 @@ Imprimir
 
 
 
+<div ref={tablaFacturasRef}>
+
+{filtroNavegacion && (
+    <div className="module-context-filter">
+        <div>
+            <strong>Filtro desde Dashboard</strong>
+            <span>{filtroNavegacion.etiqueta || "Facturación filtrada"}</span>
+        </div>
+        <button type="button" onClick={onLimpiarFiltro}>
+            Quitar filtro
+        </button>
+    </div>
+)}
+
+{facturaEditando && (
+    <div className="card table-card">
+
+        <div className="table-title">
+            <h3>
+                Editar factura {facturaEditando.numeroFactura}
+            </h3>
+            <p>
+                Solo se puede corregir la fecha y el estado de pago.
+                El paciente, la cita y los servicios facturados no
+                se modifican aquí.
+            </p>
+        </div>
+
+        <div className="form-group">
+            <label htmlFor="fechaEdicion">
+                Fecha
+            </label>
+            <input
+                id="fechaEdicion"
+                type="date"
+                value={edicion.fecha}
+                max={hoyISO}
+                onChange={(e) =>
+                    setEdicion({
+                        ...edicion,
+                        fecha: e.target.value
+                    })
+                }
+            />
+            <small>
+                No se permite una fecha posterior a hoy.
+            </small>
+        </div>
+
+        <div className="form-group">
+            <label htmlFor="estadoPagoEdicion">
+                Estado de pago
+            </label>
+            <select
+                id="estadoPagoEdicion"
+                value={edicion.estadoPago}
+                onChange={(e) =>
+                    setEdicion({
+                        ...edicion,
+                        estadoPago: e.target.value
+                    })
+                }
+            >
+                <option value="PENDIENTE">
+                    PENDIENTE
+                </option>
+                <option value="PAGADA">
+                    PAGADA
+                </option>
+                <option value="CANCELADA">
+                    CANCELADA
+                </option>
+            </select>
+        </div>
+
+        <div className="form-buttons">
+            <button
+                type="button"
+                className="btn-primary"
+                onClick={guardarEdicion}
+            >
+                Guardar cambios
+            </button>
+            <button
+                type="button"
+                className="btn-secondary"
+                onClick={cancelarEdicion}
+            >
+                Cancelar
+            </button>
+        </div>
+
+    </div>
+)}
+
 <FacturaTable
 
 
     facturas={
-        facturas
+        facturasFiltradasDashboard
+    }
+
+
+    onEditar={
+        iniciarEdicion
     }
 
 
@@ -1333,7 +1651,7 @@ Imprimir
 
 />
 
-
+</div>
 
 
 

@@ -257,11 +257,23 @@ TABLA FACTURAS
 .Factura-table th {
 
 
-    background:#007f73;
+    background: linear-gradient(135deg, #1c9683, #177c6b);
 
     color:white;
 
-    padding:10px;
+    padding: 14px 12px;
+
+    text-align: left;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.4px;
+
+    text-transform: uppercase;
+
+    white-space: nowrap;
 
 
 }
@@ -363,6 +375,34 @@ Eliminar
 
 
     background:#c62828;
+
+
+}
+
+
+
+
+/*
+Editar
+*/
+
+
+.factura-actions .btn-edit {
+
+
+    background:#2e9d78;
+
+    color:white;
+
+
+}
+
+
+
+.factura-actions .btn-edit:hover {
+
+
+    background:#25795d;
 
 
 }
@@ -488,4 +528,119 @@ ESTADOS FACTURA
     display:inline-block;
 
 
+}
+
+
+
+
+/*
+  ============================================================
+  PANEL DE EDICIÓN DE FACTURA
+  ============================================================
+  Reutiliza el mismo lenguaje visual (botones, título de
+  tabla, tarjeta) que ya usan los demás módulos, para que el
+  panel de edición se vea consistente con el resto de la app.
+*/
+
+.form-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 5px;
+}
+
+
+.btn-primary,
+.btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 700;
+    padding: 12px 25px;
+    transition:
+        background 0.2s ease,
+        transform 0.15s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.btn-primary {
+    background: linear-gradient(135deg, #1c9683, #177c6b);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(23, 124, 107, 0.3);
+}
+
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #178071, #135f52);
+    transform: translateY(-1px);
+}
+
+
+.btn-secondary {
+    background: #e7eeee;
+    color: #455a64;
+}
+
+
+.btn-secondary:hover {
+    background: #d8e2e2;
+    transform: translateY(-1px);
+}
+
+
+.table-title {
+    margin-bottom: 20px;
+}
+
+
+.table-title h3 {
+    margin-top: 0;
+    margin-bottom: 6px;
+}
+
+
+.table-title p {
+    margin: 0;
+    color: #78909c;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+
+.table-card {
+    padding: 22px 25px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+
+.table-card .form-group input,
+.table-card .form-group select {
+    width: 100%;
+    max-width: 320px;
+    padding: 12px 14px;
+    border: 1px solid #cfdedb;
+    border-radius: 10px;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    transition: 0.2s;
+}
+
+
+.table-card .form-group input:focus,
+.table-card .form-group select:focus {
+    border-color: #177c6b;
+}
+
+
+.table-card .form-group small {
+    display: block;
+    margin-top: 6px;
+    color: #78909c;
+    font-size: 12px;
 }

@@ -1,0 +1,92 @@
+/*
+============================================================
+BuscadorUniversal.css
+
+Estilo moderno tipo "pill" para el campo de búsqueda
+reutilizado en todos los módulos.
+============================================================
+*/
+
+.buscador-universal {
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    width: 100%;
+    max-width: 420px;
+
+    padding: 11px 16px;
+
+    background: var(--color-fondo-tarjeta);
+    border: 1.5px solid var(--color-borde);
+    border-radius: var(--radio-full);
+
+    box-shadow: var(--sombra-suave);
+
+    transition:
+        border-color var(--transicion-rapida),
+        box-shadow var(--transicion-rapida);
+}
+
+
+.buscador-universal:focus-within {
+
+    border-color: var(--color-primario-600);
+    box-shadow: var(--sombra-foco);
+
+}
+
+
+.buscador-icono {
+    color: var(--color-texto-suave);
+    flex-shrink: 0;
+}
+
+
+.buscador-input {
+
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+
+    font-size: var(--texto-md);
+    color: var(--color-texto-principal);
+    font-family: var(--fuente-base);
+
+}
+
+
+.buscador-input::placeholder {
+    color: var(--color-texto-suave);
+}
+
+
+.buscador-limpiar {
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 22px;
+    height: 22px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: var(--color-fondo-app);
+    color: var(--color-texto-secundario);
+
+    cursor: pointer;
+    flex-shrink: 0;
+
+    transition: background var(--transicion-rapida);
+
+}
+
+
+.buscador-limpiar:hover {
+    background: var(--color-primario-100);
+    color: var(--color-primario-700);
+}

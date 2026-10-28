@@ -20,6 +20,8 @@ import {
 
     useEffect,
 
+    useMemo,
+
     useState
 
 } from "react";
@@ -37,8 +39,16 @@ import {
 } from "../services/HistoriaClinicaService";
 
 
+/*
+ * Importa la URL centralizada del backend para permitir
+ * el funcionamiento local y el despliegue en la nube.
+ */
+import { API_BASE_URL } from "../config/api";
+
+
 
 import HistoriaClinicaTable from "../components/HistoriaClinicaTable";
+import { estaFechaEnRangoISO } from "../utils/dashboardPeriodo";
 
 
 import "./HistoriaClinica.css";
@@ -50,7 +60,10 @@ import "./HistoriaClinica.css";
 
 
 
-function HistoriaClinica() {
+function HistoriaClinica({
+    filtroNavegacion = null,
+    onLimpiarFiltro
+}) {
 
 
 
@@ -69,7 +82,6 @@ function HistoriaClinica() {
     const [historias, setHistorias] =
 
         useState([]);
-
 
 
 
@@ -342,7 +354,7 @@ function HistoriaClinica() {
 
                 await fetch(
 
-                    "http://localhost:8765/api/historias/pacientes-atendidos",
+                    `${API_BASE_URL}/historias/pacientes-atendidos`,
 
                     obtenerConfigAuth()
 
@@ -416,7 +428,7 @@ function HistoriaClinica() {
 
                 await fetch(
 
-                    "http://localhost:8765/api/profesionales",
+                    `${API_BASE_URL}/profesionales`,
 
                     obtenerConfigAuth()
 
@@ -488,7 +500,7 @@ function HistoriaClinica() {
 
                 await fetch(
 
-                    "http://localhost:8765/api/citas",
+                    `${API_BASE_URL}/citas`,
 
                     obtenerConfigAuth()
 
@@ -621,7 +633,7 @@ function HistoriaClinica() {
 
                 await fetch(
 
-                    `http://localhost:8765/api/historias/${idHistoriaEditando}`,
+                    `${API_BASE_URL}/historias/${idHistoriaEditando}`,
 
                     {
 
@@ -1176,6 +1188,43 @@ function HistoriaClinica() {
 
 
     };
+
+    /*
+    ========================================================
+    FILTRO RECIBIDO DESDE EL DASHBOARD
+
+    Mantiene sincronizada la tarjeta de Historias clinicas
+    con la tabla del modulo usando el mismo rango de fechas.
+    ========================================================
+    */
+    const historiasFiltradasDashboard = useMemo(() => {
+
+        if(!filtroNavegacion) return historias;
+
+        if(filtroNavegacion.tipo === "periodo"){
+            return historias.filter(historiaActual => estaFechaEnRangoISO(
+                historiaActual.fecha,
+                filtroNavegacion.fechaInicio,
+                filtroNavegacion.fechaFin
+            ));
+        }
+
+        if(filtroNavegacion.tipo === "idHistoria"){
+            return historias.filter(
+                historiaActual => Number(historiaActual.idHistoria) === Number(filtroNavegacion.valor)
+            );
+        }
+
+        if(filtroNavegacion.tipo === "idPaciente"){
+            return historias.filter(
+                historiaActual => Number(historiaActual.paciente?.idPaciente) === Number(filtroNavegacion.valor)
+            );
+        }
+
+        return historias;
+
+    }, [historias, filtroNavegacion]);
+
 
     return (
 
@@ -1783,11 +1832,24 @@ function HistoriaClinica() {
 
 
 
+            {filtroNavegacion && (
+                <div className="module-context-filter">
+                    <div>
+                        <strong>Filtro desde Dashboard</strong>
+                        <span>{filtroNavegacion.etiqueta || "Historias filtradas"}</span>
+                    </div>
+                    <button type="button" onClick={onLimpiarFiltro}>
+                        Quitar filtro
+                    </button>
+                </div>
+            )}
+
+
             <HistoriaClinicaTable
 
 
 
-                historias={historias}
+                historias={historiasFiltradasDashboard}
 
 
 

@@ -1,261 +1,109 @@
-/*
-  Componente encargado de mostrar
-  la tabla de citas.
-*/
+import { useState } from "react";
+import { Pencil, Trash2 } from "lucide-react";
+import ModuleTableHeader from "./ModuleTableHeader";
 
-function CitaTable({
+function CitaTable({ citas, servicios, onEditar, onEliminar }) {
+  const [busqueda, setBusqueda] = useState("");
 
-  citas,
+  const registrosFiltrados = (citas || []).filter((item) =>
+    JSON.stringify(item)
+      .toLowerCase()
+      .includes(busqueda.toLowerCase())
+  );
 
-  servicios,
-
-  onEditar,
-
-  onEliminar
-
-}) {
-
-
-  /*
-    Obtiene el nombre del servicio
-    utilizando su ID.
-  */
   const obtenerNombreServicio = (idServicio) => {
+    const servicio = (servicios || []).find(
+      (item) => item.idServicio === Number(idServicio)
+    );
 
-    const servicio =
-      servicios.find(
-
-        item =>
-          item.idServicio ===
-          Number(idServicio)
-
-      )
-
-
-    return servicio
-      ? servicio.nombreServicio
-      : 'Servicio no encontrado'
-
-  }
-
+    return servicio ? servicio.nombreServicio : "Servicio no encontrado";
+  };
 
   return (
+    <div className="card table-card data-table-card">
+      <ModuleTableHeader
+        titulo="Citas Registradas"
+        descripcion="Listado de citas almacenadas en el sistema."
+        busqueda={busqueda}
+        setBusqueda={setBusqueda}
+        placeholder="Buscar por paciente, servicio, fecha, estado..."
+      />
 
-    <div className="card table-card">
-
-
-      <div className="table-title">
-
-        <h3>
-          Citas Registradas
-        </h3>
-
-        <p>
-          Listado de citas obtenido
-          directamente desde la base de datos.
-        </p>
-
-      </div>
-
-
-      <div className="table-container">
-
-        <table className="Cita-table">
-
-
+      <div className="table-container data-table-scroll">
+        <table className="Cita-table data-table">
           <thead>
-
             <tr>
-
               <th>ID</th>
-
               <th>Paciente</th>
-
               <th>Servicio</th>
-
               <th>Fecha</th>
-
               <th>Hora</th>
-
               <th>Duración</th>
-
               <th>Estado</th>
-
               <th>Observación</th>
-
               <th>Acciones</th>
-
             </tr>
-
           </thead>
 
-
           <tbody>
-
-
-            {citas.length === 0 ? (
-
+            {registrosFiltrados.length === 0 ? (
               <tr>
-
-                <td
-                  colSpan="9"
-                  className="empty-table"
-                >
-
+                <td colSpan="9" className="empty-table">
                   No hay citas registradas.
-
                 </td>
-
               </tr>
-
             ) : (
-
-
-              citas.map((cita) => (
-
+              registrosFiltrados.map((cita) => (
                 <tr key={cita.idCita}>
-
-
-                  {/* ID */}
-
+                  <td>{cita.idCita}</td>
                   <td>
-                    {cita.idCita}
-                  </td>
-
-
-                  {/* PACIENTE */}
-
-                  <td>
-
                     {cita.paciente
                       ? `${cita.paciente.nombre} ${cita.paciente.apellido}`
-                      : 'Sin paciente'}
-
+                      : "Sin paciente"}
                   </td>
-
-
-                  {/* SERVICIO */}
-
+                  <td>{obtenerNombreServicio(cita.idServicio)}</td>
+                  <td>{cita.fecha}</td>
+                  <td>{cita.horaInicio}</td>
+                  <td>{cita.duracionMin} min</td>
                   <td>
-
-                    {obtenerNombreServicio(
-                      cita.idServicio
-                    )}
-
-                  </td>
-
-
-                  {/* FECHA */}
-
-                  <td>
-                    {cita.fecha}
-                  </td>
-
-
-                  {/* HORA */}
-
-                  <td>
-                    {cita.horaInicio}
-                  </td>
-
-
-                  {/* DURACIÓN */}
-
-                  <td>
-                    {cita.duracionMin} min
-                  </td>
-
-
-                  {/* ESTADO */}
-
-                  <td>
-
                     <span
-                      className={`estado estado-${String(
-                        cita.estado || ''
-                      )
+                      className={`estado estado-${String(cita.estado || "")
                         .toLowerCase()
-                        .replaceAll(' ', '-')}`}
+                        .replaceAll(" ", "-")}`}
                     >
-
-                      {cita.estado || 'Sin estado'}
-
+                      {cita.estado || "Sin estado"}
                     </span>
-
                   </td>
-
-
-                  {/* OBSERVACIÓN */}
-
+                  <td>{cita.observacion || "Sin observación"}</td>
                   <td>
-
-                    {cita.observacion
-                      || 'Sin observación'}
-
-                  </td>
-
-
-                  {/* ACCIONES */}
-
-                  <td>
-
                     <div className="action-buttons">
-
-
                       <button
                         type="button"
                         className="btn-edit"
-                        onClick={() =>
-                          onEditar(cita)
-                        }
+                        onClick={() => onEditar(cita)}
                       >
-
+                        <Pencil size={15} />
                         Editar
-
                       </button>
-
 
                       <button
                         type="button"
                         className="btn-delete"
-                        onClick={() =>
-                          onEliminar(
-                            cita.idCita
-                          )
-                        }
+                        onClick={() => onEliminar(cita.idCita)}
                       >
-
+                        <Trash2 size={15} />
                         Eliminar
-
                       </button>
-
-
                     </div>
-
                   </td>
-
-
                 </tr>
-
               ))
-
             )}
-
-
           </tbody>
-
         </table>
-
       </div>
-
     </div>
-
-  )
-
+  );
 }
 
-
-/*
-  Exporta el componente.
-*/
-export default CitaTable
+export default CitaTable;

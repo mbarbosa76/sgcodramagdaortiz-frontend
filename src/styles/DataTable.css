@@ -1,0 +1,251 @@
+/*
+============================================================
+DataTable.css
+============================================================
+Estándar visual único para todas las tablas del sistema.
+La referencia visual es la tabla del módulo Pacientes.
+
+IMPORTANTE:
+- Las clases "data-*" están deliberadamente aisladas para
+  evitar que los CSS de cada módulo se pisen entre sí.
+- Los estilos específicos de estados/badges permanecen en
+  los CSS de cada módulo.
+============================================================
+*/
+
+.card.table-card.data-table-card {
+  padding: 0;
+  overflow: hidden;
+  background: #ffffff;
+  border-radius: 12px;
+  margin-bottom: 25px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+}
+
+/* Encabezado uniforme: título + descripción + buscador. */
+.data-table-card .module-table-header {
+  margin: 0;
+  padding: 22px 25px 18px;
+}
+
+.data-table-card .module-table-header .table-title {
+  margin: 0 0 18px;
+  padding: 0;
+}
+
+.data-table-card .module-table-header .table-title h3 {
+  margin: 0 0 6px;
+  color: #263238;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.data-table-card .module-table-header .table-title p {
+  margin: 0;
+  color: #78909c;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.data-table-card .search-bar {
+  width: 100%;
+  max-width: 330px;
+  margin: 0;
+}
+
+/* Si la tabla viene con un filtro contextual del Dashboard,
+   conserva el filtro dentro de la tarjeta y con respiración. */
+.data-table-card > .module-context-filter {
+  margin: 20px 25px 0;
+}
+
+/* Contenedor con scroll horizontal solo cuando sea necesario. */
+.data-table-scroll,
+.data-table-card .table-container,
+.data-table-card .table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  padding: 0 0 6px;
+}
+
+/* Tabla base. */
+.data-table-card table.data-table {
+  width: 100%;
+  margin: 0;
+  border-collapse: collapse;
+  background: #ffffff;
+}
+
+.data-table-card table.data-table thead,
+.data-table-card table.data-table thead tr {
+  background: transparent;
+}
+
+.data-table-card table.data-table th {
+  background: linear-gradient(135deg, #1c9683, #177c6b);
+  color: #ffffff;
+  padding: 14px 12px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.data-table-card table.data-table td {
+  padding: 12px;
+  border-bottom: 1px solid #e5eeee;
+  color: #455a64;
+  font-size: 14px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.data-table-card table.data-table tbody tr:nth-child(even) {
+  background: #f8fbfa;
+}
+
+.data-table-card table.data-table tbody tr:hover {
+  background: #eaf5f2;
+}
+
+/* La columna de acciones se mantiene compacta y estable. */
+.data-table-card table.data-table th:last-child,
+.data-table-card table.data-table td:last-child {
+  min-width: 185px;
+  white-space: nowrap;
+}
+
+.data-table-card .action-buttons,
+.data-table-card .factura-actions {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+}
+
+.data-table-card .action-buttons button,
+.data-table-card .factura-actions button,
+.data-table-card .btn-edit,
+.data-table-card .btn-delete,
+.data-table-card .btn-activate,
+.data-table-card .btn-print {
+  width: auto;
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex-shrink: 0;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.15s ease,
+    box-shadow 0.2s ease;
+}
+
+.data-table-card .btn-edit {
+  background: #2e9d78;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(46, 157, 120, 0.30);
+}
+
+.data-table-card .btn-edit:hover {
+  background: #247e61;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(46, 157, 120, 0.38);
+}
+
+.data-table-card .btn-delete {
+  background: #e05c58;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(224, 92, 88, 0.30);
+}
+
+.data-table-card .btn-delete:hover {
+  background: #c8433f;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(224, 92, 88, 0.36);
+}
+
+.data-table-card .btn-activate {
+  background: #18a558;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(24, 165, 88, 0.28);
+}
+
+.data-table-card .btn-activate:hover {
+  background: #128145;
+  transform: translateY(-1px);
+}
+
+.data-table-card .btn-print {
+  background: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+}
+
+.data-table-card .btn-print:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+.data-table-card button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  transform: none;
+  box-shadow: none;
+}
+
+.data-table-card .empty-table,
+.data-table-card .empty-message {
+  text-align: center !important;
+  padding: 30px !important;
+  color: #78909c !important;
+  white-space: normal !important;
+}
+
+/* Ajustes puntuales de anchura según la cantidad de acciones. */
+.data-table-card .Factura-table th:last-child,
+.data-table-card .Factura-table td:last-child {
+  min-width: 285px;
+}
+
+.data-table-card .Profesional-table th:last-child,
+.data-table-card .Profesional-table td:last-child {
+  min-width: 215px;
+}
+
+.data-table-card .Cita-table th:last-child,
+.data-table-card .Cita-table td:last-child {
+  min-width: 180px;
+}
+
+/* En Servicio.css las celdas estaban centradas; aquí se fuerza
+   la misma alineación izquierda de Pacientes. */
+.data-table-card .servicio-table td,
+.data-table-card .servicio-table th {
+  text-align: left;
+}
+
+@media (max-width: 700px) {
+  .data-table-card .module-table-header {
+    padding: 18px 18px 15px;
+  }
+
+  .data-table-card .search-bar {
+    max-width: none;
+  }
+}

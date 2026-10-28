@@ -1,106 +1,144 @@
-/*
-  ============================================================
-  COLOMBIASERVICE.JS
-  SISTEMA DE GESTIÓN DE CITAS ODONTOLÓGICAS
-  ============================================================
-
-  Servicio encargado de consultar los departamentos y
-  municipios de Colombia, usados en el selector en cascada
-  (Departamento -> Municipio) del formulario de Profesional.
-
-  IMPORTANTE:
-
-  Este servicio NO llama directamente a la API externa
-  "API Colombia" (https://api-colombia.com). En su lugar,
-  llama al propio backend de este proyecto
-  (ApiColombiaController.java), que actúa como intermediario
-  ("proxy") y es quien realmente consume la API externa.
-
-  Frontend (este archivo)
-       -> Backend propio (/api/publica/colombia/...)
-            -> API externa (https://api-colombia.com)
-
-  Como esta ruta está dentro de "/api/publica/**", NO
-  requiere token JWT.
-*/
-
-// Importa Axios para realizar peticiones HTTP.
-import axios from 'axios'
-
 
 /*
-  ============================================================
-  URL BASE
-  ============================================================
-*/
+ * ============================================================
+ * COLOMBIASERVICE.JS
+ * SISTEMA DE GESTION DE CITAS ODONTOLOGICAS
+ * Consultorio Odontologico Dra. Magda Ortiz (SGCO)
+ * ============================================================
+ *
+ * Servicio encargado de consultar los departamentos,
+ * municipios y regiones de Colombia.
+ *
+ * Estos datos se utilizan en el formulario del modulo
+ * de profesionales, donde se selecciona primero el
+ * departamento y despues el municipio correspondiente.
+ *
+ * IMPORTANTE:
+ *
+ * Este servicio no consume directamente la API externa
+ * de Colombia. Las solicitudes se realizan al backend
+ * del SGCO, que actua como intermediario para consultar
+ * la informacion geografica.
+ *
+ * Flujo de comunicacion:
+ *
+ * Frontend React
+ *      |
+ *      v
+ * Backend Spring Boot
+ * /api/publica/colombia/...
+ *      |
+ *      v
+ * API externa de Colombia
+ *
+ * La URL del backend se obtiene desde la configuracion
+ * central ubicada en src/config/api.js.
+ *
+ * Como las rutas utilizadas son publicas, este servicio
+ * no necesita enviar un token JWT.
+ *
+ * ============================================================
+ */
 
-const API = 'http://localhost:8765/api/publica/colombia'
+// Importa Axios para realizar solicitudes HTTP.
+import axios from "axios";
+
+// Importa la URL centralizada del backend.
+import { API_BASE_URL } from "../config/api";
 
 
 /*
-  ============================================================
-  OBTENER DEPARTAMENTOS
-  ============================================================
-*/
+ * ============================================================
+ * URL BASE DEL SERVICIO
+ * ============================================================
+ *
+ * Se utiliza la configuracion central de la API.
+ *
+ * En desarrollo local, la URL corresponde al backend
+ * que se ejecuta en el puerto 8765.
+ *
+ * En la nube, utiliza la URL publica configurada mediante
+ * la variable de entorno VITE_API_URL.
+ */
+
+const API = `${API_BASE_URL}/publica/colombia`;
+
+
+/*
+ * ============================================================
+ * OBTENER DEPARTAMENTOS
+ * ============================================================
+ */
 
 /**
- * Consulta el listado completo de departamentos de Colombia.
+ * Consulta el listado de departamentos de Colombia.
  *
+ * Endpoint:
  * GET /api/publica/colombia/departamentos
  *
- * @returns Respuesta HTTP de Axios (arreglo de { id, name }).
+ * La ruta es publica y no requiere token JWT.
+ *
+ * @returns {Promise} Respuesta HTTP de Axios con los
+ * departamentos disponibles.
  */
 export const getDepartamentos = () => {
 
-  return axios.get(
-    `${API}/departamentos`
-  )
+    return axios.get(
+        `${API}/departamentos`
+    );
 
-}
+};
 
 
 /*
-  ============================================================
-  OBTENER MUNICIPIOS POR DEPARTAMENTO
-  ============================================================
-*/
+ * ============================================================
+ * OBTENER MUNICIPIOS POR DEPARTAMENTO
+ * ============================================================
+ */
 
 /**
- * Consulta los municipios/ciudades que pertenecen
- * a un departamento específico.
+ * Consulta los municipios pertenecientes a un departamento.
  *
+ * Endpoint:
  * GET /api/publica/colombia/departamentos/{idDepartamento}/municipios
  *
- * @param {number} idDepartamento Identificador del departamento
- * (el mismo "id" que devuelve getDepartamentos()).
- * @returns Respuesta HTTP de Axios (arreglo de { id, name }).
+ * El identificador recibido debe corresponder al valor
+ * devuelto por la consulta de departamentos.
+ *
+ * @param {number} idDepartamento Identificador del departamento.
+ * @returns {Promise} Respuesta HTTP de Axios con los municipios.
  */
-export const getMunicipiosPorDepartamento = (idDepartamento) => {
+export const getMunicipiosPorDepartamento = (
+    idDepartamento
+) => {
 
-  return axios.get(
-    `${API}/departamentos/${idDepartamento}/municipios`
-  )
+    return axios.get(
+        `${API}/departamentos/${idDepartamento}/municipios`
+    );
 
-}
+};
 
 
 /*
-  ============================================================
-  OBTENER REGIONES
-  ============================================================
-*/
+ * ============================================================
+ * OBTENER REGIONES
+ * ============================================================
+ */
 
 /**
  * Consulta el listado de regiones de Colombia.
  *
+ * Endpoint:
  * GET /api/publica/colombia/regiones
  *
- * @returns Respuesta HTTP de Axios (arreglo de { id, name }).
+ * La ruta es publica y no requiere token JWT.
+ *
+ * @returns {Promise} Respuesta HTTP de Axios con las regiones.
  */
 export const getRegiones = () => {
 
-  return axios.get(
-    `${API}/regiones`
-  )
+    return axios.get(
+        `${API}/regiones`
+    );
 
-}
+};

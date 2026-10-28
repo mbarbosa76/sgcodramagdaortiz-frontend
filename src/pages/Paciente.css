@@ -279,14 +279,18 @@
 .btn-secondary,
 .btn-edit,
 .btn-delete {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   border: none;
-  border-radius: 7px;
+  border-radius: 10px;
   cursor: pointer;
   font-family: inherit;
   font-weight: 700;
   transition:
     background 0.2s ease,
     transform 0.15s ease,
+    box-shadow 0.2s ease,
     opacity 0.2s ease;
 }
 
@@ -296,15 +300,40 @@
 */
 
 .btn-primary {
-  background: #177c6b;
+  background: linear-gradient(135deg, #1c9683, #177c6b);
   color: #ffffff;
   padding: 12px 25px;
+  box-shadow: 0 4px 12px rgba(23, 124, 107, 0.3);
 }
 
 
 .btn-primary:hover {
-  background: #177c6b;
+  background: linear-gradient(135deg, #178071, #135f52);
   transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(23, 124, 107, 0.38);
+}
+
+
+/*
+  Icono giratorio mientras se procesa
+  el guardado del formulario.
+*/
+
+.spin-icon {
+  animation: girar 0.8s linear infinite;
+}
+
+
+@keyframes girar {
+
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+
 }
 
 
@@ -339,6 +368,7 @@
   cursor: not-allowed;
   opacity: 0.6;
   transform: none;
+  box-shadow: none;
 }
 
 
@@ -369,6 +399,27 @@
 
 /*
   ============================================================
+  TARJETA DE LA TABLA
+  ============================================================
+
+  Se recorta el desbordamiento para que las esquinas
+  redondeadas también apliquen al encabezado de la tabla,
+  logrando un look más moderno tipo "panel".
+*/
+
+.table-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+
+.table-card .table-title {
+  padding: 22px 25px 0;
+}
+
+
+/*
+  ============================================================
   CONTENEDOR RESPONSIVO DE LA TABLA
   ============================================================
 */
@@ -376,6 +427,7 @@
 .table-container {
   width: 100%;
   overflow-x: auto;
+  padding: 0 0 6px;
 }
 
 
@@ -397,12 +449,14 @@
 */
 
 .Paciente-table th {
-  background: #177c6b;
+  background: linear-gradient(135deg, #1c9683, #177c6b);
   color: #ffffff;
-  padding: 12px;
+  padding: 14px 12px;
   text-align: left;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
   white-space: nowrap;
 }
 
@@ -421,12 +475,40 @@
 
 
 /*
+  Filas cebra: mejora la lectura en tablas largas.
+*/
+
+.Paciente-table tbody tr:nth-child(even) {
+  background: #f8fbfa;
+}
+
+
+/*
   Efecto visual al pasar el cursor
   sobre una fila.
 */
 
 .Paciente-table tbody tr:hover {
-  background: #f5faf9;
+  background: #eaf5f2;
+}
+
+
+/*
+  Celda del número de teléfono, con
+  icono para identificarla rápido.
+*/
+
+.telefono-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #455a64;
+}
+
+
+.telefono-cell svg {
+  color: #177c6b;
+  flex-shrink: 0;
 }
 
 
@@ -451,13 +533,16 @@
 .btn-edit {
   background: #2e9d78;
   color: #ffffff;
-  padding: 7px 12px;
+  padding: 8px 14px;
+  font-size: 13px;
+  box-shadow: 0 2px 6px rgba(46, 157, 120, 0.3);
 }
 
 
 .btn-edit:hover {
   background: #247e61;
   transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(46, 157, 120, 0.4);
 }
 
 
@@ -466,14 +551,16 @@
 */
 
 .btn-delete {
-  background: #d9534f;
+  background: #e05c58;
   color: #ffffff;
-  padding: 7px 12px;
+  padding: 8px 14px;
+  font-size: 13px;
+  box-shadow: 0 2px 6px rgba(224, 92, 88, 0.3);
 }
 
 
 .btn-delete:hover {
-  background: #b93f3b;
+  background: #c8433f;
   transform: translateY(-1px);
 }
 
