@@ -1817,3 +1817,143 @@ interfaz compacta, pero con la misma lectura visual de escritorio.
         grid-template-columns: 1fr;
     }
 }
+
+
+/* =========================================================
+   CORRECCION RESPONSIVE DEL DASHBOARD - SGCO
+   ========================================================= */
+
+/* Evita que las reglas posteriores impongan dos columnas
+   en pantallas donde el contenido necesita una sola. */
+@media (max-width: 1180px) {
+    .dashboard-main-grid {
+        grid-template-columns: minmax(0, 1fr) !important;
+    }
+
+    .dashboard-bottom-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+
+    .calendar-panel {
+        grid-column: 1 / -1;
+    }
+}
+
+/* Ajustes específicos para móviles */
+@media (max-width: 720px) {
+    .dashboard {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    .dashboard-hero {
+        min-height: 0 !important;
+        padding: 16px !important;
+        gap: 14px;
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .dashboard-hero-content {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+    }
+
+    .dashboard-hero-content h1 {
+        font-size: clamp(22px, 6vw, 27px) !important;
+        line-height: 1.15;
+        flex-wrap: wrap;
+        overflow-wrap: anywhere;
+    }
+
+    .dashboard-hero-content p {
+        font-size: 13px;
+        line-height: 1.4;
+    }
+
+    .dashboard-hero-actions {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .dashboard-primary-action,
+    .dashboard-secondary-action {
+        width: 100%;
+        flex: 1 1 auto;
+        box-sizing: border-box;
+    }
+
+    .dashboard-kpi-grid,
+    .dashboard-main-grid,
+    .dashboard-bottom-grid {
+        width: 100%;
+        min-width: 0;
+        grid-template-columns: minmax(0, 1fr) !important;
+        gap: 12px;
+    }
+
+    .dashboard-kpi-card,
+    .dashboard-panel {
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+    }
+
+    /* Evita que el contenido interno de las tarjetas
+       comprima los titulos y los valores. */
+    .dashboard-kpi-top {
+        grid-template-columns: 44px minmax(0, 1fr) !important;
+        gap: 9px;
+    }
+
+    .kpi-sparkline {
+        display: none;
+    }
+
+    .dashboard-kpi-copy,
+    .dashboard-kpi-copy strong {
+        min-width: 0;
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+
+    .dashboard-panel-header {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .calendar-panel {
+        grid-column: auto !important;
+    }
+
+    .calendar-layout {
+        grid-template-columns: minmax(0, 1fr) !important;
+    }
+
+    .calendar-legend {
+        padding-top: 0;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .upcoming-item {
+        grid-template-columns: 48px minmax(0, 1fr) 20px !important;
+    }
+
+    .appointment-status {
+        display: none;
+    }
+
+    .activity-item {
+        grid-template-columns: 32px minmax(0, 1fr) auto;
+    }
+
+    .dashboard-hero-logo {
+        right: 0;
+        opacity: 0.035;
+    }
+}

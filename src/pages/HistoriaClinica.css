@@ -355,3 +355,107 @@ ACCIONES TABLA HISTORIA CLÍNICA
     cursor:not-allowed;
 
 }
+
+
+/* ============================================================
+   SGCO - HISTORIA CLINICA RESPONSIVE PARA MOVILES
+   Mantiene el formulario funcional y evita desbordamientos.
+   ============================================================ */
+
+.historia-container {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+@media (max-width: 720px) {
+
+    .historia-container,
+    .historia-container * {
+        box-sizing: border-box;
+    }
+
+    /* Encabezado del modulo */
+    .historia-container .module-header {
+        width: 100%;
+        min-width: 0;
+        margin-bottom: 18px;
+    }
+
+    .historia-container .module-header h2 {
+        font-size: clamp(23px, 6vw, 28px);
+        line-height: 1.25;
+        overflow-wrap: anywhere;
+    }
+
+    .historia-container .module-header p {
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    /* Formulario: una sola columna */
+    .historia-container .historia-form {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        width: 100%;
+        min-width: 0;
+        padding: 16px;
+        gap: 12px;
+        border-radius: 14px;
+    }
+
+    /* Todos los campos respetan el ancho de la tarjeta */
+    .historia-container .historia-form > * {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        grid-column: 1 / -1;
+        justify-self: stretch;
+    }
+
+    .historia-container .historia-form select,
+    .historia-container .historia-form input,
+    .historia-container .historia-form textarea {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        padding: 11px 10px;
+        font-size: 14px;
+    }
+
+    /* Evita que el texto largo desborde los campos */
+    .historia-container .historia-form select {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .historia-container .historia-form textarea {
+        grid-column: 1 / -1;
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    /* Boton de guardado */
+    .historia-container .historia-form button {
+        width: 100%;
+        min-height: 44px;
+        padding: 12px 10px;
+        justify-self: stretch;
+        white-space: normal;
+        line-height: 1.35;
+    }
+
+    /* Tabla: permite desplazamiento si tiene muchas columnas */
+    .historia-container .Historia-table {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .historia-container .Historia-table th,
+    .historia-container .Historia-table td {
+        white-space: nowrap;
+    }
+}
